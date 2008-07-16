@@ -12,7 +12,7 @@ describe "/admin/users/show.html.erb" do
     assigns[:user] = @user
   end
 
-  it "should render attributes in <p>" do
+  it "should render an individual user" do
     render "/admin/users/show.html.erb"
     response.should have_text(/MyString1/)
     response.should have_text(/MyString2/)

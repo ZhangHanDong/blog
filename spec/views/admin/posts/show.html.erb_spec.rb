@@ -18,7 +18,7 @@ describe "/admin/posts/show.html.erb" do
     assigns[:post] = @post
   end
 
-  it "should render attributes in <p>" do
+  it "should render an individual post" do
     render "/admin/posts/show.html.erb"
     response.should have_text(/MyString/)
     response.should have_text(/MyString/)

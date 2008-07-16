@@ -16,7 +16,7 @@ describe "/admin/comments/new.html.erb" do
     assigns[:comment] = @comment
   end
 
-  it "should render edit form" do
+  it "should render the new comment form" do
     render "/admin/comments/new.html.erb"
     
     response.should have_tag("form[action=?][method=post]", admin_post_comments_path(@post)) do  

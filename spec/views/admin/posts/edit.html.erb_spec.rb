@@ -17,7 +17,7 @@ describe "/admin/posts/edit.html.erb" do
     assigns[:post] = @post
   end
 
-  it "should render edit form" do
+  it "should render edit post form" do
     render "/admin/posts/edit.html.erb"
     
     response.should have_tag("form[action=#{admin_post_path(@post)}][method=post]") do

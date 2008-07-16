@@ -21,7 +21,7 @@ describe "/comments/new" do
     assigns[:comment] = @comment
   end
 
-  it "should render attributes in <p>" do
+  it "should render the form for adding a new comment to the post" do
     render 'comments/new'   
     response.should have_text(/MyStringTitle1/)
   end

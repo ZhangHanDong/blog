@@ -13,7 +13,7 @@ describe "/admin/posts/edit.html.erb" do
     assigns[:user] = @user
   end
 
-  it "should render edit form" do
+  it "should render edit user form" do
     render "/admin/users/edit.html.erb"
     
     response.should have_tag("form[action=#{admin_user_path(@user)}][method=post]") do

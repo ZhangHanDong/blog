@@ -10,7 +10,7 @@ describe "/admin/tags/show" do
     assigns[:tag] = @tag
   end
 
-  it "should render attributes" do
+  it "should render all items tagged with this tag" do
     render "/admin/tags/show.html.erb"
     response.should have_text(/MyString/)
   end

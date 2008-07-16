@@ -27,11 +27,12 @@ describe "/posts/show" do
     assigns[:comment] = @comment
   end
 
-  it "should render attributes in <p>" do
+  it "should render an individual post with recent comments" do
     render "/posts/show.html.erb"
     response.should have_text(/MyStringTitle1/)
     response.should have_text(/matt/)
     response.should have_text(/Not Blank/)
     response.should have_text(/Body Text/) 
-  end
+  end  
+  
 end

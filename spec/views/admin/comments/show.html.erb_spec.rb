@@ -17,7 +17,7 @@ describe "/admin/comments/show.html.erb" do
     assigns[:comment] = @comment
   end
 
-  it "should render attributes in <p>" do
+  it "should render an individual comment" do
     render "/admin/comments/show.html.erb"
     response.should have_text(/MyString/)
     response.should have_text(/MyString/)
