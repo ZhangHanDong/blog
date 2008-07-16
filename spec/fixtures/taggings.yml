@@ -1,0 +1,6 @@
+normal_tagging:
+  id: 1
+  tag_id: 1
+  taggable_id: 1
+  taggable_type: Post
+  user_id: 1

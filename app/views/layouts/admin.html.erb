@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head profile="http://www.w3.org/2005/10/profile">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" >
+    <title>Blog Admin</title>
+    <link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/admin.css">
+  </head>
+  <body>
+
+  <h2>Manage Blog</h2>
+  <ul>
+    <li><%= link_to 'posts', admin_posts_path %></li>
+    <li><%= link_to 'tags', admin_tags_path %></li>
+    <li><%= link_to 'users', admin_users_path %></li>
+    <li><strong><%= link_to 'logout', logout_path %></strong></li>
+  </ul>
+  <hr/>
+  <p style="color: green"><%= flash[:notice] %></p>
+
+  <%= yield  %>   
+
+  <hr/>
+  <p><small>you are logged in as <strong><%= @current_user.login %></strong> - <%= link_to @current_user.email, "mailto:#{@current_user.email}" %> (<a href="/logout">logout</a>)</small></p>
+  </body>
+</html>

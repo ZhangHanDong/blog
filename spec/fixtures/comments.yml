@@ -1,0 +1,10 @@
+normal_comment:
+  name: Joe Swanson
+  body: MyText is here
+  user_id: 1     
+  post_id: 1  
+  
+normal_comment_without_user:
+  name: Henry Ford
+  body: MyText is here again
+  post_id: 1

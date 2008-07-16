@@ -1,0 +1,7 @@
+*.log     
+log/*.log
+db/schema.rb
+tmp/sessions/*.*
+coverage/*
+config/initializers/site_keys.rb
+public/images/u

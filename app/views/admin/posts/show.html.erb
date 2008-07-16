@@ -1,0 +1,55 @@
+<p>
+  <b>Title:</b>
+  <%=h @post.title %>
+</p>
+
+<p>
+  <b>Permalink:</b>
+  <%=h @post.permalink %>
+</p>
+
+<p>
+  <b>Publish date:</b>
+  <%=h @post.publish_date %>
+</p>
+
+<p>
+  <b>Summary:</b>
+  <%=h @post.summary %>
+</p>
+
+<p>
+  <b>Body:</b>
+  <%=h @post.body %>
+</p>
+
+<p>
+  <b>Body formatted:</b>
+  <%= @post.body_formatted %>
+</p>
+
+<p>
+  <b>Tagged with:</b>
+  <ul>
+  <% @post.tags.each do |tag| -%>
+    <li><%= link_to_admin_tag(tag) %></li>
+  <% end -%>
+  </ul>
+</p>
+
+<p>
+  <b>In draft:</b>
+  <%=h @post.in_draft %>
+</p> 
+ 
+<hr/>
+
+<% unless @post.comments.empty? %>
+  <h3><%= pluralize(@post.comments.length, 'Comment') %> </h3>
+  <%= render :partial => 'admin/comments/comment', :collection => @post.comments -%>
+<% end %>                                                                     
+<p><%= link_to 'manage post comments', admin_post_comments_path(@post) %></p>
+
+
+<%= link_to 'Edit', edit_admin_post_path(@post) %> |
+<%= link_to 'Back', admin_posts_path %>

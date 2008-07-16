@@ -1,0 +1,36 @@
+<h1>Editing post</h1>
+
+<% form_for [:admin, @post] do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </p>
+  <p>
+    <%= f.label :publish_date %><br />
+    <%= f.datetime_select :publish_date %>
+  </p>
+  <p>
+    <%= f.label :summary %><br />
+    <%= f.text_area :summary, :rows => 3 %>
+  </p>
+  <p>
+    <%= f.label :body %><br />
+    <%= f.text_area :body %>
+  </p>   
+  <p>Tags (space separate tags &amp; use quotes "" to group tag phrases)<br />
+    <%= f.text_field :tag_list -%>
+    <%= f.hidden_field :user_id, :value => @current_user.id  unless @current_user.nil? -%>
+  </p> 
+  <p>
+    <%= f.label :in_draft %><br />
+    <%= f.check_box :in_draft %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', admin_post_path(@post) %> |
+<%= link_to 'Back', admin_posts_path %>

@@ -1,0 +1,17 @@
+<h1>Listing all taggings for <%=h @tag.name %></h1>
+
+<table>
+  <tr>
+    <th>Type</th> 
+    <th>Tagged</th> 
+    <th>created by user</th> 
+  </tr>
+
+<% for tagging in @tag.taggings %>
+  <tr>
+    <td><%=h tagging.taggable_type %></td>
+    <td><%=link_to(tagging.taggable.title, {:controller => tagging.taggable_type.downcase.pluralize, :action => :show, :id => tagging.taggable_id}) -%></td>
+    <td><%=link_to(h(tagging.user.name), admin_user_path(tagging.user)) if tagging.user %></td> 
+  </tr>
+<% end %>
+</table>

@@ -1,0 +1,35 @@
+<h1>Post</h1>
+<h2><%=link_to h(@post.title), @post %></h2>
+<ul>
+  <li>added on <%= @post.publish_date %> by <%= @post.user.name %></li>   
+</ul>           
+<p><%=h @post.summary %></p>   
+<%= @post.body_formatted %>         
+<p>
+  <%= link_to(pluralize(@post.comments.length, 'comment'), '#comments') unless @post.comments.length == 0 %>
+</p>  
+<% unless @post.tags.empty? -%>
+<ul>
+  <% @post.tags.each do |tag| -%>
+    <li><%= h tag.name %></li>
+  <% end -%>
+</ul>       
+<% end -%>                             
+
+<a name="comments"></a>
+<% unless @post.comments.empty? %>  
+  <hr/>
+  <h3><%= pluralize(@post.comments.length, 'Comment') %> </h3>
+  <%= render :partial => 'comments/comment', :collection => @post.comments -%>
+<% end %>
+
+
+
+<a name="new-comment"></a>
+<h3>Add your comment</h3>
+
+<% form_for [@post, @comment] do |f| %>
+  <%= render :partial => 'comments/form', :locals => { :f => f } -%>
+<% end %>
+
+<%= link_to 'return to all posts', posts_path %>

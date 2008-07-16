@@ -1,0 +1,22 @@
+development:
+  adapter: mysql
+  encoding: utf8
+  database: blog_development
+  username: root
+  password:
+
+test:
+  adapter: mysql
+  encoding: utf8
+  database: blog_test
+  username: root
+  password:
+
+production:
+  adapter: mysql
+  encoding: utf8
+  database: blog_production
+  username: root
+  password:              
+  
+ 

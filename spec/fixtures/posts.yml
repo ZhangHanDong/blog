@@ -1,0 +1,19 @@
+normal_post:
+  title: MyString
+  permalink: MyString
+  publish_date: 2008-06-22 13:30:43
+  summary: MyText
+  body: MyText
+  body_formatted: MyText
+  in_draft: false 
+  user_id: 1
+
+draft_post:
+  title: MyString
+  permalink: MyString
+  publish_date: 2008-06-22 13:30:43
+  summary: MyText
+  body: MyText
+  body_formatted: MyText
+  in_draft: true
+  user_id: 2

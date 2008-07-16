@@ -1,0 +1,25 @@
+<h1>Posts</h1>
+<hr/>
+<% for post in @posts %>
+  <h2><%=link_to h(post.title), post %></h2>
+  <ul>
+    <li>added on <%= post.publish_date %> by <%= post.user.name %></li>   
+  </ul>               
+  <% unless post.summary.blank? -%>
+  <p><%=h post.summary %></p>   
+  <% else -%>
+  <%= truncate_words(post.body_formatted, 300) %>
+  <% end -%>
+  <p>
+    <%= post.comments.length == 0 ? link_to('no comments yet, post one now', post_path(post, :anchor => 'new-comment')) : link_to(pluralize(post.comments.length, 'comment'), post_path(post, :anchor => 'comments')) %>
+  </p>
+  <% unless post.tags.empty? -%>
+  <ul>
+    <% post.tags.each do |tag| -%>
+      <li><%= h tag.name %></li>
+    <% end -%>
+  </ul>       
+  <% end -%>
+  <hr/>
+<% end %>
+<p><%= will_paginate @posts %></p>

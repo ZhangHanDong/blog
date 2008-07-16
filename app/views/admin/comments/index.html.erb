@@ -1,0 +1,29 @@
+Listing comments for post, <strong><%= h @post.title %></strong>
+
+<table>
+  <tr>    
+    <th>Name</th>
+    <th>Email</th>
+    <th>Website</th> 
+    <th>User</th> 
+  </tr>
+
+<% for comment in @comments %>
+  <tr>                           
+    <td><%=h comment.name %></td>
+    <td><%=h comment.email %></td> 
+    <td><%= link_to h(comment.website), comment.website %></td>     
+    <td><%= link_to h(comment.user.name), admin_user_path(comment.user) if comment.user %></td> 
+    <td><%= link_to 'Show', admin_post_comment_path(@post, comment) %></td>    
+    <td><%= link_to 'Edit', edit_admin_post_comment_path(@post, comment) %></td>
+    <td><%= link_to 'Destroy', admin_post_comment_path(@post, comment), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table> 
+
+<p><%= will_paginate @comments %></p>
+
+<br />
+
+<%= link_to 'add new post comment', new_admin_post_comment_path(@post) %>   
+<%= link_to 'back to Post', admin_post_path(@post) %>
