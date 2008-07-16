@@ -8,6 +8,8 @@ describe CommentsController do
       @post = mock_model(Post)
       @comment = mock_model(Comment)
       Post.stub!(:find).and_return(@post)     
+      @post.should_receive(:comments).and_return(@comment) 
+      @comment.should_receive(:recent).and_return(@comment)
     end
 
     def do_get

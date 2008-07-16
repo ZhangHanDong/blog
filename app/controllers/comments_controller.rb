@@ -2,9 +2,10 @@ class CommentsController < ApplicationController
   
   # GET /posts/1/comments.atom
   def index
-    @post = Post.published.find(params[:post_id], :include => [:comments, :user])
+    @post = Post.published.find(params[:post_id])
+    @comments = @post.comments.recent
     respond_to do |format|
-      format.atom #index.atom.builder
+      format.atom
     end
   end
   

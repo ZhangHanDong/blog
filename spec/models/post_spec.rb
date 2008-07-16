@@ -34,6 +34,15 @@ describe Post do
       @draft_post.in_draft.should eql(true)                
       Post.find(:all).length.should eql(4)
       Post.published.should eql([@post, posts(:normal_post)]) 
+    end
+    
+    it "should have a recent scope, and find recent posts (limited and ordered)" do
+      1.upto(22) do
+        Post.create!(valid_post_attributes)  
+      end                                    
+      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent', :publish_date => (Time.now+1.day)))  
+      Post.recent.length.should eql(20)        
+      Post.recent.first.title.should eql(@most_recent_post.title)
     end          
          
   end

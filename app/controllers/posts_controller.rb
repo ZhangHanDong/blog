@@ -5,11 +5,10 @@ class PostsController < ApplicationController
   def index
     respond_to do |format|
       format.html {
-        @posts = Post.published.paginate(:all, :page => params[:page], :order => 'publish_date DESC', :per_page => 10, :include => [:comments, :user, :tags])
-      }
-      #index.atom.erb                         
+        @posts = Post.published.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+      }                  
       format.atom {
-        @posts = Post.published.find(:all, :limit => 20, :include => [:comments, :user])
+        @posts = Post.published.recent.find(:all, :include => [:comments, :user])  
       }
     end
   end

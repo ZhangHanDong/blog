@@ -8,4 +8,6 @@ class Comment < ActiveRecord::Base
   belongs_to :post
   belongs_to :user
   
+  named_scope :recent, :limit => 20, :order => "created_at DESC"
+  
 end

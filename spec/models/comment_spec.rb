@@ -21,7 +21,20 @@ describe Comment do
   before(:each) do
     @comment = Comment.new
   end          
-       
+          
+  describe 'named scopes' do  
+    
+    it "should have a recent scope, and find recent comments (limited and ordered)" do
+      1.upto(22) do
+        Comment.create!(valid_comment_attributes)  
+      end                                    
+      @most_recent_comment = Comment.create!(valid_comment_attributes.with(:name => 'Very Recent Name', :created_at => Time.now+1.day))
+      Comment.recent.length.should eql(20)        
+      Comment.recent.first.name.should eql(@most_recent_comment.name)
+    end          
+         
+  end
+
    
   describe 'being associated with' do  
     

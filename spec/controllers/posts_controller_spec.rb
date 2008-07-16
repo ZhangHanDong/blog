@@ -24,7 +24,7 @@ describe PostsController do
     end
 
     it "should find all posts" do
-      Post.should_receive(:find).with(:all, {:offset=>0, :limit=>10, :include=>[:comments, :user, :tags], :order=>"publish_date DESC"}).and_return([@post])
+      Post.should_receive(:find).with(:all, {:offset=>0, :limit=>10, :include=>[:comments, :user, :tags]}).and_return([@post])
       do_get
     end
 
@@ -53,7 +53,7 @@ describe PostsController do
     end
 
     it "should find all posts" do
-      Post.should_receive(:find).with(:all, :limit => 20, :include => [:comments, :user]).and_return(@posts)
+      Post.should_receive(:find).with(:all, :include => [:comments, :user]).and_return(@posts)
       do_get
     end
 
