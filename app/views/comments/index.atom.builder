@@ -1,5 +1,5 @@
 atom_feed do |feed|
-  feed.title("#{h(@post.title)} Comments")           
+  feed.title("Recent comments on #{h(@post.title)}")           
   feed.updated((@comments.empty? ? @post.publish_date : @comments.first.updated_at))
   
   for comment in @comments

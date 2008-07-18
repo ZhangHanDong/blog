@@ -14,6 +14,11 @@
   <b>Email:</b>
   <%=h @user.email %>
 </p>
+              
+<p>
+  <b>Posts:</b>
+  <%= link_to 'show all posts for this user', admin_user_posts_path(@user) %>    
+</p>
 
 
 <%= link_to 'Edit', edit_admin_user_path(@user) %> |

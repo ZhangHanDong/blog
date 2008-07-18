@@ -1,4 +1,4 @@
-<h1>Posts</h1>
+<h1><%= "Blog posts#{(@user.nil? ? '' : " from #{@user.name}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
 <hr/>
 <% for post in @posts %>
   <h2><%=link_to h(post.title), post %></h2>

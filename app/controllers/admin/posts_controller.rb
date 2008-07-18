@@ -6,13 +6,19 @@ class Admin::PostsController < ApplicationController
   
   # GET /admin/posts
   # GET /admin/posts.xml
-  def index
+  # GET /users/:id/posts
+  # GET /users/:id/posts.xml
+  def index 
+    if params[:user_id] 
+      @user = User.find(params[:user_id])
+      conditions = ['user_id = ?', @user.id] if @user
+    end
     respond_to do |format|
       format.html {
-        @posts = Post.paginate(:all, :page => params[:page], :order => 'publish_date DESC', :per_page => 10, :include => :comments)
+        @posts = Post.paginate(:all, :page => params[:page], :order => 'publish_date DESC', :per_page => 10, :include => :comments, :conditions => conditions)
       }
       format.xml  { 
-        @posts = Post.find(:all)
+        @posts = Post.find(:all, :conditions => conditions)
         render :xml => @posts 
       }
     end

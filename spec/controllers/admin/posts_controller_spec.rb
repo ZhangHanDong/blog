@@ -28,7 +28,7 @@ describe Admin::PostsController do
     end
 
     it "should find all posts" do
-      Post.should_receive(:find).with(:all, {:offset => 0, :order => "publish_date DESC", :limit => 10, :include => :comments }).and_return([@post])
+      Post.should_receive(:find).with(:all, {:offset => 0, :order => "publish_date DESC", :limit => 10, :include => :comments, :conditions => nil}).and_return([@post])
       do_get
     end
 
@@ -58,7 +58,7 @@ describe Admin::PostsController do
     end
 
     it "should find all posts" do
-      Post.should_receive(:find).with(:all).and_return(@posts)
+      Post.should_receive(:find).with(:all, :conditions => nil).and_return(@posts)
       do_get
     end
 
