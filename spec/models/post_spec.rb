@@ -22,7 +22,29 @@ describe Post do
 
   before(:each) do
     @post = Post.new
-  end          
+  end 
+  
+  
+  describe 'helper methods' do           
+    
+    it "should return date range based on year and (optional) month, day params" do
+      range = Post.get_date_range("2008", nil, nil)
+      range.should eql({:start => Time.utc(2008, 1, 1), 
+                        :end => Time.utc(2008, 1, 1).end_of_year, 
+                        :descriptor => ' in 2008'})
+                        
+      range = Post.get_date_range("2007", "6", nil)
+      range.should eql({:start => Time.utc(2007, 6, 1), 
+                        :end => Time.utc(2007, 6, 1).end_of_month, 
+                        :descriptor => ' in June 2007'})
+      
+      range = Post.get_date_range("2006", "2", "28")
+      range.should eql({:start => Time.utc(2006, 2, 28), 
+                        :end => Time.utc(2006, 2, 28).end_of_day, 
+                        :descriptor => ' on Tuesday February 28, 2006'})
+    end
+    
+  end         
              
         
   describe 'named scopes' do  
