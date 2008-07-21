@@ -5,3 +5,4 @@ tmp/sessions/*.*
 coverage/*
 config/initializers/site_keys.rb
 public/images/u
+spec/previous_failures.txt
