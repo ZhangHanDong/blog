@@ -6,3 +6,4 @@ coverage/*
 config/initializers/site_keys.rb
 public/images/u
 spec/previous_failures.txt
+db/development_structure.sql
