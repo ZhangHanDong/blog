@@ -90,7 +90,53 @@ describe PostsController do
       do_get
       assigns[:post].should equal(@post)
     end
-  end  
+  end     
+                                         
+  
+  describe "handling GET /users/1/posts" do
+    
+    before(:each) do
+      @post = mock_model(Post) 
+      @user = mock_model(User)
+      Post.stub!(:find).and_return([@post])
+      User.stub!(:find).and_return(@user)
+    end
+    
+    def do_get
+      get :index, :user_id => "1"
+    end    
+    
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end    
+    
+    it "should assign the found user for the view" do
+      do_get
+      assigns[:user].should equal(@user)
+    end
+    
+  end
+  
+  
+  describe "handling GET /users/1/posts/1" do
+     before(:each) do
+      @post = mock_model(Post) 
+      @user = mock_model(User)
+      Post.stub!(:find).and_return([@post])
+      User.stub!(:find).and_return(@user)
+    end
+    
+    def do_get
+      get :show, :id => "1", :user_id => "1"
+    end    
+    
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end   
+    
+  end
   
   describe "handling unsuccessful GET for /posts/15155199" do
     it "should be redirected with flash message" do

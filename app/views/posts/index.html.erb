@@ -1,9 +1,9 @@
-<h1><%= "Blog posts#{(@user.nil? ? '' : " from #{@user.name}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
+<h1><%= "Blog posts#{(@user.nil? ? '' : " by #{@user.name}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
 <hr/>
 <% for post in @posts %>
   <h2><%=link_to h(post.title), post %></h2>
   <ul>
-    <li>added on <%= post.publish_date %> by <%= post.user.name %></li>   
+    <li>added on <%= post.publish_date %> by <%= link_to post.user.name, user_posts_url(post.user) %></li>   
   </ul>               
   <% unless post.summary.blank? -%>
   <p><%=h post.summary %></p>   

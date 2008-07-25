@@ -22,11 +22,19 @@ describe PostsController do
     it "should map { :controller => 'posts', :action => 'date', :year => '2006', :month => '4', :day => '22' } to /posts/2006/4/22" do
       route_for(:controller => "posts", :action => "date", :year => "2006", :month => '4', :day => '22').should == "/posts/2006/4/22"
     end
+    
+    it "should map { :controller => 'posts', :action => 'index', :user_id => '1' } to /users/1/posts" do
+      route_for(:controller => "posts", :action => "index", :user_id => "1").should == "/users/1/posts"
+    end  
+    
+    it "should map { :controller => 'posts', :action => 'show', :id => 1 } to /users/1/posts/1" do
+      route_for(:controller => "posts", :action => "show", :id => 1, :user_id => "1").should == "/users/1/posts/1"
+    end
  
   end
 
   describe "route recognition" do
-
+        
     it "should generate params { :controller => 'posts', action => 'index' } from GET /posts" do
       params_from(:get, "/posts").should == {:controller => "posts", :action => "index"}
     end
@@ -45,7 +53,14 @@ describe PostsController do
     
     it "should generate params { :controller => 'posts', action => 'date' } from GET /posts/2006/10/22" do
       params_from(:get, "/posts/2006/10/22").should == {:controller => "posts", :action => "date", :year => "2006", :month => "10", :day => "22"}
+    end 
+    
+    it "should generate params { :controller => 'posts', action => 'index', user_id => '1' } from GET /users/1/posts" do
+      params_from(:get, "/users/1/posts").should == {:controller => "posts", :action => "index", :user_id => "1"}
     end
-
+    
+    it "should generate params { :controller => 'posts', action => 'show', id => '1', user_id => '1' } from GET /posts/1" do
+      params_from(:get, "/users/1/posts/1").should == {:controller => "posts", :action => "show", :id => "1", :user_id => "1"}
+    end
   end
 end

@@ -10,8 +10,7 @@ ActionController::Routing::Routes.draw do |map|
                  :controller => 'posts',
                  :action     => 'date',
                  :month => nil, :day => nil,
-                 :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/ }
-                 
+                 :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/ }               
                  
   # mapped resources 
   map.resource  :session

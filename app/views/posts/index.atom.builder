@@ -1,5 +1,5 @@
 atom_feed do |feed|
-  feed.title("Recent blog posts#{(@user.nil? ? '' : " from #{@user.name}")}")   
+  feed.title("Recent blog posts#{(@user.nil? ? '' : " by #{@user.name}")}")   
   feed.updated((@posts.empty? ? Time.now : @posts.first.updated_at))
 
   for post in @posts
