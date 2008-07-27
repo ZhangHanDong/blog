@@ -31,8 +31,41 @@ describe PostsController do
     it "should assign the found posts for the view" do
       do_get
       assigns[:posts].should == [@post]
+    end      
+  end    
+  
+    
+  describe "handling GET /posts with date range" do
+    
+    before(:each) do
+      @post = mock_model(Post)
+      Post.stub!(:find).and_return([@post])
     end
-  end  
+
+    it "should be successful on year search" do   
+      Post.should_receive(:find).with(:all, {:offset=>0, :limit=>10, :include=>[:comments, :user, :tags]}).and_return([@post])
+      get :date, :year => "2008"         
+      response.should be_success
+    end  
+    
+    it "should be successful on year, month search" do  
+      get :date, :year => "2008", :month => '7'
+      response.should be_success
+    end
+    
+    it "should be successful on year, month and day search" do
+      get :date, :year => "2008", :month => '7', :day => '23'
+      response.should be_success
+    end
+    
+    it "should show no posts found and redirect (with message) when none in date range" do
+      Post.should_receive(:find).with(:all, {:offset=>0, :limit=>10, :include=>[:comments, :user, :tags]}).and_return([]) 
+      get :date, :year => "2007"   
+      flash[:notice].should_not be_empty       
+      response.should redirect_to(posts_url) 
+    end
+
+  end
       
   
   describe "handling GET /posts.atom" do
@@ -136,7 +169,8 @@ describe PostsController do
       response.should be_success
     end   
     
-  end
+  end    
+  
   
   describe "handling unsuccessful GET for /posts/15155199" do
     it "should be redirected with flash message" do

@@ -417,12 +417,70 @@ describe Admin::UsersController do
   end
 
 
-
   def create_user(options = {})
     post :create, :user => { :login => 'quire', :email => 'quire@example.com',
     :password => 'quire69', :password_confirmation => 'quire69' }.merge(options)
+  end   
+
+  
+  describe "User Registration - handling POST /users/register" do
+     it 'allows register' do
+      lambda do
+        register_user
+        response.should be_redirect
+      end.should change(User, :count).by(1)
+    end
+
+    it 'requires login on register' do
+      lambda do
+        register_user(:login => nil)
+        assigns[:user].errors.on(:login).should_not be_nil
+        response.should be_success
+      end.should_not change(User, :count)
+    end
+
+    it 'requires password on register' do
+      lambda do
+        register_user(:password => nil)
+        assigns[:user].errors.on(:password).should_not be_nil
+        response.should be_success
+      end.should_not change(User, :count)
+    end
+
+    it 'requires password confirmation on register' do
+      lambda do
+        register_user(:password_confirmation => nil)
+        assigns[:user].errors.on(:password_confirmation).should_not be_nil
+        response.should be_success
+      end.should_not change(User, :count)
+    end
+
+    it 'requires email on register' do
+      lambda do
+        register_user(:email => nil)
+        assigns[:user].errors.on(:email).should_not be_nil
+        response.should be_success
+      end.should_not change(User, :count)
+    end
+
+
+
+    def register_user(options = {})
+      post :register, :user => { :login => 'quire', :email => 'quire@example.com',
+      :password => 'quire69', :password_confirmation => 'quire69' }.merge(options)
+    end
   end
-end
+  
+end      
+  
+
+
+
+
+        
+
+
+
 
 describe Admin::UsersController do
   describe "route generation" do      

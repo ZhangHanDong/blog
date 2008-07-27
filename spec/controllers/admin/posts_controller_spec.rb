@@ -313,8 +313,8 @@ describe Admin::PostsController do
       it "should re-render 'new'" do
         do_post
         response.should render_template('new')
-      end
-
+      end      
+     
     end
   end
 
@@ -366,8 +366,16 @@ describe Admin::PostsController do
       it "should re-render 'edit'" do
         do_put
         response.should render_template('edit')
-      end
-
+      end 
+      
+      it "should be render template with flash message on update RecordInvalid" do   
+        @post.errors.stub!(:full_messages).and_return([])                  
+        @post.should_receive(:update_attributes).and_raise(ActiveRecord::RecordInvalid.new(@post))
+        post :update, :id => "1"
+        flash[:notice].should_not be_empty   
+        response.should render_template('edit')                  
+      end   
+      
     end
   end
 
