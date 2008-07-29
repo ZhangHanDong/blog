@@ -1,16 +1,16 @@
-Listing comments for post, <strong><%= h @post.title %></strong>
+<h1>Listing comments for post, <strong><%= h @post.title %></strong></h1>
 
 <table>
   <tr>    
-    <th>Name</th>
+    <th>Body</th>
     <th>Email</th>
     <th>Website</th> 
     <th>User</th> 
   </tr>
 
 <% for comment in @comments %>
-  <tr>                           
-    <td><%=h comment.name %></td>
+  <tr>    
+    <td><%= truncate_words(h(comment.body), 50) %></td>                       
     <td><%=h comment.email %></td> 
     <td><%= link_to h(comment.website), comment.website %></td>     
     <td><%= link_to h(comment.user.name), admin_user_path(comment.user) if comment.user %></td> 

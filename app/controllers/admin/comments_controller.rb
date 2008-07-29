@@ -47,7 +47,8 @@ class Admin::CommentsController < ApplicationController
   
   
   # GET /admin/posts/1/comment/1/edit
-  def edit         
+  def edit       
+    @post = Post.find(params[:post_id])  
     @comment = Comment.find(params[:id])
   end           
   

@@ -1,8 +1,8 @@
 <ul>
-  <li>name: <%= h comment.name %></li> 
+  <li>name: <%= h comment.name %></li>  
+  <li>user: <%= link_to h(comment.user.name), admin_user_path(comment.user) if comment.user %></li>  
   <li>date: <%= comment.created_at %></li> 
   <li>email: <%= h comment.email %></li>
   <li>website: <%= link_to h(comment.website), comment.website %></li>
   <li>body: <%= h comment.body %></li> 
 </ul>
-<hr/>

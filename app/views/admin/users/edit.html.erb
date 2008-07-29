@@ -1,34 +1,7 @@
 <h1>Editing user</h1>
 
 <% form_for [:admin, @user], :html => { :multipart => true } do |f| %>
-  <%= f.error_messages %>
-  <p>
-    <%= f.label :login %><br />
-    <%= f.text_field :login %>
-  </p>
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :email %><br />  
-    <%= f.text_field :email %>
-  </p>
-  <p>
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
-  </p>
-  <p>
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation %>
-  </p>
-  <p>
-    (optional photo)<br />
-    <%= f.file_field :photo %>
-  </p>
-  <p>
-    <%= f.submit "Update" %>
-  </p>
+  <%= render :partial => 'form', :locals => { :f => f, :label => 'Update' } -%>
 <% end %>
 
 <%= link_to 'Show', admin_user_path(@user) %> |

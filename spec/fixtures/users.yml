@@ -1,6 +1,7 @@
 quentin:
   id:                        1
-  login:                     quentin
+  login:                     quentin   
+  name:                      Quentin Bart
   email:                     quentin@example.com
   salt:                      356a192b7913b04c54574d18c28d46e6395428ab # SHA1('0')
   crypted_password:          c9a807c5d213243a4b14a69a628aad0201b40a49 # 'monkey'

@@ -1,8 +1,7 @@
 <h1>New comment for post <%=h @post.title -%></h1>
 
 <% form_for [@post, @comment] do |f| %>
-  <%= f.error_messages %>
-  <%= render :partial => 'comments/form', :locals => { :f => f } -%>
+  <%= render :partial => 'form', :locals => { :f => f } -%>
 <% end %>
 
 <%= link_to 'Back to post', post_path(@post) %>
