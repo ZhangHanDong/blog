@@ -23,7 +23,8 @@ class Admin::CommentsController < ApplicationController
         
   # GET /admin/posts/1/comment/1
   # GET /admin/posts/1/comment/1.xml
-  def show         
+  def show  
+    @post = Post.find(params[:post_id])       
     @comment = Comment.find(params[:id])  
     
     respond_to do |format|

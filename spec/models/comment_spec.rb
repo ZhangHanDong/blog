@@ -33,6 +33,24 @@ describe Comment do
       Comment.recent.first.name.should eql(@most_recent_comment.name)
     end          
          
+  end     
+  
+  
+  describe 'before save callbacks' do
+
+    it "should have format format_website after_save (create)" # do
+     #      @post.attributes = valid_post_attributes.with(:body => 'wejfn iewjnf wek *efwef* "some link":http://google.com wqdqw')
+     #      @post.save!
+     #      @post.body_formatted.should eql('<p>wejfn iewjnf wek <strong>efwef</strong> <a href="http://google.com">some link</a> wqdqw</p>')
+     #    end
+     #                                                              
+    it "should have format format_website after_save (update)" # do
+     #      @post.attributes = valid_post_attributes.with(:body => 'wejfn iewjnf wek *efwef* "some link":http://google.com wqdqw')
+     #      @post.save!
+     #      @post.update_attribute(:body, 'wejfn iewjnf wek *efwef*')
+     #      @post.body_formatted.should eql('<p>wejfn iewjnf wek <strong>efwef</strong></p>')
+     #    end                                                       
+
   end
 
    
@@ -83,16 +101,6 @@ describe Comment do
       @comment.attributes = valid_comment_attributes.with(:email => 'som.eth.ingwqdo!!that.com')
       @comment.should have(1).error_on(:email)
     end   
-    
-    it "should have an valid website if passed" do
-      @comment.attributes = valid_comment_attributes.with(:website => 'http://bbc.co.uk')
-      @comment.should have(0).errors_on(:website)
-    end 
-    
-    it "should raise invalid website error" do
-      @comment.attributes = valid_comment_attributes.with(:website => 'sohtp:/\m.eth.inewwgwqdo!!that.com')
-      @comment.should have(1).error_on(:website)
-    end
     
   end
   

@@ -70,6 +70,8 @@ describe Post do
       Post.recent.length.should eql(20)
       Post.recent.first.title.should eql(@most_recent_post.title)
     end
+    
+    it "should have an in range scope (date range)"
 
   end
 

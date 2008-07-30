@@ -2,10 +2,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Admin::PostsController do
   describe "route generation" do
-
-    it "should map { :controller => 'admin/posts', :action => 'index' } to /admin/posts" do
-      route_for(:controller => "admin/posts", :action => "index").should == "/admin"
-    end
   
     it "should map { :controller => 'admin/posts', :action => 'new' } to /admin/posts/new" do
       route_for(:controller => "admin/posts", :action => "new").should == "/admin/posts/new"
