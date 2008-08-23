@@ -4,13 +4,22 @@ describe Admin::BlogsController do
   
   fixtures :users 
   
+  before(:each) do 
+    login_as :quentin
+    stub!(:reset_session)
+    
+    @blog  = mock_model(Blog, :to_param => "1", :to_xml => "XML", :destroy => true)
+    @blogs = mock("Array of Blogs", :to_xml => "XML")
+    @user  = mock_model(User, :id => "1")
+    User.stub!(:find).and_return(@user)   
+    Blog.stub!(:find).and_return(@blog)
+    Blog.stub!(:new).and_return(@blog)   
+  end
+  
   describe "handling GET /blogs" do
 
-    before(:each) do            
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog)
-      Blog.stub!(:find).and_return([@blog])
+    before(:each) do                
+      Blog.stub!(:find).and_return([@blog]) 
     end
   
     def do_get
@@ -28,7 +37,7 @@ describe Admin::BlogsController do
     end
   
     it "should find all blogs" do
-      Blog.should_receive(:find).with(:all).and_return([@blog])
+      Blog.should_receive(:find).with(:all, {:limit=>10, :conditions=>nil, :offset=>0, :include=>:creator}).and_return([@blog])
       do_get
     end
   
@@ -41,10 +50,7 @@ describe Admin::BlogsController do
   describe "handling GET /blogs.xml" do
 
     before(:each) do       
-      login_as :quentin
-      stub!(:reset_session)
-      @blogs = mock("Array of Blogs", :to_xml => "XML")
-      Blog.stub!(:find).and_return(@blogs)
+      Blog.stub!(:find).and_return(@blogs) 
     end
   
     def do_get
@@ -58,7 +64,7 @@ describe Admin::BlogsController do
     end
 
     it "should find all blogs" do
-      Blog.should_receive(:find).with(:all).and_return(@blogs)
+      Blog.should_receive(:find).with(:all, {:conditions=>nil, :include=>:creator}).and_return(@blogs)
       do_get
     end
   
@@ -68,16 +74,54 @@ describe Admin::BlogsController do
       response.body.should == "XML"
     end
   end
+  
+  describe "handling GET /users/1/blogs" do
+    
+    before(:each) do            
+      Blog.stub!(:find).and_return([@blog])
+    end
+  
+    def do_get
+      get :index, :user_id => 1
+    end
+  
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end
+
+    it "should render index template" do
+      do_get
+      response.should render_template('index')
+    end
+  
+    it "should find all blogs for the user" do
+      Blog.should_receive(:find).with(:all, {:limit=>10, :conditions=>["created_by_id = ?", "1"], :offset=>0, :include=>:creator}).and_return([@blog])
+      do_get
+    end
+
+  end
+
+  describe "handling GET /users/1/blogs.xml" do
+
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :user_id => 1
+    end
+
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end
+
+    it "should find all blogs for the user" do
+      Blog.should_receive(:find).with(:all, {:conditions=>["created_by_id = ?", "1"], :include=>:creator}).and_return(@blogs)
+      do_get
+    end
+  end
 
   describe "handling GET /blogs/1" do
 
-    before(:each) do           
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog)
-      Blog.stub!(:find).and_return(@blog)
-    end
-  
     def do_get
       get :show, :id => "1"
     end
@@ -93,7 +137,7 @@ describe Admin::BlogsController do
     end
   
     it "should find the blog requested" do
-      Blog.should_receive(:find).with("1").and_return(@blog)
+      Blog.should_receive(:find).with("1", {:include=>:creator}).and_return(@blog)
       do_get
     end
   
@@ -105,13 +149,6 @@ describe Admin::BlogsController do
 
   describe "handling GET /blogs/1.xml" do
 
-    before(:each) do    
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog, :to_xml => "XML")
-      Blog.stub!(:find).and_return(@blog)
-    end
-  
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
       get :show, :id => "1"
@@ -123,7 +160,7 @@ describe Admin::BlogsController do
     end
   
     it "should find the blog requested" do
-      Blog.should_receive(:find).with("1").and_return(@blog)
+      Blog.should_receive(:find).with("1", {:include=>:creator}).and_return(@blog)
       do_get
     end
   
@@ -133,15 +170,21 @@ describe Admin::BlogsController do
       response.body.should == "XML"
     end
   end
+  
+  
+  describe "handling unsuccessful GET for /admin/blogs/15155199" do
+    
+    it "should be redirected with flash message" do
+      Blog.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "15155199"    
+      response.should redirect_to(root_url)
+      flash[:notice].should_not be_empty
+    end
+    
+  end
+  
 
   describe "handling GET /blogs/new" do
-
-    before(:each) do         
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog)
-      Blog.stub!(:new).and_return(@blog)
-    end
   
     def do_get
       get :new
@@ -174,13 +217,6 @@ describe Admin::BlogsController do
   end
 
   describe "handling GET /blogs/1/edit" do
-
-    before(:each) do   
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog)
-      Blog.stub!(:find).and_return(@blog)
-    end
   
     def do_get
       get :edit, :id => "1"
@@ -208,17 +244,11 @@ describe Admin::BlogsController do
   end
 
   describe "handling POST /blogs" do
-
-    before(:each) do     
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog, :to_param => "1")
-      Blog.stub!(:new).and_return(@blog)
-    end
     
     describe "with successful save" do
   
       def do_post
+        @blog.should_receive(:creator=).with(users(:quentin)).and_return(true)
         @blog.should_receive(:save).and_return(true)
         post :create, :blog => {}
       end
@@ -238,6 +268,7 @@ describe Admin::BlogsController do
     describe "with failed save" do
 
       def do_post
+        @blog.should_receive(:creator=).with(users(:quentin)).and_return(true)
         @blog.should_receive(:save).and_return(false)
         post :create, :blog => {}
       end
@@ -251,13 +282,6 @@ describe Admin::BlogsController do
   end
 
   describe "handling PUT /blogs/1" do
-
-    before(:each) do   
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog, :to_param => "1")
-      Blog.stub!(:find).and_return(@blog)
-    end
     
     describe "with successful update" do
 
@@ -312,13 +336,6 @@ describe Admin::BlogsController do
   end
 
   describe "handling DELETE /blogs/1" do
-
-    before(:each) do 
-      login_as :quentin
-      stub!(:reset_session)
-      @blog = mock_model(Blog, :destroy => true)
-      Blog.stub!(:find).and_return(@blog)
-    end
   
     def do_delete
       delete :destroy, :id => "1"

@@ -7,14 +7,15 @@
   </head>
   <body>
 
-  <h2>Manage</h2>
+  <h2>Menu</h2>
   <ul>                         
     <li><%= link_to 'blogs', admin_blogs_path %></li> 
     <li><%= link_to 'users', admin_users_path %></li>    
   </ul>
   <ul>
-    <li><%= link_to 'posts', admin_posts_path %></li>
-    <li><%= link_to 'tags', admin_tags_path %></li>
+    <li><%= link_to 'all posts', admin_posts_path %></li>
+    <li><%= link_to 'all comments', admin_comments_path %></li>
+    <li><%= link_to 'all tags', admin_tags_path %></li>
   </ul>
   <hr/>
   <p style="color: green"><%= flash[:notice] %></p>
@@ -22,6 +23,6 @@
   <%= yield  %>   
 
   <hr/>
-  <p><small>you are logged in as <strong><%= @current_user.login %></strong> - <%= link_to @current_user.email, "mailto:#{@current_user.email}" %> (<a href="/logout">logout</a>) | <a href="/">public site</a></small></p>
+  <p><small>you are logged in as <strong><%= link_to h(@current_user.name), admin_user_path(@current_user) %></strong> - <%= link_to @current_user.email, "mailto:#{@current_user.email}" %> (<a href="/logout">logout</a>) | <a href="/">public site</a></small></p>
   </body>
 </html>

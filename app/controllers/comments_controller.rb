@@ -15,6 +15,7 @@ class CommentsController < ApplicationController
     @post = Post.published.find(params[:post_id])           
     @comment = Comment.new(params[:comment])
     @comment.post = @post
+    @comment.user = current_user if current_user
 
     respond_to do |format|
       if @comment.save

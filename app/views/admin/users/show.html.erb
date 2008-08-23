@@ -1,3 +1,4 @@
+<h1>User, <%=h @user.name %></h1>
 <%= image_tag @user.photo.url(:thumb) if @user.photo %>
 
 <p>
@@ -14,10 +15,20 @@
   <b>Email:</b>
   <%=h @user.email %>
 </p>
+
+<p>
+  <b>Blogs:</b>
+  <%= link_to 'show all blogs for this user', admin_user_blogs_path(@user) %>    
+</p>
               
 <p>
   <b>Posts:</b>
   <%= link_to 'show all posts for this user', admin_user_posts_path(@user) %>    
+</p>
+
+<p>
+  <b>Comments:</b>
+  <%= link_to 'show all comments for this user', admin_user_comments_path(@user) %>    
 </p>
 
 

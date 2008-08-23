@@ -15,4 +15,5 @@ class Comment < ActiveRecord::Base
   def format_website
     self.website = "http://#{self.website}" unless self.website =~ /^(http|https):\/\// 
   end
+
 end

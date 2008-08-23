@@ -1,8 +1,19 @@
+<h1>Blog</h1>
 <p>
   <b>Title:</b>
   <%=h @blog.title %>
 </p>
-
-
+<p>
+  <b>Short Name:</b>
+  <%=h @blog.short_name %>
+</p>
+<p>
+  <b>In Draft:</b>
+  <%=h @blog.in_draft %>
+</p>
+<p>
+  <b>Created By:</b>
+  <%= link_to h(@blog.creator.name), admin_user_path(@blog.creator) %>
+</p>
 <%= link_to 'Edit', edit_admin_blog_path(@blog) %> |
 <%= link_to 'Back', admin_blogs_path %>

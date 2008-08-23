@@ -1,4 +1,8 @@
+<h1>Comment</h1>
 <%= render :partial => 'comment', :locals => { :comment => @comment } -%>      
+<ul>
+  <li>made on Post: <%= link_to h(@comment.post.title), admin_post_path(@comment.post) %></li> 
+</ul>  
   
 <%= link_to 'Edit', edit_admin_post_comment_path(@post, @comment) %> |
 <%= link_to 'Back', admin_post_path(@post) %>

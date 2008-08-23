@@ -15,9 +15,6 @@ class Post < ActiveRecord::Base
   acts_as_taggable
 
 
-
-
-
   def self.get_date_range(year, month = 1, day = 1)
     start_date = end_date = Time.utc(year, month, day)
     if year && month && day

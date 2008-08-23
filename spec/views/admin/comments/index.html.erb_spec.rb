@@ -13,6 +13,7 @@ describe "/admin/posts/index.html.erb" do
     @comment_98.stub!(:website).and_return("MyString")
     @comment_98.stub!(:user).and_return(nil)
     @comment_98.stub!(:body).and_return("MyText")  
+    @comment_98.stub!(:post).and_return(@post)  
     
     @comment_99 = mock_model(Comment)  
     @comment_99.stub!(:name).and_return("MyString")
@@ -20,6 +21,7 @@ describe "/admin/posts/index.html.erb" do
     @comment_99.stub!(:website).and_return("MyString")
     @comment_99.stub!(:user).and_return(nil) 
     @comment_99.stub!(:body).and_return("MyText")
+    @comment_99.stub!(:post).and_return(@post)  
     
     assigns[:post] = @post
     assigns[:comments] = [@comment_98, @comment_99] 

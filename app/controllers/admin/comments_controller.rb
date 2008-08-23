@@ -4,19 +4,26 @@ class Admin::CommentsController < ApplicationController
   before_filter :login_required
   
   
+  # GET /admin/comments
+  # GET /admin/comments.xml
   # GET /admin/posts/1/comments
   # GET /admin/posts/1/comments.xml
+  # GET /admin/users/1/comments
+  # GET /admin/users/1/comments.xml
   def index
-    @post = Post.find(params[:post_id])   
+    if params[:user_id] 
+      @user = User.find(params[:user_id])
+      @comments = @user.comments.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10, :conditions => ['user_id = ?', @user.id], :include => [:post, :user]) if @user.comments
+    elsif params[:post_id] 
+      @post = Post.find(params[:post_id])   
+      @comments = @post.comments.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10, :include => [:post, :user]) if @post.comments
+    else
+      @comments = Comment.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10, :include => [:post, :user])
+    end
     
     respond_to do |format|
-      format.html {
-        @comments = @post.comments.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10) if @post.comments
-      }
-      format.xml  { 
-        @comments = @post.comments
-        render :xml => @comments 
-      }
+      format.html
+      format.xml  { render :xml => @comments }
     end
   end  
   
@@ -24,8 +31,8 @@ class Admin::CommentsController < ApplicationController
   # GET /admin/posts/1/comment/1
   # GET /admin/posts/1/comment/1.xml
   def show  
-    @post = Post.find(params[:post_id])       
-    @comment = Comment.find(params[:id])  
+    @comment = Comment.find(params[:id], :include => [:post, :user]) 
+    @post = @comment.post if @comment
     
     respond_to do |format|
       format.html
@@ -37,7 +44,7 @@ class Admin::CommentsController < ApplicationController
   # GET /admin/posts/1/comments/new
   # GET /admin/posts/1/comments/new.xml
   def new                       
-    @post = Post.find(params[:post_id])     
+    @post = Post.find(params[:post_id]) if params[:post_id]     
     @comment = Comment.new                  
     
     respond_to do |format|
@@ -49,8 +56,8 @@ class Admin::CommentsController < ApplicationController
   
   # GET /admin/posts/1/comment/1/edit
   def edit       
-    @post = Post.find(params[:post_id])  
-    @comment = Comment.find(params[:id])
+    @comment = Comment.find(params[:id], :include => [:post, :user])
+    @post = @comment.post
   end           
   
 
@@ -78,8 +85,8 @@ class Admin::CommentsController < ApplicationController
   # PUT /admin/posts/1/comment/1
   # PUT /admin/posts/1/comment/1.xml
   def update 
-    @post = Post.find(params[:post_id])
-    @comment = @post.comments.find(params[:id])
+    @comment = Comment.find(params[:id])
+    @post = @comment.post
     
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
@@ -97,15 +104,14 @@ class Admin::CommentsController < ApplicationController
   # DELETE /admin/posts/1/comment/1
   # DELETE /admin/posts/1/comment/1.xml
   def destroy                        
-    @post = Post.find(params[:post_id])
-    @comment = @post.comments.find(params[:id])
+    @comment = Comment.find(params[:id])
+    @post = @comment.post
     @comment.destroy                              
     
     respond_to do |format|
       format.html { redirect_to(admin_post_comments_url(@post)) }
       format.xml  { head :ok }
     end
-  end    
-         
+  end             
 
 end

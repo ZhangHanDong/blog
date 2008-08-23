@@ -4,14 +4,17 @@ describe Admin::TagsController do
 
   fixtures :users
 
-  describe "handling GET /tags" do
+   before(:each) do
+     login_as :quentin
+     stub!(:reset_session)
+     
+     @tag = mock_model(Tag, :to_xml => "XML")
+     @tags = mock("Array of Tags", :to_xml => "XML")
+     Tag.stub!(:find).and_return([@tag])
+   end
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @tag = mock_model(Tag)
-      Tag.stub!(:find).and_return([@tag])
-    end
+
+  describe "handling GET /tags" do
 
     def do_get
       get :index
@@ -38,12 +41,10 @@ describe Admin::TagsController do
     end
   end
 
+
   describe "handling GET /tags.xml" do
   
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @tags = mock("Array of Tags", :to_xml => "XML")
       Tag.stub!(:find).and_return(@tags)
     end
   
@@ -69,14 +70,8 @@ describe Admin::TagsController do
     end
   end
      
+     
   describe "handling GET /tags/1" do
-  
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @tag = mock_model(Tag)
-      Tag.stub!(:find).and_return(@tag)
-    end
   
     def do_get
       get :show, :id => "1"
@@ -98,6 +93,7 @@ describe Admin::TagsController do
     end
   
     it "should assign the found tag for the view" do
+      Tag.stub!(:find).and_return(@tag)
       do_get
       assigns[:tag].should equal(@tag)
     end
@@ -105,28 +101,18 @@ describe Admin::TagsController do
   
   
   describe "handling unsuccessful GET for /tags/15155199" do
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-    end
 
     it "should be redirected with flash message" do
+      Tag.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199"    
       response.should redirect_to(root_url)
       flash[:notice].should_not be_empty
     end
+    
   end
   
-  
-  
+    
   describe "handling GET /tags/1.xml" do
-  
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @tag = mock_model(Tag, :to_xml => "XML")
-      Tag.stub!(:find).and_return(@tag)
-    end
   
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
@@ -144,6 +130,7 @@ describe Admin::TagsController do
     end
   
     it "should render the found tag as xml" do
+      Tag.stub!(:find).and_return(@tag)
       @tag.should_receive(:to_xml).and_return("XML")
       do_get
       response.body.should == "XML"

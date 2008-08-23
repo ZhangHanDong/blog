@@ -29,6 +29,5 @@ class Admin::TagsController < ApplicationController
       format.xml  { render :xml => @tag }
     end
   end 
-      
-      
+   
 end

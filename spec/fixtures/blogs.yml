@@ -2,6 +2,11 @@
 
 one:
   title: Blog One
-
+  short_name: blogone
+  in_draft: false
+  created_by_id: 1
 two:
   title: Blog Two
+  short_name: blogtwo
+  in_draft: true
+  created_by_id: 2

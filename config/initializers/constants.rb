@@ -16,5 +16,6 @@ unless defined? CONSTANTS_DEFINED
   RE_DOMAIN_TLD   = '(?:[A-Z]{2}|com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum)'
   RE_EMAIL_OK     = /\A#{RE_EMAIL_NAME}@#{RE_DOMAIN_HEAD}#{RE_DOMAIN_TLD}\z/i
   MSG_EMAIL_BAD   = "should look like an email address."
+  MSG_ALPHA_BAD   = "should be alphanumeric, letters, numbers and underscores _ only"
   CONSTANTS_DEFINED = 'yup' # sorry for the C idiom
 end

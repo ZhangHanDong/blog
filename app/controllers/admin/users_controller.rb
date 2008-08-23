@@ -4,8 +4,8 @@ class Admin::UsersController < ApplicationController
   before_filter   :login_required, :except => [ :register, :signup ]
       
    
-  # GET /users
-  # GET /users.xml
+  # GET /admin/users
+  # GET /admin/users.xml
   def index
     respond_to do |format|
       format.html {
@@ -19,19 +19,19 @@ class Admin::UsersController < ApplicationController
   end
            
   
-  # GET /users/1
-  # GET /users/1.xml
+  # GET /admin/users/1
+  # GET /admin/users/1.xml
   def show
     @user = User.find(params[:id])   
     
     respond_to do |format|
-      format.html # show.rhtml
+      format.html
       format.xml  { render :xml => @user.to_xml }
     end
   end
          
   
-  # GET /users/new
+  # GET /admin/users/new
   def new
     @user = User.new
   end
@@ -44,14 +44,14 @@ class Admin::UsersController < ApplicationController
   end
         
   
-  # GET /users/1;edit
+  # GET /admin/users/1;edit
   def edit
     @user = User.find(params[:id])
   end
        
    
-  # POST /users
-  # POST /users.xml           
+  # POST /admin/users
+  # POST /admin/users.xml           
   def create                       
     @user = User.new(params[:user])    
     
@@ -88,8 +88,8 @@ class Admin::UsersController < ApplicationController
   end
   
   
-  # PUT /users/1
-  # PUT /users/1.xml
+  # PUT /admin/users/1
+  # PUT /admin/users/1.xml
   def update
     @user = User.find(params[:id])
 
@@ -106,8 +106,8 @@ class Admin::UsersController < ApplicationController
   end
           
 
-  # DELETE /users/1
-  # DELETE /users/1.xml
+  # DELETE /admin/users/1
+  # DELETE /admin/users/1.xml
   def destroy
     @user = User.find(params[:id])
     unless @user == @current_user
@@ -118,7 +118,6 @@ class Admin::UsersController < ApplicationController
         format.xml  { head :ok }
       end                   
     end
-  end
-         
+  end  
 
 end

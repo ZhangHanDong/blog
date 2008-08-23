@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   # anything else you want user to change should be added here
   attr_accessible :login, :email, :name, :password, :password_confirmation, :photo
 
+  has_many :created_blogs, :class_name => 'Blog', :foreign_key => 'created_by_id'
   has_many :posts, :order => "created_at DESC"     
   has_many :taggings 
   has_many :comments, :order => "created_at DESC"     
@@ -45,6 +46,5 @@ class User < ActiveRecord::Base
     end
     u && u.authenticated?(password) ? u : nil
   end
-
 
 end

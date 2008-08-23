@@ -11,12 +11,19 @@ module PostSpecHelper
       :user_id => 1
     }
   end
+  
+  def create_posts_over_days(number_of_days, starting_from_date = Time.now,  attributes = Hash.new)
+    1.upto(number_of_days) do
+      Post.create!(valid_post_attributes.with(attributes.merge(:publish_date => starting_from_date)))
+      starting_from_date = starting_from_date + 1.day
+    end
+  end
 
 end
 
 describe Post do
 
-  fixtures :posts
+  fixtures :posts, :users
 
   include PostSpecHelper
 
@@ -63,15 +70,26 @@ describe Post do
     end
 
     it "should have a recent scope, and find recent posts (limited and ordered)" do
-      1.upto(22) do
-        Post.create!(valid_post_attributes)
-      end
-      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent', :publish_date => (Time.now+1.day)))
+      create_posts_over_days(22, Time.mktime(2007,3,1))
+      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent', :publish_date => Time.now+1.day))
       Post.recent.length.should eql(20)
       Post.recent.first.title.should eql(@most_recent_post.title)
     end
     
-    it "should have an in range scope (date range)"
+    it "should have an in range scope (date range) over mar-apr" do
+      create_posts_over_days(10, Time.mktime(2007,3,25))
+      start_date = Time.mktime(2007,3,30)
+      end_date = Time.mktime(2007,4,2)
+      Post.in_range(start_date, end_date).length.should eql(3)
+    end
+    
+    it "should have an in range scope (date range) over a few days" do
+      create_posts_over_days(3, Time.mktime(2007,3,25))
+      create_posts_over_days(2, Time.mktime(2007,3,25))
+      start_date = Time.mktime(2007,3,25)
+      end_date = Time.mktime(2007,3,26)
+      Post.in_range(start_date, end_date).length.should eql(4)
+    end
 
   end
 
@@ -99,6 +117,7 @@ describe Post do
     it "should have a user" do
       @post.attributes = valid_post_attributes.with(:user_id => 1)
       @post.save!
+      @post.user.should eql(users(:quentin))
     end
 
     it "should have tags" do

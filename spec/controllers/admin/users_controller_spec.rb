@@ -7,6 +7,10 @@ describe Admin::UsersController do
   before(:each) do
     login_as :quentin
     stub!(:reset_session)
+    
+    @user = mock_model(User, :to_xml => "XML", :to_param => "1", :destroy => true)
+    @users = mock("Array of users", :to_xml => "XML")
+    User.stub!(:find).and_return(@user)
   end                        
   
   it "should allow access to public signup without login" do
@@ -18,9 +22,6 @@ describe Admin::UsersController do
   describe "handling GET /users" do
 
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User)
       User.stub!(:find).and_return([@user])
     end
 
@@ -52,9 +53,6 @@ describe Admin::UsersController do
   describe "handling GET /users.xml" do
 
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @users = mock("Array of users", :to_xml => "XML")
       User.stub!(:find).and_return(@users)
     end
 
@@ -83,13 +81,6 @@ describe Admin::UsersController do
 
   describe "handling GET /users/1" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User)
-      User.stub!(:find).and_return(@user)
-    end
-
     def do_get
       get :show, :id => "1"
     end
@@ -117,28 +108,19 @@ describe Admin::UsersController do
   
   
   describe "handling unsuccessful GET for /admin/users/15155199" do
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-    end
-
+   
     it "should be redirected with flash message" do
+      User.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199"    
       response.should redirect_to(root_url)
       flash[:notice].should_not be_empty
     end
+    
   end
   
   
 
   describe "handling GET /users/1.xml" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User, :to_xml => "XML")
-      User.stub!(:find).and_return(@user)
-    end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
@@ -164,14 +146,8 @@ describe Admin::UsersController do
 
   describe "handling GET /users/new" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User)
-      User.stub!(:new).and_return(@user)
-    end
-
     def do_get
+      User.should_receive(:new).and_return(@user)
       get :new
     end
 
@@ -185,8 +161,7 @@ describe Admin::UsersController do
       response.should render_template('new')
     end
 
-    it "should create an new user" do
-      User.should_receive(:new).and_return(@user)
+    it "should create a new user" do
       do_get
     end
 
@@ -202,14 +177,7 @@ describe Admin::UsersController do
   end
 
   describe "handling GET /users/1/edit" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User)
-      User.stub!(:find).and_return(@user)
-    end
-
+    
     def do_get
       get :edit, :id => "1"
     end
@@ -237,14 +205,6 @@ describe Admin::UsersController do
 
   describe "handling POST /users" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User, :to_param => "1")
-      User.stub!(:new).and_return(@user)
-
-    end
-
     describe "with setting author (user)" do
 
       def do_post
@@ -254,7 +214,6 @@ describe Admin::UsersController do
 
       it "should create a new user with the correct author set" do
         User.should_receive(:new).with({}).and_return(@user)
-        login_as :aaron
         do_post
       end
 
@@ -263,16 +222,12 @@ describe Admin::UsersController do
     describe "with successful save" do
 
       def do_post
+        User.should_receive(:new).with({}).and_return(@user)
         @user.should_receive(:save).and_return(true)
         post :create, :user => {}
       end
 
-      it "should create a new user" do
-        User.should_receive(:new).with({}).and_return(@user)
-        do_post
-      end
-
-      it "should redirect to the new user" do
+      it "should create a new user and redirect to the new user" do
         do_post
         response.should redirect_to(admin_user_url("1"))
       end
@@ -282,7 +237,6 @@ describe Admin::UsersController do
     describe "with failed save" do
 
       def do_post
-        @user.should_receive(:save).and_return(false)
         post :create, :user => {}
       end
 
@@ -295,13 +249,6 @@ describe Admin::UsersController do
   end
 
   describe "handling PUT /users/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User, :to_param => "1")
-      User.stub!(:find).and_return(@user)
-    end
 
     describe "with successful update" do
 
@@ -348,13 +295,6 @@ describe Admin::UsersController do
   end
 
   describe "handling DELETE /users/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @user = mock_model(User, :destroy => true)
-      User.stub!(:find).and_return(@user)
-    end
 
     def do_delete
       delete :destroy, :id => "1"
@@ -472,132 +412,3 @@ describe Admin::UsersController do
   end
   
 end      
-  
-
-
-
-
-        
-
-
-
-
-describe Admin::UsersController do
-  describe "route generation" do      
-    
-    it "should route to user signup correctly" do
-      route_for(:controller => 'admin/users', :action => 'signup').should == "/signup"
-    end
-    
-    it "should route to user register correctly" do
-      route_for(:controller => 'admin/users', :action => 'register').should == "/admin/users/register"
-    end
-    
-    it "should route users's 'index' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'index').should == "/admin/users"
-    end
-
-    it "should route users's 'new' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'new').should == "/admin/users/new"
-    end
-
-    it "should route {:controller => 'admin/users', :action => 'create'} correctly" do
-      route_for(:controller => 'admin/users', :action => 'create').should == "/admin/users"
-    end
-
-    it "should route users's 'show' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'show', :id => '1').should == "/admin/users/1"
-    end
-
-    it "should route users's 'edit' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'edit', :id => '1').should == "/admin/users/1/edit"
-    end
-
-    it "should route users's 'update' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'update', :id => '1').should == "/admin/users/1"
-    end
-
-    it "should route users's 'destroy' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'destroy', :id => '1').should == "/admin/users/1"
-    end
-  end
-
-  describe "route recognition" do
-    it "should generate params for users's index action from GET /users" do
-      params_from(:get, '/admin/users').should == {:controller => 'admin/users', :action => 'index'}
-      params_from(:get, '/admin/users.xml').should == {:controller => 'admin/users', :action => 'index', :format => 'xml'}
-      params_from(:get, '/admin/users.json').should == {:controller => 'admin/users', :action => 'index', :format => 'json'}
-    end
-
-    it "should generate params for users's new action from GET /users" do
-      params_from(:get, '/admin/users/new').should == {:controller => 'admin/users', :action => 'new'}
-      params_from(:get, '/admin/users/new.xml').should == {:controller => 'admin/users', :action => 'new', :format => 'xml'}
-      params_from(:get, '/admin/users/new.json').should == {:controller => 'admin/users', :action => 'new', :format => 'json'}
-    end
-    
-    it "should generate params for users's new action from GET /users" do
-      params_from(:get, '/signup').should == {:controller => 'admin/users', :action => 'signup'}
-    end
-
-    it "should generate params for users's create action from POST /users" do
-      params_from(:post, '/admin/users').should == {:controller => 'admin/users', :action => 'create'}
-      params_from(:post, '/admin/users.xml').should == {:controller => 'admin/users', :action => 'create', :format => 'xml'}
-      params_from(:post, '/admin/users.json').should == {:controller => 'admin/users', :action => 'create', :format => 'json'}
-    end
-    
-    it "should generate params for users's create action from POST /users" do
-      params_from(:post, '/admin/users/register').should == {:controller => 'admin/users', :action => 'register'}
-    end
-
-    it "should generate params for users's show action from GET /users/1" do
-      params_from(:get , '/admin/users/1').should == {:controller => 'admin/users', :action => 'show', :id => '1'}
-      params_from(:get , '/admin/users/1.xml').should == {:controller => 'admin/users', :action => 'show', :id => '1', :format => 'xml'}
-      params_from(:get , '/admin/users/1.json').should == {:controller => 'admin/users', :action => 'show', :id => '1', :format => 'json'}
-    end
-
-    it "should generate params for users's edit action from GET /users/1/edit" do
-      params_from(:get , '/admin/users/1/edit').should == {:controller => 'admin/users', :action => 'edit', :id => '1'}
-    end
-
-    it "should generate params {:controller => 'admin/users', :action => update', :id => '1'} from PUT /users/1" do
-      params_from(:put , '/admin/users/1').should == {:controller => 'admin/users', :action => 'update', :id => '1'}
-      params_from(:put , '/admin/users/1.xml').should == {:controller => 'admin/users', :action => 'update', :id => '1', :format => 'xml'}
-      params_from(:put , '/admin/users/1.json').should == {:controller => 'admin/users', :action => 'update', :id => '1', :format => 'json'}
-    end
-
-    it "should generate params for users's destroy action from DELETE /users/1" do
-      params_from(:delete, '/admin/users/1').should == {:controller => 'admin/users', :action => 'destroy', :id => '1'}
-      params_from(:delete, '/admin/users/1.xml').should == {:controller => 'admin/users', :action => 'destroy', :id => '1', :format => 'xml'}
-      params_from(:delete, '/admin/users/1.json').should == {:controller => 'admin/users', :action => 'destroy', :id => '1', :format => 'json'}
-    end
-  end
-
-  describe "named routing" do
-    before(:each) do
-      get :new
-    end
-
-    it "should route admin_users_path() to /admin/users" do
-      admin_users_path().should == "/admin/users"
-      formatted_admin_users_path(:format => 'xml').should == "/admin/users.xml"
-      formatted_admin_users_path(:format => 'json').should == "/admin/users.json"
-    end
-
-    it "should route new_user_path() to /admin/users/new" do
-      new_admin_user_path().should == "/admin/users/new"
-      formatted_new_admin_user_path(:format => 'xml').should == "/admin/users/new.xml"
-      formatted_new_admin_user_path(:format => 'json').should == "/admin/users/new.json"
-    end
-
-    it "should route user_(:id => '1') to /users/1" do
-      admin_user_path(:id => '1').should == "/admin/users/1"
-      formatted_admin_user_path(:id => '1', :format => 'xml').should == "/admin/users/1.xml"
-      formatted_admin_user_path(:id => '1', :format => 'json').should == "/admin/users/1.json"
-    end
-
-    it "should route edit_user_path(:id => '1') to /admin/users/1/edit" do
-      edit_admin_user_path(:id => '1').should == "/admin/users/1/edit"
-    end
-  end
-
-end

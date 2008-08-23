@@ -4,20 +4,30 @@ describe Admin::CommentsController do
 
   fixtures :users
 
+  before(:each) do
+    login_as :quentin
+    stub!(:reset_session)
+    
+    @post = mock_model(Post, :id => 1, :to_param => "1")
+    @user = mock_model(User, :id => 1)
+    @comment = mock_model(Comment, :to_param => "2", :to_xml => "XML", :destroy => true)
+    @comments = [@comment]
+    Post.stub!(:find).and_return(@post)
+    User.stub!(:find).and_return(@user)
+    Comment.stub!(:find).and_return(@comment)
+    @comment.stub!(:post).and_return(@post)
+    Comment.stub!(:new).and_return(@comment)
+  end
+
   describe "handling GET /admin/posts/1/comments" do
 
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
-      @comment = mock_model(Comment)
-      Post.stub!(:find).and_return(@post)
-      @post.should_receive(:comments).at_least(3).times.and_return(@comment)
-      @post.comments.should_receive(:paginate).with(:all, {:order => "created_at DESC", :page => nil, :per_page => 10}).and_return([@comment])
+      @post.should_receive(:comments).exactly(3).times.and_return(@comments)
+      @post.comments.should_receive(:paginate).with(:all, {:per_page=>10, :order=>"created_at DESC", :include=>[:post, :user], :page=>nil}).and_return([@comment])
     end
 
     def do_get
-      get :index
+      get :index, :post_id => 1
     end
 
     it "should be successful" do
@@ -40,19 +50,13 @@ describe Admin::CommentsController do
   describe "handling GET /admin/posts/1/comments.xml" do
 
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
-      @comment = mock_model(Comment, :to_xml => "XML")
-      @comments = [@comment]
-      Post.stub!(:find).and_return(@post)
-      @post.stub!(:comments).and_return([@comment])
-      @post.should_receive(:comments).and_return(@comments)
+      @post.should_receive(:comments).exactly(3).times.and_return(@comments)
+      @post.comments.should_receive(:paginate).with(:all, {:per_page=>10, :order=>"created_at DESC", :include=>[:post, :user], :page=>nil}).and_return(@comments)
     end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index
+      get :index, :post_id => 1
     end
 
     it "should be successful" do
@@ -65,29 +69,56 @@ describe Admin::CommentsController do
       do_get
     end
   end
-
-  describe "handling unsuccessful GET for /admin/posts/1/comment/15155199" do
+  
+  describe "handling GET /users/1/comments" do
+    
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
+      @user.should_receive(:comments).exactly(3).times.and_return(@comment)
+      @user.comments.should_receive(:paginate).with(:all, {:page=>nil, :order=>"created_at DESC", :include=>[:post, :user], :conditions=>["user_id = ?", 1], :per_page=>10}).and_return([@comment])
+    end
+    
+    def do_get
+      get :index, :user_id => 1
+    end
+    
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end
+    
+  end
+
+  describe "handling GET /users/1/comments.xml" do
+    
+    before(:each) do      
+      @user.should_receive(:comments).exactly(3).and_return(@comments)
+      @user.comments.should_receive(:paginate).with(:all, {:page=>nil, :order=>"created_at DESC", :include=>[:post, :user], :conditions=>["user_id = ?", 1], :per_page=>10}).and_return(@comments)
     end
 
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :user_id => 1
+    end
+
+    it "should be successful" do
+      do_get
+      response.should be_success
+    end
+    
+  end
+
+  describe "handling unsuccessful GET for /admin/posts/1/comment/15155199" do
+    
     it "should be redirected with flash message" do
+      Comment.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199"    
       response.should redirect_to(root_url)
       flash[:notice].should_not be_empty
     end
+    
   end
 
   describe "handling GET /admin/posts/1/comment/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @comment = mock_model(Comment)
-      Post.stub!(:find).and_return(mock_model(Post))
-      Comment.stub!(:find).and_return(@comment)
-    end
 
     def do_get
       get :show, :id => "1"
@@ -104,7 +135,7 @@ describe Admin::CommentsController do
     end
 
     it "should find the comment requested" do
-      Comment.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find).with("1", {:include=>[:post, :user]}).and_return(@comment)
       do_get
     end
 
@@ -115,14 +146,6 @@ describe Admin::CommentsController do
   end
 
   describe "handling GET /admin/posts/1/comment/1.xml" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @comment = mock_model(Comment, :to_xml => "XML")
-      Post.stub!(:find).and_return(mock_model(Post))
-      Comment.stub!(:find).and_return(@comment)
-    end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
@@ -135,7 +158,7 @@ describe Admin::CommentsController do
     end
 
     it "should find the comment requested" do
-      Comment.should_receive(:find).with("1").and_return(@comment)
+      Comment.should_receive(:find).with("1", {:include=>[:post, :user]}).and_return(@comment)
       do_get
     end
 
@@ -147,14 +170,6 @@ describe Admin::CommentsController do
   end
 
   describe "handling GET /admin/posts/1/comments/new" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      Post.stub!(:find).and_return(mock_model(Post))
-      @comment = mock_model(Comment)
-      Comment.stub!(:new).and_return(@comment)
-    end
 
     def do_get
       get :new
@@ -190,14 +205,6 @@ describe Admin::CommentsController do
 
   describe "handling GET /admin/posts/1/comments/1/edit" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @comment = mock_model(Comment)
-      Post.stub!(:find).and_return(mock_model(Post))
-      Comment.stub!(:find).and_return(@comment)
-    end
-
     def do_get
       get :edit, :id => "1"
     end
@@ -225,20 +232,11 @@ describe Admin::CommentsController do
 
   describe "handling POST /admin/posts/1/comments" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :to_param => "1")
-      Post.stub!(:find).and_return(@post)
-      @comment = mock_model(Comment, :to_param => "2")
-      Comment.stub!(:new).and_return(@comment)
-    end
-
     describe "with setting author (user) and into comments collection (sucessful save)" do
 
       def do_post
         @post.should_receive(:comments).and_return([])
-        @comment.should_receive(:user=).with(users(:aaron)).and_return(true)
+        @comment.should_receive(:user=).with(users(:quentin)).and_return(true)
         @post.should_receive(:save).and_return(true)
         post :create, :comment => {}
       end
@@ -262,7 +260,7 @@ describe Admin::CommentsController do
 
       def do_post
         @post.should_receive(:comments).and_return([])
-        @comment.should_receive(:user=).with(users(:aaron)).and_return(true)
+        @comment.should_receive(:user=).with(users(:quentin)).and_return(true)
         @post.should_receive(:save).and_return(false)
         post :create, :comment => {}
       end
@@ -278,36 +276,20 @@ describe Admin::CommentsController do
 
   describe "handling PUT /admin/posts/1/comments/1" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :to_param => "1")
-      Post.stub!(:find).and_return(@post)
-      @comment = mock_model(Comment, :to_param => "1")
-      @post.stub!(:comments).and_return(@comment)
-      @comment.stub!(:find).and_return(@comment)
-    end
-
     describe "with successful update" do
 
       def do_put
         @comment.should_receive(:update_attributes).and_return(true)
-        put :update, :id => "1", :post_id => "1", :comment => {}
+        put :update, :id => "1", :post_id => "1", :comment => { }
       end
 
       it "should update the found comment" do
         do_put
-        assigns[:comment].should equal(@comment)
-      end
-
-      it "should assign the found comment for the view" do
-        do_put
-        assigns[:comment].should equal(@comment)
       end
 
       it "should redirect to the comment" do
         do_put
-        response.should redirect_to(admin_post_comment_url("1", "1"))
+        response.should redirect_to(admin_post_comment_url("1", "2"))
       end
 
     end
@@ -329,16 +311,6 @@ describe Admin::CommentsController do
   
 
   describe "handling DELETE /admin/posts/1/comments/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :to_param => "1")
-      Post.stub!(:find).and_return(@post)
-      @comment = mock_model(Comment, :destroy => true)
-      @post.stub!(:comments).and_return(@comment)
-      @comment.stub!(:find).and_return(@comment)
-    end
 
     def do_delete
       delete :destroy, :id => "1"

@@ -20,11 +20,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users, :has_many => :posts       
     
   
-  map.namespace :admin do |admin|                 
-    admin.resources :blogs                     
-    admin.resources :posts, :has_many => :comments
-    admin.resources :users, :has_many => :posts       
-    admin.resources :tags
+  map.namespace :admin do |admin|   
+    admin.resources :comments
+    admin.resources :tags              
+    admin.resources :users,    :has_many => [:blogs, :posts, :comments]
+    admin.resources :blogs,    :has_many => :posts
+    admin.resources :posts,    :has_many => :comments
+    
   end
 
                  

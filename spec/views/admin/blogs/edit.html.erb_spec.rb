@@ -6,6 +6,8 @@ describe "/admin/blogs/edit.html.erb" do
   before do
     @blog = mock_model(Blog)
     @blog.stub!(:title).and_return("MyString")
+    @blog.stub!(:short_name).and_return("MyString")
+    @blog.stub!(:in_draft).and_return(false)
     assigns[:blog] = @blog
   end
 

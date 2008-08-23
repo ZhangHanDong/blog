@@ -38,18 +38,18 @@ describe Comment do
   
   describe 'before save callbacks' do
 
-    it "should have format format_website after_save (create)" # do
-     #      @post.attributes = valid_post_attributes.with(:body => 'wejfn iewjnf wek *efwef* "some link":http://google.com wqdqw')
-     #      @post.save!
-     #      @post.body_formatted.should eql('<p>wejfn iewjnf wek <strong>efwef</strong> <a href="http://google.com">some link</a> wqdqw</p>')
-     #    end
-     #                                                              
-    it "should have format format_website after_save (update)" # do
-     #      @post.attributes = valid_post_attributes.with(:body => 'wejfn iewjnf wek *efwef* "some link":http://google.com wqdqw')
-     #      @post.save!
-     #      @post.update_attribute(:body, 'wejfn iewjnf wek *efwef*')
-     #      @post.body_formatted.should eql('<p>wejfn iewjnf wek <strong>efwef</strong></p>')
-     #    end                                                       
+    it "should have format website url after_save (create)" do
+      @comment.attributes = valid_comment_attributes.with(:website => 'www.yahoo.com')
+      @comment.save!
+      @comment.website.should eql('http://www.yahoo.com')
+    end
+                                                              
+    it "should have format format_website after_save (update)" do
+      @comment.attributes = valid_comment_attributes.with(:website => 'something.matt.com')
+      @comment.save!
+      @comment.update_attribute(:website, 'https://matt.com')
+      @comment.website.should eql('https://matt.com')
+    end                                                       
 
   end
 

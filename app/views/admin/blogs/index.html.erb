@@ -1,13 +1,17 @@
-<h1>Listing Blogs</h1>
+<h1>Listing <%= " blogs#{(@user.nil? ? '' : " by #{@user.name}")}" %></h1>
 
 <table>
   <tr>
     <th>Title</th>
+    <th>Short name</th>
+    <th>Created By</th>
   </tr>
 
 <% for blog in @blogs %>
   <tr>
     <td><%=h blog.title %></td>
+    <td><%=h blog.short_name %></td>
+    <td><%= link_to h(blog.creator.name), admin_user_path(blog.creator) %></td>
     <td><%= link_to 'Show', admin_blog_path(blog) %></td>
     <td><%= link_to 'Edit', edit_admin_blog_path(blog) %></td>
     <td><%= link_to 'Destroy', admin_blog_path(blog), :confirm => 'Are you sure?', :method => :delete %></td>

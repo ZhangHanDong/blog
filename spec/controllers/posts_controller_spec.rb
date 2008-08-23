@@ -2,12 +2,14 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe PostsController do
 
-  describe "handling GET /posts" do
+  before(:each) do
+    @post = mock_model(Post)
+    @user = mock_model(User)
+    User.stub!(:find).and_return(@user)
+    Post.stub!(:find).and_return([@post])
+  end
 
-    before(:each) do
-      @post = mock_model(Post)
-      Post.stub!(:find).and_return([@post])
-    end
+  describe "handling GET /posts" do
 
     def do_get
       get :index
@@ -36,11 +38,6 @@ describe PostsController do
   
     
   describe "handling GET /posts with date range" do
-    
-    before(:each) do
-      @post = mock_model(Post)
-      Post.stub!(:find).and_return([@post])
-    end
 
     it "should be successful on year search" do   
       Post.should_receive(:find).with(:all, {:offset=>0, :limit=>10, :include=>[:comments, :user, :tags]}).and_return([@post])
@@ -70,11 +67,6 @@ describe PostsController do
   
   describe "handling GET /posts.atom" do
 
-    before(:each) do
-      @posts = mock_model(Post)  
-      Post.stub!(:find).and_return(@posts)
-    end
-
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/atom+xml"
       get :index
@@ -86,7 +78,7 @@ describe PostsController do
     end
 
     it "should find all posts" do
-      Post.should_receive(:find).with(:all, :include => [:comments, :user], :conditions => nil).and_return(@posts)
+      Post.should_receive(:find).with(:all, :include => [:comments, :user], :conditions => nil).and_return(@post)
       do_get
     end
 
@@ -95,8 +87,6 @@ describe PostsController do
   describe "handling GET /posts/1" do
 
     before(:each) do
-      @post = mock_model(Post)
-      Post.stub!(:find).and_return(@post) 
       Comment.should_receive(:new).and_return(mock_model(Comment))         
     end
 
@@ -115,11 +105,12 @@ describe PostsController do
     end
 
     it "should find the post requested" do
-      Post.should_receive(:find).with("1", {:include=>[:comments, :user, :tags]}).and_return(@post)
+      Post.should_receive(:find).with("1", {:include=>[:comments, :user, :tags]}).and_return([@post])
       do_get
     end
 
     it "should assign the found post for the view" do
+      Post.stub!(:find).and_return(@post)
       do_get
       assigns[:post].should equal(@post)
     end
@@ -127,14 +118,7 @@ describe PostsController do
                                          
   
   describe "handling GET /users/1/posts" do
-    
-    before(:each) do
-      @post = mock_model(Post) 
-      @user = mock_model(User)
-      Post.stub!(:find).and_return([@post])
-      User.stub!(:find).and_return(@user)
-    end
-    
+        
     def do_get
       get :index, :user_id => "1"
     end    
@@ -153,12 +137,6 @@ describe PostsController do
   
   
   describe "handling GET /users/1/posts/1" do
-     before(:each) do
-      @post = mock_model(Post) 
-      @user = mock_model(User)
-      Post.stub!(:find).and_return([@post])
-      User.stub!(:find).and_return(@user)
-    end
     
     def do_get
       get :show, :id => "1", :user_id => "1"
@@ -174,6 +152,7 @@ describe PostsController do
   
   describe "handling unsuccessful GET for /posts/15155199" do
     it "should be redirected with flash message" do
+      Post.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199"    
       response.should redirect_to(root_url)
       flash[:notice].should_not be_empty

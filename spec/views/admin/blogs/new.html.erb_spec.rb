@@ -7,6 +7,8 @@ describe "/admin/blogs/new.html.erb" do
     @blog = mock_model(Blog)
     @blog.stub!(:new_record?).and_return(true)
     @blog.stub!(:title).and_return("MyString")
+    @blog.stub!(:short_name).and_return("MyString")
+    @blog.stub!(:in_draft).and_return(false)
     assigns[:blog] = @blog
   end
 

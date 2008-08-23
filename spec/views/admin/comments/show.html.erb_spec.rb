@@ -12,7 +12,8 @@ describe "/admin/comments/show.html.erb" do
     @comment.stub!(:email).and_return("MyString")
     @comment.stub!(:website).and_return("MyString")
     @comment.stub!(:body).and_return("MyText")      
-    @comment.stub!(:created_at).and_return(Time.now)      
+    @comment.stub!(:created_at).and_return(Time.now)
+    @comment.stub!(:post).and_return(@post)      
     
     assigns[:post] = @post
     assigns[:comment] = @comment

@@ -2,7 +2,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe User do
-  fixtures :users, :posts, :taggings, :tags, :comments
+  fixtures :users, :blogs, :posts, :taggings, :tags, :comments
 
   describe 'being created' do
     before do
@@ -20,6 +20,11 @@ describe User do
   
   
   describe 'being associated with' do
+    
+    it "should have created blogs" do
+      users(:quentin).created_blogs.should eql([blogs(:one)])  
+    end
+    
     it "should have posts" do
       users(:quentin).posts.should eql([posts(:normal_post)])
     end

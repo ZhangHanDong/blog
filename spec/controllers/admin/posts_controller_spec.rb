@@ -3,13 +3,22 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe Admin::PostsController do
 
   fixtures :users
+  
+  before(:each) do
+    login_as :quentin
+    stub!(:reset_session)
+    
+    @post = mock_model(Post, :to_xml => "XML", :to_param => "1", :destroy => true)
+    @user = mock_model(User)
+    @posts = mock("Array of Posts", :to_xml => "XML")
+    Post.stub!(:find).and_return(@post)
+    User.stub!(:find).and_return(@user) 
+    Post.stub!(:new).and_return(@post)
+  end
 
   describe "handling GET /admin/posts" do
 
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
       Post.stub!(:find).and_return([@post])
     end
 
@@ -28,7 +37,7 @@ describe Admin::PostsController do
     end
 
     it "should find all posts" do
-      Post.should_receive(:find).with(:all, {:offset => 0, :order => "publish_date DESC", :limit => 10, :include => :comments, :conditions => nil}).and_return([@post])
+      Post.should_receive(:find).with(:all, {:order=>"publish_date DESC", :offset=>0, :limit=>10, :conditions=>nil, :include=>[:comments, :user]}).and_return([@post])
       do_get
     end
 
@@ -41,9 +50,6 @@ describe Admin::PostsController do
   describe "handling GET /admin/posts.xml" do
 
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @posts = mock("Array of Posts", :to_xml => "XML")
       Post.stub!(:find).and_return(@posts)
     end
 
@@ -72,12 +78,7 @@ describe Admin::PostsController do
   describe "handling GET /admin/users/1/posts" do
     
     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
       Post.stub!(:find).and_return([@post])
-      @user = mock_model(User)
-      User.stub!(:find).and_return(@user)
     end
     
     def do_get
@@ -98,15 +99,6 @@ describe Admin::PostsController do
   
   
   describe "handling GET /admin/users/1/posts/1" do
-     before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      
-      @post = mock_model(Post) 
-      @user = mock_model(User)
-      Post.stub!(:find).and_return([@post])
-      User.stub!(:find).and_return(@user)
-    end
     
     def do_get
       get :show, :id => "1", :user_id => "1"
@@ -120,13 +112,6 @@ describe Admin::PostsController do
   end
 
   describe "handling GET /admin/posts/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
-      Post.stub!(:find).and_return(@post)
-    end
 
     def do_get
       get :show, :id => "1"
@@ -143,7 +128,7 @@ describe Admin::PostsController do
     end
 
     it "should find the post requested" do
-      Post.should_receive(:find).with("1", :include => :comments).and_return(@post)
+      Post.should_receive(:find).with("1", :include => [:comments, :user]).and_return(@post)
       do_get
     end
 
@@ -152,28 +137,21 @@ describe Admin::PostsController do
       assigns[:post].should equal(@post)
     end
   end
+
   
   describe "handling unsuccessful GET for /admin/posts/15155199" do
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-    end
-
+    
     it "should be redirected with flash message" do
+      Post.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199"    
       response.should redirect_to(root_url)
       flash[:notice].should_not be_empty
     end
+    
   end
 
-  describe "handling GET /admin/posts/1.xml" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :to_xml => "XML")
-      Post.stub!(:find).and_return(@post)
-    end
+  describe "handling GET /admin/posts/1.xml" do
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
@@ -186,7 +164,7 @@ describe Admin::PostsController do
     end
 
     it "should find the post requested" do
-      Post.should_receive(:find).with("1", :include => :comments).and_return(@post)
+      Post.should_receive(:find).with("1", :include => [:comments, :user]).and_return(@post)
       do_get
     end
 
@@ -198,13 +176,6 @@ describe Admin::PostsController do
   end
 
   describe "handling GET /admin/posts/new" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
-      Post.stub!(:new).and_return(@post)
-    end
 
     def do_get
       get :new
@@ -238,13 +209,6 @@ describe Admin::PostsController do
 
   describe "handling GET /admin/posts/1/edit" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post)
-      Post.stub!(:find).and_return(@post)
-    end
-
     def do_get
       get :edit, :id => "1"
     end
@@ -272,30 +236,20 @@ describe Admin::PostsController do
 
   describe "handling POST /admin/posts" do
 
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :to_param => "1")
-      Post.stub!(:new).and_return(@post)
-
-    end
-
     describe "with setting author (user) (successful save)" do
 
       def do_post
-        @post.should_receive(:user=).with(users(:aaron)).and_return(true)
+        @post.should_receive(:user=).with(users(:quentin)).and_return(true)
         @post.should_receive(:save).and_return(true)
         post :create, :post => {}
       end
 
       it "should create a new post with the correct author set" do
         Post.should_receive(:new).with({}).and_return(@post)
-        login_as :aaron
         do_post
       end
 
       it "should redirect to the new post" do
-        login_as :aaron
         do_post
         response.should redirect_to(admin_post_url("1"))
       end
@@ -319,13 +273,6 @@ describe Admin::PostsController do
   end
 
   describe "handling PUT /admin/posts/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :to_param => "1")
-      Post.stub!(:find).and_return(@post)
-    end
 
     describe "with successful update" do
 
@@ -380,13 +327,6 @@ describe Admin::PostsController do
   end
 
   describe "handling DELETE /admin/posts/1" do
-
-    before(:each) do
-      login_as :quentin
-      stub!(:reset_session)
-      @post = mock_model(Post, :destroy => true)
-      Post.stub!(:find).and_return(@post)
-    end
 
     def do_delete
       delete :destroy, :id => "1"

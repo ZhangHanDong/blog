@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe PostsController do
+  
   describe "route generation" do
 
     it "should map { :controller => 'posts', :action => 'index' } to /posts" do
@@ -63,4 +64,5 @@ describe PostsController do
       params_from(:get, "/users/1/posts/1").should == {:controller => "posts", :action => "show", :id => "1", :user_id => "1"}
     end
   end
+  
 end
