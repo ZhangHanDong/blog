@@ -1,7 +1,12 @@
-<h1>Post</h1>
+<h1><%= h @post.blog.title %> post</h1>
 <p>
   <b>Title:</b>
   <%=h @post.title %>
+</p>                                   
+
+<p>
+  <b>By User:</b>
+  <%=link_to(h(@post.user.name), admin_user_path(@post.user)) if @post.user %>
 </p>
 
 <p>
@@ -33,7 +38,7 @@
   <b>Tagged with:</b>
   <ul>
   <% @post.tags.each do |tag| -%>
-    <li><%= link_to_admin_tag(tag) %></li>
+    <li><%= link_to h(tag.name), admin_blog_tag_path(@post.blog, tag) %></li>
   <% end -%>
   </ul>
 </p>
@@ -49,8 +54,9 @@
   <h3><%= pluralize(@post.comments.length, 'Comment') %> </h3>
   <%= render :partial => 'admin/comments/comment', :collection => @post.comments -%>
 <% end %>                                                                     
-<p><%= link_to 'manage post comments', admin_post_comments_path(@post) %></p>
+<p><%= link_to 'manage post comments', admin_blog_post_comments_path(@post.blog, @post) %> | <%= link_to('+ add new comment', new_admin_blog_post_comment_path(@post.blog, @post)) %></p>
 
 
-<%= link_to 'Edit', edit_admin_post_path(@post) %> |
-<%= link_to 'Back', admin_posts_path %>
+
+<%= link_to 'Edit', edit_admin_blog_post_path(@post.blog, @post) %> |
+<%= link_to 'Back', admin_blog_posts_path(@post.blog) %>

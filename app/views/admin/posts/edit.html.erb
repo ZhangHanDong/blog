@@ -1,8 +1,8 @@
-<h1>Editing post</h1>
+<h1>Editing post in <%= h @post.blog.title %></h1>
 
-<% form_for [:admin, @post] do |f| %>    
+<% form_for [:admin, @post.blog, @post] do |f| %>    
   <%= render :partial => 'form', :locals => { :f => f, :label => 'Update' } -%>
 <% end %>
 
-<%= link_to 'Show', admin_post_path(@post) %> |
-<%= link_to 'Back', admin_posts_path %>
+<%= link_to 'Show', admin_blog_post_path(@post.blog, @post) %> |
+<%= link_to 'Back', admin_blog_posts_path(@post.blog) %>

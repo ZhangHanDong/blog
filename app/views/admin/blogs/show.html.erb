@@ -15,5 +15,26 @@
   <b>Created By:</b>
   <%= link_to h(@blog.creator.name), admin_user_path(@blog.creator) %>
 </p>
+<p>
+  <b>Posts:</b>
+  <%= @blog.posts.length == 0 ? @blog.posts.length : link_to(@blog.posts.length, admin_blog_posts_path(@blog)) %>
+</p>
+<p>
+  <b>Comments:</b>
+  <%= @blog.comments.length == 0 ? @blog.comments.length : link_to(@blog.comments.length, admin_blog_comments_path(@blog)) %>
+</p>
+<p>
+  <b>Users:</b>
+  <%= @blog.users.length == 0 ? @blog.users.length : link_to(@blog.users.length, admin_blog_users_path(@blog)) %>
+</p>
+<p>
+  <b>Tags Used:</b>
+  <ul>
+  <% @blog.tags.each do |tag| -%>
+    <li><%= link_to h(tag.name), admin_blog_tag_path(@blog, tag) %></li>
+  <% end -%>
+  </ul>
+</p>
+
 <%= link_to 'Edit', edit_admin_blog_path(@blog) %> |
 <%= link_to 'Back', admin_blogs_path %>

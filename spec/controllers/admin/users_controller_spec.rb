@@ -40,7 +40,8 @@ describe Admin::UsersController do
     end
 
     it "should find all users" do
-      User.should_receive(:find).with(:all, {:offset=>0, :limit=>10, :order=>"created_at DESC"}).and_return([@user])
+      User.should_receive(:find).with(:all).and_return(@user)
+      @user.should_receive(:paginate).with({:order=>"created_at DESC", :per_page=>10, :page=>nil}).and_return([@user])
       do_get
     end
 
@@ -67,7 +68,7 @@ describe Admin::UsersController do
     end
 
     it "should find all users" do
-      User.should_receive(:find).with(:all).and_return(@users)
+      User.should_receive(:find).with(:all).twice.and_return(@users)
       do_get
     end
 

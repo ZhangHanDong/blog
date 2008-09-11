@@ -17,20 +17,39 @@
 </p>
 
 <p>
-  <b>Blogs:</b>
-  <%= link_to 'show all blogs for this user', admin_user_blogs_path(@user) %>    
-</p>
-              
-<p>
-  <b>Posts:</b>
-  <%= link_to 'show all posts for this user', admin_user_posts_path(@user) %>    
+  <b>Created Blogs:</b>
+  <%= @user.created_blogs.length == 0 ? @user.created_blogs.length : link_to(@user.created_blogs.length, admin_user_blogs_path(@user)) %>
 </p>
 
 <p>
-  <b>Comments:</b>
-  <%= link_to 'show all comments for this user', admin_user_comments_path(@user) %>    
+  <b>Created Posts:</b>
+  <%= @user.posts.length == 0 ? @user.posts.length : link_to(@user.posts.length, admin_user_posts_path(@user)) %>
 </p>
 
+<p>
+  <b>Created Comments:</b>
+  <%= @user.comments.length == 0 ? @user.comments.length : link_to(@user.comments.length, admin_user_comments_path(@user)) %>
+</p>
+
+<p>
+  <b><%=h @user.name %> posted in these blogs:</b>
+  <ul>
+  <% @user.blogs.each do |blog|
+    blog_posts_count = blog.posts.by_user(@user).length
+    blog_comments_count = blog.comments.by_user(@user).length
+    blog_tags_count = blog.tags.by_user(@user).length
+    -%>
+    <li><%= link_to h(blog.title), admin_blog_path(blog) %> 
+    (
+      posted <%= blog_posts_count == 0 ? "nothing" : link_to("#{blog_posts_count} times", admin_blog_user_posts_path(blog, @user)) %> |
+      commented <%= blog_comments_count == 0 ? "nothing" : link_to("#{blog_comments_count} times", admin_blog_user_comments_path(blog, @user)) %> |
+      tagged <%= blog_tags_count == 0 ? "nothing" : link_to("#{blog_tags_count} items", admin_blog_user_tags_path(blog, @user)) %>
+    )
+    </li>
+  <% end -%>
+  </ul>
+</p>
 
 <%= link_to 'Edit', edit_admin_user_path(@user) %> |
 <%= link_to 'Back', admin_users_path %>
+

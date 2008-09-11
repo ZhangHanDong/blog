@@ -5,7 +5,11 @@ describe "/admin/blogs/show.html.erb" do
   
   before(:each) do
     @user = mock_model(User)
-    @blog = mock_model(Blog)
+    @blog = mock_model(Blog)   
+    @blog.should_receive(:posts).twice.and_return([])
+    @blog.should_receive(:comments).twice.and_return([])
+    @blog.should_receive(:users).twice.and_return([])  
+    @blog.should_receive(:tags).and_return([])  
     @blog.stub!(:title).and_return("MyString")
     @blog.stub!(:short_name).and_return("MyString")
     @blog.stub!(:in_draft).and_return(false)

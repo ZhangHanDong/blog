@@ -1,22 +1,22 @@
-<h1><%= "Blog posts#{(@user.nil? ? '' : " by #{@user.name}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
+<h1><%= "#{h(@blog.title)} posts#{(@tag.nil? ? '' : " tagged with #{h(@tag.name)}")}#{(@user.nil? ? '' : " by #{h(@user.name)}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
 <hr/>
 <% for post in @posts %>
-  <h2><%=link_to h(post.title), post %></h2>
+  <h2><%=link_to h(post.title), blog_post_path(@blog, post) %></h2>
   <ul>
-    <li>added on <%= post.publish_date %> by <%= link_to post.user.name, user_posts_url(post.user) %></li>   
+    <li>added on <%= post.publish_date %> by <%= link_to h(post.user.name), blog_user_path(@blog, post.user) %></li>   
   </ul>               
   <% unless post.summary.blank? -%>
-  <p><%=h post.summary %></p>   
+  <p><%= h(post.summary) %></p>   
   <% else -%>
   <%= truncate_words(post.body_formatted, 300) %>
   <% end -%>
   <p>
-    <%= post.comments.length == 0 ? link_to('no comments yet, post one now', post_path(post, :anchor => 'new-comment')) : link_to(pluralize(post.comments.length, 'comment'), post_path(post, :anchor => 'comments')) %>
+    <%= post.comments.length == 0 ? link_to('no comments yet, post one now', blog_post_path(@blog, post, :anchor => 'new-comment')) : link_to(pluralize(post.comments.length, 'comment'), blog_post_path(@blog, post, :anchor => 'comments')) %>
   </p>
   <% unless post.tags.empty? -%>
   <ul>
     <% post.tags.each do |tag| -%>
-      <li><%= h tag.name %></li>
+      <li><%= link_to h(tag.name), blog_tag_posts_path(@blog, tag) %></li>
     <% end -%>
   </ul>       
   <% end -%>

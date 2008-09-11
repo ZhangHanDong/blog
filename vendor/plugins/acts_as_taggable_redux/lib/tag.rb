@@ -1,6 +1,9 @@
 class Tag < ActiveRecord::Base
   has_many :taggings
-
+  has_many :blogs, :through => :taggings, :uniq => true 
+  named_scope :by_user,  lambda { |*user| {:conditions =>  ["taggings.user_id = ?", user], :include => :taggings}}      
+  
+  
   # Parse a text string into an array of tokens for use as tags
   def self.parse(list)
     tag_names = []
@@ -44,8 +47,8 @@ class Tag < ActiveRecord::Base
   end
     
   # Tag a taggable with this tag, optionally add user to add owner to tagging
-  def tag(taggable, user_id = nil)
-    taggings.create :taggable => taggable, :user_id => user_id
+  def tag(taggable, user_id = nil, blog_id = nil)
+    taggings.create :taggable => taggable, :user_id => user_id, :blog_id => blog_id
     taggings.reset
     @tagged = nil
   end

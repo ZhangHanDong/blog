@@ -3,37 +3,46 @@ class Admin::CommentsController < ApplicationController
   layout 'admin'
   before_filter :login_required
   
-  
-  # GET /admin/comments
-  # GET /admin/comments.xml
-  # GET /admin/posts/1/comments
-  # GET /admin/posts/1/comments.xml
   # GET /admin/users/1/comments
   # GET /admin/users/1/comments.xml
-  def index
-    if params[:user_id] 
+  # GET /admin/blogs/1/comments
+  # GET /admin/blogs/1/comments.xml
+  # GET /admin/blogs/1/posts/1/comments
+  # GET /admin/blogs/1/posts/1/comments.xml
+  # GET /admin/blogs/1/users/1/comments
+  # GET /admin/blogs/1/users/1/comments.xml
+  def index     
+    if params[:blog_id]
+      @blog = Blog.find(params[:blog_id])            
+      if params[:user_id] 
+        @user = User.find(params[:user_id])
+        @collection = @blog.comments.by_user(@user)
+      elsif params[:post_id]
+        @post = @blog.posts.find(params[:post_id])
+        @collection = @post.comments
+      else  
+        @collection = @blog.comments
+      end  
+    elsif params[:user_id] 
       @user = User.find(params[:user_id])
-      @comments = @user.comments.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10, :conditions => ['user_id = ?', @user.id], :include => [:post, :user]) if @user.comments
-    elsif params[:post_id] 
-      @post = Post.find(params[:post_id])   
-      @comments = @post.comments.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10, :include => [:post, :user]) if @post.comments
-    else
-      @comments = Comment.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10, :include => [:post, :user])
-    end
+      @collection = @user.comments
+    end               
+   
     
     respond_to do |format|
-      format.html
-      format.xml  { render :xml => @comments }
+      format.html {
+        @comments = @collection.paginate(:all, :page => params[:page], :per_page => 10, :include => { :post => :blog })
+      }
+      format.xml  { render :xml => @collection.recent.find(:all) }
     end
   end  
   
         
-  # GET /admin/posts/1/comment/1
-  # GET /admin/posts/1/comment/1.xml
-  def show  
+  # GET /admin/blogs/1/posts/1/comment/1
+  # GET /admin/blogs/1/posts/1/comment/1.xml
+  def show
     @comment = Comment.find(params[:id], :include => [:post, :user]) 
-    @post = @comment.post if @comment
-    
+
     respond_to do |format|
       format.html
       format.xml  { render :xml => @comment }
@@ -41,10 +50,10 @@ class Admin::CommentsController < ApplicationController
   end      
   
 
-  # GET /admin/posts/1/comments/new
-  # GET /admin/posts/1/comments/new.xml
+  # GET /admin/blogs/1/posts/1/comments/new
+  # GET /admin/blogs/1/posts/1/comments/new.xml
   def new                       
-    @post = Post.find(params[:post_id]) if params[:post_id]     
+    @post = Post.find(params[:post_id], :include => :blog)     
     @comment = Comment.new                  
     
     respond_to do |format|
@@ -54,17 +63,16 @@ class Admin::CommentsController < ApplicationController
   end        
   
   
-  # GET /admin/posts/1/comment/1/edit
+  # GET /admin/blogs/1/posts/1/comment/1/edit
   def edit       
     @comment = Comment.find(params[:id], :include => [:post, :user])
-    @post = @comment.post
   end           
   
 
-  # POST /admin/posts/1/comments
-  # POST /admin/posts/1/comments.xml
+  # POST /admin/blogs/1/posts/1/comments
+  # POST /admin/blogs/1/posts/1/comments.xml
   def create                       
-    @post = Post.find(params[:post_id])           
+    @post = Post.find(params[:post_id], :include => :blog)           
     @comment = Comment.new(params[:comment])
     @comment.user = @current_user
     @post.comments << @comment         
@@ -72,7 +80,7 @@ class Admin::CommentsController < ApplicationController
     respond_to do |format|
       if @post.save
         flash[:notice] = 'Comment was successfully created.'
-        format.html { redirect_to(admin_post_comment_path(@post, @comment)) }
+        format.html { redirect_to(admin_blog_post_comment_path(@post.blog, @post, @comment)) }
         format.xml  { render :xml => @comment, :status => :created, :location => @comment }
       else
         format.html { render :action => "new" }
@@ -82,16 +90,15 @@ class Admin::CommentsController < ApplicationController
   end 
            
   
-  # PUT /admin/posts/1/comment/1
-  # PUT /admin/posts/1/comment/1.xml
+  # PUT /admin/blogs/1/posts/1/comment/1
+  # PUT /admin/blogs/1/posts/1/comment/1.xml
   def update 
-    @comment = Comment.find(params[:id])
-    @post = @comment.post
-    
+    @comment = Comment.find(params[:id], :include => :post)
+
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
         flash[:notice] = 'Comment was successfully updated.'
-        format.html { redirect_to(admin_post_comment_path(@post, @comment)) }
+        format.html { redirect_to(admin_blog_post_comment_path(@comment.post.blog, @comment.post, @comment)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -101,15 +108,14 @@ class Admin::CommentsController < ApplicationController
   end    
   
 
-  # DELETE /admin/posts/1/comment/1
-  # DELETE /admin/posts/1/comment/1.xml
+  # DELETE /admin/blogs/1/posts/1/comment/1
+  # DELETE /admin/blogs/1/posts/1/comment/1.xml
   def destroy                        
     @comment = Comment.find(params[:id])
-    @post = @comment.post
     @comment.destroy                              
     
     respond_to do |format|
-      format.html { redirect_to(admin_post_comments_url(@post)) }
+      format.html { redirect_to(admin_blog_post_comments_url(@comment.post.blog, @comment.post)) }
       format.xml  { head :ok }
     end
   end             

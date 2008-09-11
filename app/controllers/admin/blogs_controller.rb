@@ -16,11 +16,10 @@ class Admin::BlogsController < ApplicationController
     
     respond_to do |format|
       format.html {   
-        @blogs = Blog.paginate(:all, :page => params[:page], :per_page => 10, :conditions => conditions, :include => :creator)
+        @blogs = Blog.paginate(:all, :page => params[:page], :per_page => 10, :include => :creator, :conditions => conditions)
       }
-      format.xml  { 
-        @blogs = Blog.find(:all, :conditions => conditions, :include => :creator)
-        render :xml => @blogs
+      format.xml {
+        render :xml => Blog.find(:all, :conditions => conditions)     
       }
     end
   end

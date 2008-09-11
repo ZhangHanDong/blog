@@ -3,13 +3,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "/admin/tags/index" do
   include Admin::TagsHelper
   
-  before(:each) do
+  before(:each) do 
+    blog = mock_model(Blog, :title => 'Blog Title')
     tag_98 = mock_model(Tag)
     tag_98.should_receive(:name).and_return("MyString")   
-    tag_98.should_receive(:taggings_count).at_least(2).times.and_return(1)   
     tag_99 = mock_model(Tag)
     tag_99.should_receive(:name).and_return("MyString") 
-    tag_99.should_receive(:taggings_count).at_least(2).times.and_return(2)
+    assigns[:blog] = blog
     assigns[:tags] = [tag_98, tag_99]
     assigns[:tags].stub!(:total_pages).and_return(0)
   end

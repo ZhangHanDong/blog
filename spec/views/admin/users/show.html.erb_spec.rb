@@ -8,7 +8,11 @@ describe "/admin/users/show.html.erb" do
     @user.stub!(:login).and_return("MyString1")
     @user.stub!(:name).and_return("MyString2")
     @user.stub!(:email).and_return("MyString3")    
-    @user.should_receive(:photo)
+    @user.should_receive(:photo)     
+    @user.should_receive(:created_blogs).twice.and_return([]) 
+    @user.should_receive(:posts).twice.and_return([])
+    @user.should_receive(:comments).twice.and_return([]) 
+    @user.should_receive(:blogs).and_return([]) 
     assigns[:user] = @user
   end
 

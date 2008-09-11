@@ -1,0 +1,7 @@
+<h1><%= h(@comments.first.post.blog.title) unless @comments.empty? %> comments <%= "#{ "on #{link_to h(@post.title), blog_post_path(@post.blog, @post)}" if @post }#{ "by #{h(@user.name)}" if @user }" %></h1>     
+
+<% unless @comments.empty? %>  
+  <%= render :partial => 'comments/comment', :collection => @comments -%>
+<% end %>      
+              
+<p><%= will_paginate @comments %></p>

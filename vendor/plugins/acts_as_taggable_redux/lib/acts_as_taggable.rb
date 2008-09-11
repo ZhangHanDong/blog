@@ -30,7 +30,7 @@ module ActiveRecord
         end
         
         def tagged_with_scope(tags, options={})
-          options.assert_valid_keys([:match, :user])
+          options.assert_valid_keys([:match, :user, :blog])
           
           tags = Tag.parse(tags)
           return [] if tags.empty?
@@ -71,6 +71,11 @@ module ActiveRecord
           super(new_user_id)
         end
         
+        def blog_id=(new_blog_id)
+          @new_blog_id = new_blog_id
+          super(new_blog_id)
+        end
+        
         def tag_list(user = nil)
           unless user
             resiult = tags.collect { |tag| tag.name.include?(" ") ? %("#{tag.name}") : tag.name }.join(" ")
@@ -91,7 +96,7 @@ module ActiveRecord
               end
             
               Tag.parse(@new_tag_list).each do |name|
-                Tag.find_or_create_by_name(name).tag(self, @new_user_id)
+                Tag.find_or_create_by_name(name).tag(self, @new_user_id, @new_blog_id)
               end
 
               tags.reset

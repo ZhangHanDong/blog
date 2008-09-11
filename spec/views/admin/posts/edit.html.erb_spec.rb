@@ -3,8 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "/admin/posts/edit.html.erb" do
   include Admin::PostsHelper
   
-  before do
-    @post = mock_model(Post)  
+  before do                      
+    @blog = mock_model(Blog, :title => 'Blog Title')
+    @post = mock_model(Post)               
+    @post.stub!(:blog).and_return(@blog)        
+    @post.stub!(:blog_id).and_return(@blog.id) 
     @post.stub!(:title).and_return("MyString")
     @post.stub!(:permalink).and_return("MyString")
     @post.stub!(:publish_date).and_return(Time.now)
@@ -20,7 +23,7 @@ describe "/admin/posts/edit.html.erb" do
   it "should render edit post form" do
     render "/admin/posts/edit.html.erb"
     
-    response.should have_tag("form[action=#{admin_post_path(@post)}][method=post]") do
+    response.should have_tag("form[action=#{admin_blog_post_path(@blog, @post)}][method=post]") do
       with_tag('input#post_title[name=?]', "post[title]")
       with_tag('textarea#post_summary[name=?]', "post[summary]")
       with_tag('textarea#post_body[name=?]', "post[body]") 

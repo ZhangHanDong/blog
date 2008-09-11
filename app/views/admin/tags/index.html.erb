@@ -1,15 +1,13 @@
-<h1>Listing tags</h1>
+<h1><%= h @blog.title %> tags<%= "#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
 
 <table>
   <tr>
     <th>Name</th> 
-    <th>Tagged</th>
   </tr>
 
 <% for tag in @tags %>
   <tr>
-    <td><%=h tag.name %></td>
-    <td align="center">(<%= tag.taggings_count == 0 ? tag.taggings_count : link_to(tag.taggings_count, admin_tag_path(tag)) %> times)</td>
+    <td><%= link_to(h(tag.name), admin_blog_tag_path(@blog, tag)) %></td>
   </tr>
 <% end %>
 </table> 

@@ -3,8 +3,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "/admin/comments/show.html.erb" do
   include Admin::CommentsHelper
   
-  before(:each) do
-    @post = mock_model(Post)
+  before(:each) do          
+    @blog = mock_model(Blog)
+    @post = mock_model(Post)                    
+    @post.stub!(:blog).and_return(@blog)
     @post.stub!(:title).and_return('Post Title')
     @comment = mock_model(Comment)  
     @comment.stub!(:name).and_return("MyString") 

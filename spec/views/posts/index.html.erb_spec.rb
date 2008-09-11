@@ -5,7 +5,10 @@ describe "/posts/index" do
   include ApplicationHelper
   include PostsHelper
  
-  before(:each) do                
+  before(:each) do
+    
+    blog = mock_model(Blog, :title => 'Blog Title')
+                    
     # with summary
     post_98 = mock_model(Post)
     post_98.should_receive(:title).and_return("MyStringTitle1")
@@ -25,7 +28,8 @@ describe "/posts/index" do
     post_99.should_receive(:comments).twice.and_return([mock_model(Comment), mock_model(Comment)])
     post_99.should_receive(:tags).and_return([])
     post_99.should_receive(:summary).and_return('')
-     
+              
+    assigns[:blog] = blog
     assigns[:posts] = [post_98, post_99]
     assigns[:posts].stub!(:total_pages).and_return(0)          
   end

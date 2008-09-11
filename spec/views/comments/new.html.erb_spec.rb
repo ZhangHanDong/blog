@@ -8,8 +8,10 @@ describe "/comments/new" do
   fixtures :users   
   
   before(:each) do
-    # comment form
-    @post = mock_model(Post)
+    # comment form          
+    @blog = mock_model(Blog, :title => 'Blog Title')
+    @post = mock_model(Post)       
+    @post.should_receive(:blog).twice.and_return(@blog)  
     @post.stub!(:title).and_return('Post Title')
     @comment = mock_model(Comment)     
     @comment.stub!(:new_record?).and_return(true)  
@@ -17,6 +19,7 @@ describe "/comments/new" do
     @comment.stub!(:email).and_return("MyString")
     @comment.stub!(:website).and_return(Time.now)
     @comment.stub!(:body).and_return("MyText")
+    assigns[:blog] = @blog
     assigns[:post] = @post
     assigns[:comment] = @comment
   end
@@ -29,7 +32,7 @@ describe "/comments/new" do
     
     render "/comments/new"
     
-    response.should have_tag("form[action=?][method=post]", post_comments_path(@post)) do  
+    response.should have_tag("form[action=?][method=post]", blog_post_comments_path(@blog, @post)) do  
       with_tag('input#comment_name[value=?]', 'Quentin Bart')
       with_tag('input#comment_email[value=?]', 'quentin@example.com')
     end

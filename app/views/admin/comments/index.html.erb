@@ -1,28 +1,24 @@
-<h1>Listing comments<%=
- if !@post.nil?
-   " for post #{@post.title}"
- elsif !@user.nil?
-   " by #{@user.name}"
- end
--%></h1>
+<h1><%= h(@blog.title) if @blog %> comments <%= "#{ "on #{link_to h(@post.title), admin_blog_post_path(@post.blog, @post)}" if @post }#{ "by #{h(@user.name)}" if @user }" %></h1>
 
 <table>
   <tr>    
     <th>Body</th>
     <th>Email</th> 
-    <th>on Post</th>
-    <th>User</th> 
+    <th>User</th>
+    <th>On Post</th>
+    <th>On Blog</th> 
   </tr>
 
 <% for comment in @comments %>
   <tr>    
     <td><%= truncate_words(h(comment.body), 50) %></td>                       
     <td><%=h comment.email %></td>  
-    <td><%= link_to h(comment.post.title), admin_post_path(comment.post) %></td> 
     <td><%= link_to h(comment.user.name), admin_user_path(comment.user) if comment.user %></td> 
-    <td><%= link_to 'Show', admin_comment_path(comment) %></td>    
-    <td><%= link_to 'Edit', edit_admin_comment_path(comment) %></td>
-    <td><%= link_to 'Destroy', admin_comment_path(comment), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to h(comment.post.title), admin_blog_post_path(comment.post.blog, comment.post) %></td>
+    <td><%= link_to h(comment.post.blog.title), admin_blog_path(comment.post.blog) %></td>    
+    <td><%= link_to 'Show', admin_blog_post_comment_path(comment.post.blog, comment.post, comment) %></td>   
+    <td><%= link_to 'Edit', edit_admin_blog_post_comment_path(comment.post.blog, comment.post, comment) %></td>
+    <td><%= link_to 'Destroy', admin_blog_post_comment_path(comment.post.blog, comment.post, comment), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table> 
@@ -32,6 +28,6 @@
 <br />
 
 <% if @post -%>
-<%= link_to 'add new post comment', new_admin_post_comment_path(@post) %>   
-<%= link_to 'back to Post', admin_post_path(@post) %>
+<%= link_to '+ add new post comment', new_admin_blog_post_comment_path(@post.blog, @post) %> |  
+<%= link_to 'back to Post', admin_blog_post_path(@post.blog, @post) %>
 <% end -%>

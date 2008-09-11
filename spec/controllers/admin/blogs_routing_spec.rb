@@ -11,20 +11,20 @@ describe Admin::BlogsController do
       route_for(:controller => "admin/blogs", :action => "new").should == "/admin/blogs/new"
     end
   
-    it "should map { :controller => 'admin/blogs', :action => 'show', :id => 1 } to /admin/blogs/1" do
-      route_for(:controller => "admin/blogs", :action => "show", :id => 1).should == "/admin/blogs/1"
+    it "should map { :controller => 'admin/blogs', :action => 'show', :id => '1' } to /admin/blogs/1" do
+      route_for(:controller => "admin/blogs", :action => "show", :id => "1").should == "/admin/blogs/1"
     end
   
-    it "should map { :controller => 'admin/blogs', :action => 'edit', :id => 1 } to /admin/blogs/1/edit" do
-      route_for(:controller => "admin/blogs", :action => "edit", :id => 1).should == "/admin/blogs/1/edit"
+    it "should map { :controller => 'admin/blogs', :action => 'edit', :id => '1' } to /admin/blogs/1/edit" do
+      route_for(:controller => "admin/blogs", :action => "edit", :id => "1").should == "/admin/blogs/1/edit"
     end
   
-    it "should map { :controller => 'admin/blogs', :action => 'update', :id => 1} to /admin/blogs/1" do
-      route_for(:controller => "admin/blogs", :action => "update", :id => 1).should == "/admin/blogs/1"
+    it "should map { :controller => 'admin/blogs', :action => 'update', :id => '1' } to /admin/blogs/1" do
+      route_for(:controller => "admin/blogs", :action => "update", :id => "1").should == "/admin/blogs/1"
     end
   
-    it "should map { :controller => 'admin/blogs', :action => 'destroy', :id => 1} to /admin/blogs/1" do
-      route_for(:controller => "admin/blogs", :action => "destroy", :id => 1).should == "/admin/blogs/1"
+    it "should map { :controller => 'admin/blogs', :action => 'destroy', :id => '1' } to /admin/blogs/1" do
+      route_for(:controller => "admin/blogs", :action => "destroy", :id => "1").should == "/admin/blogs/1"
     end
   end
 

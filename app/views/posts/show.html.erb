@@ -1,7 +1,6 @@
-<h1>Post</h1>
-<h2><%=link_to h(@post.title), @post %></h2>
+<h1><%=link_to h(@post.title), blog_post_path(@blog, @post) %></h1>
 <ul>
-  <li>added on <%= @post.publish_date %> by <%= @post.user.name %></li>   
+  <li>added on <%= @post.publish_date %> by <%= link_to h(@post.user.name), blog_user_path(@blog, @post.user) %></li>   
 </ul>           
 <p><%=h @post.summary %></p>   
 <%= @post.body_formatted %>         
@@ -11,7 +10,7 @@
 <% unless @post.tags.empty? -%>
 <ul>
   <% @post.tags.each do |tag| -%>
-    <li><%= h tag.name %></li>
+    <li><%= link_to h(tag.name), blog_tag_posts_path(@blog, tag) %></li>
   <% end -%>
 </ul>       
 <% end -%>                             
@@ -28,8 +27,8 @@
 <a name="new-comment"></a>
 <h3>Add your comment</h3>
 
-<% form_for [@post, @comment] do |f| %>
+<% form_for [@blog, @post, @comment] do |f| %>
   <%= render :partial => 'comments/form', :locals => { :f => f } -%>
 <% end %>
 
-<%= link_to 'return to all posts', posts_path %>
+<%= link_to 'return to all posts', blog_posts_path(@blog) %>

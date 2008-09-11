@@ -7,10 +7,13 @@ describe "/admin/comments/new.html.erb" do
 
   before do   
     login_as :quentin
-    stub!(:reset_session)
-    @post = mock_model(Post)
+    stub!(:reset_session)       
+    @blog = mock_model(Blog, :title => 'Blog Title')
+    @post = mock_model(Post)    
+    @post.stub!(:blog).and_return(@blog)
     @post.stub!(:title).and_return('Post Title')
     @comment = mock_model(Comment)     
+    @comment.stub!(:post).and_return(@post)
     @comment.stub!(:new_record?).and_return(true)  
     @comment.stub!(:name).and_return("MyString")
     @comment.stub!(:email).and_return("MyString")
@@ -23,7 +26,7 @@ describe "/admin/comments/new.html.erb" do
   it "should render the new comment form" do
     render "/admin/comments/new.html.erb"
     
-    response.should have_tag("form[action=?][method=post]", admin_post_comments_path(@post)) do  
+    response.should have_tag("form[action=?][method=post]", admin_blog_post_comments_path(@blog, @post)) do  
       with_tag('input#comment_name[name=?]', "comment[name]")
       with_tag('input#comment_email[name=?]', "comment[email]")
       with_tag('input#comment_website[name=?]', "comment[website]") 
@@ -36,7 +39,7 @@ describe "/admin/comments/new.html.erb" do
     @comment.stub!(:email).and_return(nil)
     render "/admin/comments/new.html.erb"
     
-    response.should have_tag("form[action=?][method=post]", admin_post_comments_path(@post)) do  
+    response.should have_tag("form[action=?][method=post]", admin_blog_post_comments_path(@blog, @post)) do  
       with_tag('input#comment_name[value=?]', 'Quentin Bart')
       with_tag('input#comment_email[value=?]', 'quentin@example.com')
     end

@@ -1,0 +1,7 @@
+<ul>
+<% for blog in @blogs %>
+  <li><%= link_to h(blog.title), blog_posts_path(blog) %> (<%= link_to 'all users', blog_users_path(blog) %>)</li>
+<% end %>
+</ul>           
+
+<p><%= will_paginate @blogs %></p> 

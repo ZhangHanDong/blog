@@ -3,13 +3,21 @@ class Admin::UsersController < ApplicationController
   layout 'admin', :except => [ :register, :signup ]
   before_filter   :login_required, :except => [ :register, :signup ]
       
-   
   # GET /admin/users
-  # GET /admin/users.xml
-  def index
+  # GET /admin/users.xml 
+  # GET /admin/blogs/1/users
+  # GET /admin/blogs/1/users.xml
+  def index      
+    if params[:blog_id]             
+      @blog = Blog.find(params[:blog_id])
+      @collection = @blog.users
+    else
+      @collection = User.find(:all)
+    end
+    
     respond_to do |format|
       format.html {
-        @users = User.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10)
+        @users = @collection.paginate(:page => params[:page], :order => 'created_at DESC', :per_page => 10)
       }
       format.xml  { 
         @users = User.find(:all)

@@ -1,25 +1,27 @@
-<h1>Listing <%= " posts#{(@user.nil? ? '' : " by #{@user.name}")}" %></h1>
+<h1><%= "#{h(@blog.title)} posts#{(@tag.nil? ? '' : " tagged with #{h(@tag.name)}")}#{(@user.nil? ? '' : " by #{h(@user.name)}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
 
 <table>
   <tr>
     <th>Title</th> 
-    <th>Comments</th>
+    <th># Comments</th>
     <th>Publish date</th>
     <th>In draft</th> 
+    <th>In blog</th>
     <th>author</th>
   </tr>
 
 <% for post in @posts %>
   <tr>
     <td><%=h post.title %></td>
-    <td><%= post.comments.length == 0 ? post.comments.length : link_to(post.comments.length, admin_post_comments_path(post)) %></td>
+    <td><%= post.comments.length == 0 ? post.comments.length : link_to(post.comments.length, admin_blog_post_comments_path(post.blog, post)) %></td>
     <td><%=h post.publish_date %></td>
-    <td><%=h post.in_draft %></td>       
+    <td><%=h post.in_draft %></td>
+    <td><%=link_to h(post.blog.title), admin_blog_path(post.blog) %></td>       
     <td><%=link_to(h(post.user.name), admin_user_path(post.user)) if post.user %></td>       
-    <td><%= link_to 'Show', admin_post_path(post) %></td>   
-    <td><%= link_to 'Comments', admin_post_comments_path(post) %></td>  
-    <td><%= link_to 'Edit', edit_admin_post_path(post) %></td>
-    <td><%= link_to 'Destroy', admin_post_path(post), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', admin_blog_post_path(post.blog, post) %></td>   
+    <td><%= link_to 'Edit', edit_admin_blog_post_path(post.blog, post) %></td>
+    <td><%= link_to 'Destroy', admin_blog_post_path(post.blog, post), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to('+ add new comment', new_admin_blog_post_comment_path(post.blog, post)) %></td>
   </tr>
 <% end %>
 </table> 
@@ -28,4 +30,6 @@
 
 <br />
 
-<%= link_to 'New post', new_admin_post_path %>
+<% if @blog -%>
+<%= link_to '+ add new post', new_admin_blog_post_path(@blog) %>
+<% end -%>

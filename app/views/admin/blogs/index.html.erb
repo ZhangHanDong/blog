@@ -1,24 +1,34 @@
-<h1>Listing <%= " blogs#{(@user.nil? ? '' : " by #{@user.name}")}" %></h1>
+<h1><%= " Blogs#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
 
 <table>
   <tr>
     <th>Title</th>
     <th>Short name</th>
     <th>Created By</th>
+    <th># Posts</th>
+    <th># Comments</th>
+    <th># Users</th> 
+    <th># Tags</th> 
   </tr>
 
-<% for blog in @blogs %>
+<% for blog in @blogs %> 
   <tr>
-    <td><%=h blog.title %></td>
+    <td><%= link_to h(blog.title), admin_blog_posts_path(blog) %></td>
     <td><%=h blog.short_name %></td>
     <td><%= link_to h(blog.creator.name), admin_user_path(blog.creator) %></td>
+    <td><%= blog.posts.length == 0 ? blog.posts.length : link_to(blog.posts.length, admin_blog_posts_path(blog)) %></td>
+    <td><%= blog.comments.length == 0 ? blog.comments.length : link_to(blog.comments.length, admin_blog_comments_path(blog)) %></td>
+    <td><%= blog.users.length == 0 ? blog.users.length : link_to(blog.users.length, admin_blog_users_path(blog)) %></td>
+    <td><%= blog.tags.length == 0 ? blog.tags.length : link_to(blog.tags.length, admin_blog_tags_path(blog)) %></td>
     <td><%= link_to 'Show', admin_blog_path(blog) %></td>
     <td><%= link_to 'Edit', edit_admin_blog_path(blog) %></td>
     <td><%= link_to 'Destroy', admin_blog_path(blog), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
-</table>
+</table>       
+
+<p><%= will_paginate @blogs %></p>   
 
 <br />
 
-<%= link_to 'New blog', new_admin_blog_path %>
+<%= link_to '+ add new blog', new_admin_blog_path %>

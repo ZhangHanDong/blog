@@ -1,8 +1,8 @@
-<h1>Editing comment (for post, <strong><%= h @post.title %></strong>)</h1>  
+<h1>Editing comment (for post, <strong><%= h @comment.post.title %></strong>)</h1>  
 
-<% form_for [:admin, @post, @comment] do |f| %>
+<% form_for [:admin, @comment.post.blog, @comment.post, @comment] do |f| %>
   <%= render :partial => 'form', :locals => { :f => f, :label => 'Update' } -%>
 <% end %>
 
-<%= link_to 'Show', admin_post_comment_path(@post, @comment) %> |
-<%= link_to 'Back', admin_post_comments_path(@post) %>
+<%= link_to 'Show', admin_blog_post_comment_path(@comment.post.blog, @comment.post, @comment) %> |
+<%= link_to 'Back', admin_blog_post_comments_path(@comment.post.blog, @comment.post) %>

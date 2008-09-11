@@ -90,6 +90,23 @@ describe Post do
       end_date = Time.mktime(2007,3,26)
       Post.in_range(start_date, end_date).length.should eql(4)
     end
+    
+    
+    it "should have a recent scope that returns up to 20 posts ordered by publish_date DESC" do
+      Post.should have_named_scope(:recent, {:limit=>20, :order=>"posts.publish_date DESC"})
+    end
+    
+    it "should have a by_user scope that returns posts created by a user" do
+      Post.should have_named_scope(:by_user, {:conditions=>["posts.user_id = ?", []]})
+    end
+    
+    it "should have a published scope that returns posts with in_draft set to false and ordered by publish_date DESC" do
+      Post.should have_named_scope(:published, {:conditions=>{:in_draft=>false}, :order=>"posts.publish_date DESC"})
+    end
+
+    it "should have a by_user scope that returns posts tagged with a matching tag" do
+      Post.should have_named_scope(:with_tag, {:include=>:taggings, :conditions=>["taggings.tag_id = ?", []]})
+    end
 
   end
 

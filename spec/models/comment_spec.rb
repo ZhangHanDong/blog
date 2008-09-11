@@ -24,13 +24,16 @@ describe Comment do
           
   describe 'named scopes' do  
     
-    it "should have a recent scope, and find recent comments (limited and ordered)" do
-      1.upto(22) do
-        Comment.create!(valid_comment_attributes)  
-      end                                    
-      @most_recent_comment = Comment.create!(valid_comment_attributes.with(:name => 'Very Recent Name', :created_at => Time.now+1.day))
-      Comment.recent.length.should eql(20)        
-      Comment.recent.first.name.should eql(@most_recent_comment.name)
+    it "should have a recent scope that returns up to 20 comments ordered by created at DESC" do
+      Comment.should have_named_scope(:recent, {:limit => 20, :order => "comments.created_at DESC"})
+    end
+    
+    it "should have a by_user scope that returns comments created by a user" do
+      Comment.should have_named_scope(:by_user, {:conditions=>["comments.user_id = ?", []]})
+    end
+    
+    it "should have a published scope that returns comments only on posts that have in_draft set to false" do
+      Comment.should have_named_scope(:published, {:include => :post, :conditions => ["posts.in_draft = ?", false]})
     end          
          
   end     

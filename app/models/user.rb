@@ -22,10 +22,11 @@ class User < ActiveRecord::Base
   attr_accessible :login, :email, :name, :password, :password_confirmation, :photo
 
   has_many :created_blogs, :class_name => 'Blog', :foreign_key => 'created_by_id'
-  has_many :posts, :order => "created_at DESC"     
-  has_many :taggings 
-  has_many :comments, :order => "created_at DESC"     
-  has_many :tags, :through => :taggings
+  has_many :posts, :order => "posts.created_at DESC"     
+  has_many :comments, :order => "comments.created_at DESC"
+  has_many :blogs, :through => :posts, :uniq => true
+  acts_as_tagger
+  
   
   has_attached_file :photo, :styles => { :tiny => ["30x30>", :gif], :thumb => ["60x60>", :gif] }, 
                             :path => ":rails_root/public/images/u/:class/:id/:style_:basename.:extension",
@@ -34,6 +35,8 @@ class User < ActiveRecord::Base
                             
   validates_attachment_content_type :photo, :content_type => ["image/png", "image/jpeg", "image/jpg", "image/gif"], 
                                             :message => "Only png, jpg, and gif images are allowed for your photo"
+  
+    
   
 
   # authenticates a user by their login name and unencrypted password.  Returns the user or nil.

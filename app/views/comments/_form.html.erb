@@ -2,11 +2,11 @@
 
 <p>
   <%= f.label :name %> (required)<br />
-  <%= f.text_field :name, :value => (current_user.name if @comment.name.blank? && current_user) %>
+  <%= f.text_field :name, :value => (h(current_user.name) if @comment.name.blank? && current_user) %>
 </p> 
 <p>
   <%= f.label :email %><br />
-  <%= f.text_field :email, :value => (current_user.email if @comment.email.blank? && current_user) %>
+  <%= f.text_field :email, :value => (h(current_user.email) if @comment.email.blank? && current_user) %>
 </p>
 <p>
   <%= f.label :website %><br />

@@ -4,8 +4,9 @@ describe "/admin/posts/index.html.erb" do
   include Admin::CommentsHelper
   
   before(:each) do          
-    
-    @post = mock_model(Post)
+    @blog = mock_model(Blog, :title => 'Blog Title')
+    @post = mock_model(Post)                    
+    @post.stub!(:blog).and_return(@blog)
     @post.stub!(:title).and_return('Post Title')
     @comment_98 = mock_model(Comment)  
     @comment_98.stub!(:name).and_return("MyString")

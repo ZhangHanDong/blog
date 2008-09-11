@@ -1,13 +1,13 @@
 atom_feed do |feed|
-  feed.title("Recent comments on #{h(@post.title)}")           
-  feed.updated((@comments.empty? ? @post.publish_date : @comments.first.updated_at))
+  feed.title("Recent comments #{ "on #{h(@post.title)}" if @post }#{ "by #{h(@user.name)}" if @user } in #{h(@blog.title)}")           
+  feed.updated((@comments.empty? ? Time.now : @comments.first.updated_at))
   
   for comment in @comments
-    feed.entry(comment, :url => post_url(@post, :anchor => "comment-#{comment.id}")) do |entry|
-      entry.title(comment.name)
-      entry.content(comment.body, :type => 'html')
+    feed.entry(comment, :url => blog_post_url(comment.post.blog, comment.post, :anchor => "comment-#{comment.id}")) do |entry|
+      entry.title(h(comment.name))
+      entry.content(h(comment.body), :type => 'html')
       entry.author do |author|
-        author.name(comment.name)
+        author.name(h(comment.name))
       end
     end
   end   

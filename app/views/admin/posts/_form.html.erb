@@ -19,6 +19,7 @@
 <p>Tags (space separate tags &amp; use quotes "" to group tag phrases)<br />
   <%= f.text_field :tag_list -%>
   <%= f.hidden_field :user_id, :value => @current_user.id unless @current_user.nil? -%>
+  <%= f.hidden_field :blog_id, :value => @blog -%>
 </p>
 <p>
   <%= f.label :in_draft %><br />

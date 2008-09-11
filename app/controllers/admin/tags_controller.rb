@@ -4,29 +4,39 @@ class Admin::TagsController < ApplicationController
   before_filter :login_required
         
   
-  # GET /admin/tags
-  # GET /admin/tags.xml
-  def index
+  # GET /admin/blogs/3/tags
+  # GET /admin/blogs/3/tags.xml
+  # GET /admin/blogs/3/users/1/tags
+  # GET /admin/blogs/3/users/1/tags.xml
+  def index    
+    @blog = Blog.find(params[:blog_id])
+    
+    if params[:user_id]
+      @user = User.find(params[:user_id])
+      @collection = @blog.tags.by_user(@user)
+    else
+      @collection = @blog.tags
+    end
+    
     respond_to do |format|
       format.html {
-        @tags = Tag.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10)
+        @tags = @collection.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10, :include => :taggings)
       }
-      format.xml  { 
-        @tags = Tag.find(:all)
-        render :xml => @tags 
-      }
+      format.xml { render :xml => @collection }
     end
   end
          
 
-  # GET /admin/tag/1
-  # GET /admin/tag/1.xml
-  def show
-    @tag = Tag.find(params[:id], :include => {:taggings => [:user, :taggable]})          
+  # GET /admin/blogs/3/tag/1
+  # GET /admin/blogs/3/tag/1.xml
+  def show    
+    @blog = Blog.find(params[:blog_id])
+    conditions = ['taggings.blog_id = ?', @blog.id] if @blog
+    @tag = Tag.find(params[:id], :include => :taggings, :conditions => conditions)          
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @tag }
+      format.xml { render :xml => @tag }
     end
   end 
    

@@ -1,0 +1,15 @@
+<h1><%=h @blog.title %> tags<%= "#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
+
+<table>
+  <tr>
+    <th>Tag</th> 
+  </tr>
+
+<% for tag in @tags %>
+  <tr>
+    <td><%= link_to( h(tag.name), blog_tag_posts_path(@blog, tag)) %></td>
+  </tr>
+<% end %>
+</table> 
+
+<p><%= will_paginate @tags %></p>

@@ -11,7 +11,7 @@ module ApplicationHelper
       words = splitted.length  
       trunc = splitted[0, words-1].join(" ") + end_str 
     end  
-    trunc = trunc+'</p>' if trunc.starts_with?('<p>')
+    trunc = trunc+'</p>' if trunc.starts_with?('<p>') # be smarter (close open tags)
     trunc
   end
   

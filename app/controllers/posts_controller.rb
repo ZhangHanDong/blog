@@ -1,34 +1,46 @@
 class PostsController < ApplicationController
 
-  # GET /posts
-  # GET /posts.atom
-  # GET /users/:id/posts
-  # GET /users/:id/posts.atom
-  def index                           
-    if params[:user_id] 
+  # GET /blog/1/posts
+  # GET /blog/1/posts.atom
+  # GET /blog/1/users/1/posts
+  # GET /blog/1/users/1/posts.atom
+  # GET /blog/1/tags/1/posts
+  # GET /blog/1/tags/1/posts.atom
+  def index
+    @blog = Blog.published.find(params[:blog_id])
+
+    if params[:user_id]
       @user = User.find(params[:user_id])
-      conditions = ['user_id = ?', @user.id] if @user
+      @collection = @blog.posts.published.by_user(@user)
+    elsif params[:tag_id]
+      @tag = Tag.find(params[:tag_id])
+      @collection = @blog.posts.published.with_tag(@tag)
+    else
+      @collection = @blog.posts.published
     end
+
     respond_to do |format|
-      format.html {                                                                                                           
-        @posts = Post.published.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags], :conditions => conditions)
+      format.html {
+        @posts = @collection.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
       }
       format.atom {
-        @posts = Post.published.recent.find(:all, :include => [:comments, :user], :conditions => conditions)
+        @posts = @collection.recent.find(:all)
       }
     end
   end
 
 
-  # GET /posts/:year/:month/:day
-  def date
+  # GET /blog/1/on/:year/:month/:day
+  def on
+    @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
-    @posts = Post.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+
     respond_to do |format|
       format.html {
         if @posts.empty?
-          flash[:notice] = 'No posts found on that day or dates'
-          redirect_to(posts_url)
+          flash[:notice] = "No posts found #{@date_range[:descriptor]}"
+          redirect_to(blog_posts_url(@blog))
         else
           render :action => 'index'
         end
@@ -37,10 +49,12 @@ class PostsController < ApplicationController
   end
 
 
-  # GET /posts/1
+  # GET /blog/1/posts/1
   def show
-    @post = Post.published.find(params[:id], :include => [:comments, :user, :tags])
+    @blog = Blog.published.find(params[:blog_id])
+    @post = @blog.posts.published.find(params[:id], :include => [:comments, :user, :tags])
     @comment = Comment.new
+
     respond_to do |format|
       format.html
     end

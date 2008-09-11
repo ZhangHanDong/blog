@@ -26,13 +26,8 @@ describe Blog do
   
   describe 'named scopes' do
 
-    it "should have a published scope, and find published blogs" do
-      @blog.attributes = valid_blog_attributes
-      @blog.save!
-      @draft_blog = Blog.create!(valid_blog_attributes.with(:in_draft => true, :short_name => 'somethingelse'))
-      @draft_blog.in_draft.should eql(true)
-      Blog.find(:all).length.should eql(4)
-      Blog.published.should eql([blogs(:one), @blog])
+    it "should have a published scope that returns blogs with in_draft flag set to false" do
+      Blog.should have_named_scope(:published, {:conditions => {:in_draft => false}})
     end
     
   end

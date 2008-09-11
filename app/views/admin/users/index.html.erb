@@ -1,15 +1,14 @@
-<h1>Listing users</h1>
+<h1><%= "#{h(@blog.title) if @blog } " %>Users</h1>
 
 <table>
-  <tr>
+  <tr>                
     <th>Login</th>  
     <th>Name</th>
     <th>Email</th>   
-    <th></th>   
   </tr>
 
 <% @users.each { |user| %>
-  <tr>
+  <tr>  
     <td><%=h user.login %></td>
     <td><%=h user.name %></td>
     <td><%=h user.email %></td> 
@@ -17,6 +16,7 @@
     <td><%= link_to 'Edit', edit_admin_user_path(user) %></td>
     <td><%= link_to 'Destroy', admin_user_path(user), :confirm => 'Are you sure?', :method => :delete unless user == @current_user %></td>  
     <td><%= link_to image_tag(user.photo.url(:thumb)), admin_user_path(user) if user.photo %></td>
+    <td><%= " &nbsp; <strong>(blog creator)</strong> " if @blog && user == @blog.creator %></td>
   </tr>
 <% } %>
 </table>

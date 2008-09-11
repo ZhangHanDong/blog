@@ -1,0 +1,32 @@
+<h1>User, <%=h @user.name %> in <%=h @blog.title %></h1>
+<%= image_tag @user.photo.url(:thumb) if @user.photo %>
+
+<p>
+  <b>Login:</b>
+  <%=h @user.login %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @user.name %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%=h @user.email %>
+</p>
+              
+<p>
+  <b>Created Posts:</b>
+  <%= @posts.length == 0 ? @posts.length : link_to(@posts.length, blog_user_posts_path(@blog, @user)) %>   
+</p>
+
+<p>
+  <b>Created Comments:</b>    
+  <%= @comments.length == 0 ? @comments.length : link_to(@comments.length, blog_user_comments_path(@blog, @user)) %>
+</p> 
+
+<p>
+  <b>Created Tags:</b>    
+  
+</p>

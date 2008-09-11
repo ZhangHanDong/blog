@@ -3,8 +3,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../spec_helper')
 describe "/admin/posts/new.html.erb" do
   include Admin::PostsHelper
   
-  before(:each) do
-    @post = mock_model(Post)             
+  before(:each) do                          
+    @blog = mock_model(Blog, :title => 'Blog Title') 
+    @post = mock_model(Post)                         
     @post.stub!(:new_record?).and_return(true)
     @post.stub!(:title).and_return("MyString")
     @post.stub!(:permalink).and_return("MyString")
@@ -15,13 +16,14 @@ describe "/admin/posts/new.html.erb" do
     @post.stub!(:tags).and_return([]) 
     @post.stub!(:tag_list).and_return("")
     @post.stub!(:in_draft).and_return(false)   
+    assigns[:blog] = @blog
     assigns[:post] = @post
   end
 
   it "should render new post form" do
     render "/admin/posts/new.html.erb"
     
-    response.should have_tag("form[action=?][method=post]", admin_posts_path) do
+    response.should have_tag("form[action=?][method=post]", admin_blog_posts_path(@blog)) do
       with_tag("input#post_title[name=?]", "post[title]")
       with_tag("textarea#post_summary[name=?]", "post[summary]")
       with_tag("textarea#post_body[name=?]", "post[body]")   

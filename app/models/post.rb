@@ -1,18 +1,20 @@
 class Post < ActiveRecord::Base
 
   validates_presence_of :title, :publish_date, :body, :user_id
-  validates_length_of :summary, :maximum => 300, :allow_blank => true
+  validates_length_of   :summary, :maximum => 300, :allow_blank => true
 
+  belongs_to :blog
   belongs_to :user
-  has_many   :comments
-
+  has_many   :comments, :dependent => :destroy
+  acts_as_taggable
+  
   before_save :format_body
 
-  named_scope :published, :conditions => {:in_draft => false}, :order => "publish_date DESC"
-  named_scope :recent, :limit => 20, :order => "publish_date DESC"
-  named_scope :in_range, lambda { |*dates| {:conditions =>  ["publish_date >= ? AND publish_date <= ?", dates[0].to_s(:db), dates[1].to_s(:db)]} }
-
-  acts_as_taggable
+  named_scope :published, :conditions => {:in_draft => false}, :order => "posts.publish_date DESC"
+  named_scope :recent, :limit => 20, :order => "posts.publish_date DESC"
+  named_scope :in_range, lambda { |*dates| {:conditions =>  ["posts.publish_date >= ? AND posts.publish_date <= ?", dates[0].to_s(:db), dates[1].to_s(:db)]}}
+  named_scope :by_user,  lambda { |*user| {:conditions =>  ["posts.user_id = ?", user]}}
+  named_scope :with_tag, lambda { |*tag| {:include => :taggings, :conditions =>  ["taggings.tag_id = ?", tag]}}
 
 
   def self.get_date_range(year, month = 1, day = 1)

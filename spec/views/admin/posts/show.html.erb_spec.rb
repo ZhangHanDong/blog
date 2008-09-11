@@ -4,8 +4,12 @@ describe "/admin/posts/show.html.erb" do
   include Admin::PostsHelper
   
   before(:each) do
+    blog = mock_model(Blog, :title => 'Blog Title')      
     @post = mock_model(Post)
-    @post.stub!(:title).and_return("MyString")
+    @user = mock_model(User, :name => 'Jimmeny')
+    @post.stub!(:blog).and_return(blog)   
+    @post.stub!(:title).and_return("MyString") 
+    @post.stub!(:user).and_return(@user) 
     @post.stub!(:permalink).and_return("MyString")
     @post.stub!(:publish_date).and_return(Time.now)
     @post.stub!(:summary).and_return("MyText")
@@ -14,7 +18,6 @@ describe "/admin/posts/show.html.erb" do
     @post.stub!(:in_draft).and_return(false)
     @post.stub!(:tags).and_return([])  
     @post.stub!(:comments).and_return([])  
-
     assigns[:post] = @post
   end
 

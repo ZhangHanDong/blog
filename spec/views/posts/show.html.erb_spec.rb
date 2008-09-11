@@ -8,12 +8,13 @@ describe "/posts/show" do
   fixtures :users  
   
   before(:each) do
+    @blog = mock_model(Blog, :title => 'Blog Title')
     @post = mock_model(Post, :to_param => 1)
     @comment = mock_model(Comment)   
      
     @post.should_receive(:title).and_return("MyStringTitle1")
     @post.should_receive(:publish_date).and_return(Time.now)
-    @post.should_receive(:user).and_return(mock_model(User, :name => 'matt'))   
+    @post.should_receive(:user).twice.and_return(mock_model(User, :name => 'matt'))   
     @post.should_receive(:comments).twice.and_return([])
     @post.should_receive(:tags).and_return([])      
     @post.should_receive(:summary).and_return('Not Blank')       
@@ -22,7 +23,8 @@ describe "/posts/show" do
     @comment.stub!(:new_record?).and_return(true)
     @comment.should_receive(:website).and_return("")
     @comment.should_receive(:body).and_return("")
-
+                          
+    assigns[:blog] = @blog
     assigns[:post] = @post
     assigns[:comment] = @comment
   end
@@ -45,7 +47,7 @@ describe "/posts/show" do
     @comment.should_receive(:email).and_return(nil)
     render "/posts/show"                  
     
-    response.should have_tag("form[action=?][method=post]", post_comments_path(@post)) do  
+    response.should have_tag("form[action=?][method=post]", blog_post_comments_path(@blog, @post)) do  
       with_tag('input#comment_name[value=?]', 'Quentin Bart')
       with_tag('input#comment_email[value=?]', 'quentin@example.com')
     end

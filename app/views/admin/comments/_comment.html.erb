@@ -1,8 +1,14 @@
 <ul>
-  <li>name: <%= h comment.name %></li>  
-  <li>user: <%= link_to h(comment.user.name), admin_user_path(comment.user) if comment.user %></li>  
+  <% if comment.user -%>
+  <li>user: <%= link_to h(comment.user.name), admin_user_path(comment.user) %></li>
+  <% else -%>
+  <li>name: <%= h comment.name %></li>                                                     
+  <% end %> 
   <li>date: <%= comment.created_at %></li> 
   <li>email: <%= h comment.email %></li>
   <li>website: <%= link_to h(comment.website), comment.website %></li>
-  <li>body: <%= h comment.body %></li> 
+  <li>body: <%= h comment.body %></li>  
+  <% unless @post -%>
+  <li>made on post: <%= link_to h(comment.post.title), admin_blog_post_url(comment.post.blog, comment.post) -%>
+  <% end -%>
 </ul>
