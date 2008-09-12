@@ -1,29 +1,27 @@
 class Admin::BlogsController < ApplicationController
-  
+
   layout 'admin'
   before_filter :login_required
-             
-    
+
+
   # GET /admin/blogs
   # GET /admin/blogs.xml
   # GET /admin/users/1/blogs
   # GET /admin/users/1/blogs.xml
   def index
-    if params[:user_id] 
+    if params[:user_id]
       @user = User.find(params[:user_id])
-      conditions = ['created_by_id = ?', @user.id] if @user
-    end 
-    
+      @blogs = @user.created_blogs.paginate(:page => params[:page], :per_page => 10, :include => [:creator, :posts, :comments, :tags])
+    else
+      @blogs = Blog.paginate(:all, :page => params[:page], :per_page => 10, :include => [:creator, :posts, :comments, :tags])
+    end
+
     respond_to do |format|
-      format.html {   
-        @blogs = Blog.paginate(:all, :page => params[:page], :per_page => 10, :include => :creator, :conditions => conditions)
-      }
-      format.xml {
-        render :xml => Blog.find(:all, :conditions => conditions)     
-      }
+      format.html
+      format.xml  { render :xml => @blogs }
     end
   end
-        
+
 
   # GET /admin/blogs/1
   # GET /admin/blogs/1.xml
@@ -35,7 +33,7 @@ class Admin::BlogsController < ApplicationController
       format.xml  { render :xml => @blog }
     end
   end
-         
+
 
   # GET /admin/blogs/new
   # GET /admin/blogs/new.xml
@@ -47,13 +45,13 @@ class Admin::BlogsController < ApplicationController
       format.xml  { render :xml => @blog }
     end
   end
-          
+
 
   # GET /admin/blogs/1/edit
   def edit
     @blog = Blog.find(params[:id], :include => :creator)
   end
-         
+
 
   # POST /admin/blogs
   # POST /admin/blogs.xml
@@ -72,7 +70,7 @@ class Admin::BlogsController < ApplicationController
       end
     end
   end
-          
+
 
   # PUT /admin/blogs/1
   # PUT /admin/blogs/1.xml
@@ -90,7 +88,7 @@ class Admin::BlogsController < ApplicationController
       end
     end
   end
-          
+
 
   # DELETE /admin/blogs/1
   # DELETE /admin/blogs/1.xml
@@ -102,6 +100,6 @@ class Admin::BlogsController < ApplicationController
       format.html { redirect_to(admin_blogs_url) }
       format.xml  { head :ok }
     end
-  end 
-  
+  end
+
 end

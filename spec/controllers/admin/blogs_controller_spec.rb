@@ -8,9 +8,11 @@ describe Admin::BlogsController do
     login_as :quentin
     stub!(:reset_session)
 
-    @blog  = mock_model(Blog, :to_param => "1", :to_xml => "XML", :destroy => true)
-    @blogs = mock("Array of Blogs", :to_xml => "XML")
-    @user  = mock_model(User, :id => "1")
+    @blog   = mock_model(Blog, :title => 'blog 1', :in_draft => true, :shortname => 'blog1', :destroy => true)
+    @blog_2 = mock_model(Blog, :title => 'blog 2', :in_draft => false, :shortname => 'blog_2')
+    @user   = mock_model(User)
+    @blogs  = mock("Array of Blogs", :to_xml => "XML")
+
     User.stub!(:find).and_return(@user)
     Blog.stub!(:find).and_return(@blog)
     Blog.stub!(:new).and_return(@blog)
@@ -19,20 +21,16 @@ describe Admin::BlogsController do
 
   describe "handling GET /blogs" do
 
-    before(:each) do
-      Blog.stub!(:find).and_return([@blog])
-    end
-
     def do_get
       get :index
     end
 
     it "should be successful, render index template and find all blogs, assigning them for the view" do
-      Blog.should_receive(:find).with(:all, {:offset=>0, :include=>:creator, :limit=>10, :conditions=>nil}).and_return([@blog])
+      Blog.should_receive(:find).with(:all, {:offset => 0, :include => [:creator, :posts, :comments, :tags], :limit => 10 }).and_return([@blog, @blog_2])
       do_get
       response.should be_success
       response.should render_template('index')
-      assigns[:blogs].should == [@blog]
+      assigns[:blogs].should == [@blog, @blog_2]
     end
 
   end
@@ -40,18 +38,13 @@ describe Admin::BlogsController do
 
   describe "handling GET /blogs.xml" do
 
-    before(:each) do
-      Blog.stub!(:find).and_return(@blogs)
-    end
-
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
       get :index
     end
 
-    it "should be successful, find all blogs and render them as XML" do
-      @blogs.should_receive(:to_xml).and_return("XML")
-      Blog.should_receive(:find).with(:all, {:conditions=>nil}).and_return(@blogs)
+    it "should be successful, find all blogs and render them as XML" do                                                                          
+      Blog.stub!(:paginate).and_return(@blogs)
       do_get
       response.should be_success
       response.body.should == "XML"
@@ -62,7 +55,7 @@ describe Admin::BlogsController do
   describe "handling GET /users/1/blogs" do
 
     before(:each) do
-      Blog.stub!(:find).and_return([@blog])
+      User.stub!(:find).and_return(@user) 
     end
 
     def do_get
@@ -70,10 +63,12 @@ describe Admin::BlogsController do
     end
 
     it "should be successful, render index template and and find all blogs created by the user" do
-      Blog.should_receive(:find).with(:all, {:offset=>0, :include=>:creator, :limit=>10, :conditions=>["created_by_id = ?", "1"]}).and_return([@blog])
+      @user.should_receive(:created_blogs).and_return([@blog, @blog_2])
       do_get
       response.should be_success
-      response.should render_template('index')
+      response.should render_template('index')  
+      assigns[:user].should == @user
+      assigns[:blogs].should == [@blog, @blog_2]
     end
   end
 
@@ -86,7 +81,8 @@ describe Admin::BlogsController do
     end
 
     it "should be successful, find all user blogs and render them as XML" do
-      Blog.should_receive(:find).with(:all, {:conditions=>["created_by_id = ?", "1"]}).and_return(@blogs)
+      @user.should_receive(:created_blogs).and_return(@blogs)
+      @blogs.stub!(:paginate).and_return(@blogs)
       do_get
       response.should be_success
       response.body.should == "XML"
@@ -217,7 +213,7 @@ describe Admin::BlogsController do
 
       it "should redirect to the new blog" do
         do_post
-        response.should redirect_to(admin_blog_url("1"))
+        response.should redirect_to(admin_blog_url(@blog))
       end
 
     end
@@ -266,7 +262,7 @@ describe Admin::BlogsController do
 
       it "should redirect to the blog" do
         do_put
-        response.should redirect_to(admin_blog_url("1"))
+        response.should redirect_to(admin_blog_url(@blog))
       end
 
     end
