@@ -8,8 +8,11 @@ describe Admin::UsersController do
     login_as :quentin
     stub!(:reset_session)
     
-    @user = mock_model(User, :to_xml => "XML", :to_param => "1", :destroy => true)
+    @blog = mock_model(Blog)
+    @user = mock_model(User, :destroy => true)
     @users = mock("Array of users", :to_xml => "XML")
+    
+    Blog.stub!(:find).and_return(@blog)
     User.stub!(:find).and_return(@user)
   end                        
   
@@ -17,65 +20,70 @@ describe Admin::UsersController do
     logout_killing_session! 
     get :signup
     response.should be_success
-  end
+  end                   
+  
 
   describe "handling GET /users" do
-
-    before(:each) do
-      User.stub!(:find).and_return([@user])
-    end
 
     def do_get
       get :index
     end
 
-    it "should be successful" do
+    it "should be successful, render index and find all users, assigning for the view" do
+      User.should_receive(:paginate).with(:all, {:order=>"created_at DESC", :per_page=>10, :page=>nil}).and_return([@user])
       do_get
-      response.should be_success
-    end
-
-    it "should render index template" do
-      do_get
+      response.should be_success   
       response.should render_template('index')
-    end
-
-    it "should find all users" do
-      User.should_receive(:find).with(:all).and_return(@user)
-      @user.should_receive(:paginate).with({:order=>"created_at DESC", :per_page=>10, :page=>nil}).and_return([@user])
-      do_get
-    end
-
-    it "should assign the found users for the view" do
-      do_get
       assigns[:users].should == [@user]
     end
-  end
+  end                
+  
 
   describe "handling GET /users.xml" do
-
-    before(:each) do
-      User.stub!(:find).and_return(@users)
-    end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
       get :index
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should find all users" do
-      User.should_receive(:find).with(:all).twice.and_return(@users)
-      do_get
-    end
-
-    it "should render the found users as xml" do
-      @users.should_receive(:to_xml).and_return("XML")
+    it "should be successful, find all users and render as XML" do
+      User.should_receive(:find).with(:all).and_return(@users)
       do_get
       response.body.should == "XML"
+      response.should be_success
+    end
+  end
+  
+  
+  describe "handling GET /blogs/1/users" do
+
+    def do_get
+      get :index, :blog_id => "1"
+    end
+
+    it "should be successful, render index and find all users, assigning for the view" do
+      @blog.should_receive(:users).and_return(@user)
+      @user.should_receive(:paginate).with(:all, {:order=>"created_at DESC", :per_page=>10, :page=>nil}).and_return([@user])
+      do_get
+      response.should be_success   
+      response.should render_template('index')
+      assigns[:users].should == [@user]
+    end
+  end
+
+  describe "handling GET /blogs/1/users.xml" do
+
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :blog_id => "1"
+    end
+
+    it "should be successful, find all users and render as XML" do
+      @blog.should_receive(:users).and_return(@user)
+      @user.should_receive(:find).with(:all).and_return(@users)
+      do_get
+      response.body.should == "XML"
+      response.should be_success
     end
   end
 
@@ -230,7 +238,7 @@ describe Admin::UsersController do
 
       it "should create a new user and redirect to the new user" do
         do_post
-        response.should redirect_to(admin_user_url("1"))
+        response.should redirect_to(admin_user_url(@user))
       end
 
     end
@@ -275,7 +283,7 @@ describe Admin::UsersController do
 
       it "should redirect to the user" do
         do_put
-        response.should redirect_to(admin_user_url("1"))
+        response.should redirect_to(admin_user_url(@user))
       end
 
     end

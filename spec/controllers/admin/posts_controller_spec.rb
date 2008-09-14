@@ -8,24 +8,21 @@ describe Admin::PostsController do
     login_as :quentin
     stub!(:reset_session)
 
-    @blog = mock_model(Blog, :title => 'Blog Title', :id => 1, :to_param => "1")
-    @post = mock_model(Post, :to_xml => "XML", :to_param => "1", :destroy => true)
-    @user = mock_model(User, :to_param => "1")  
-    @tag = mock_model(Tag)
+    @blog = mock_model(Blog)
+    @post = mock_model(Post, :destroy => true)
     @posts = mock("Array of Posts", :to_xml => "XML")
+    @user = mock_model(User)
+    @tag = mock_model(Tag)
+
     Blog.stub!(:find).and_return(@blog)
     Post.stub!(:find).and_return(@post)
-    User.stub!(:find).and_return(@user)
     Tag.stub!(:find).and_return(@tag)
     Post.stub!(:new).and_return(@post)
-  end       
-  
-   
-  describe "handling GET /admin/users/1/posts" do
+    User.stub!(:find).and_return(@user)
+  end
 
-    before(:each) do
-      Post.stub!(:find).and_return([@post])
-    end
+
+  describe "handling GET /admin/users/1/posts" do
 
     def do_get
       get :index, :user_id => "1"
@@ -37,16 +34,13 @@ describe Admin::PostsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:user].should == @user
       assigns[:posts].should == [@post]
     end
   end
-     
-  
-  describe "handling GET /admin/users/1/posts.xml" do
 
-    before(:each) do
-      Post.stub!(:find).and_return(@posts)
-    end
+
+  describe "handling GET /admin/users/1/posts.xml" do
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
@@ -54,23 +48,17 @@ describe Admin::PostsController do
     end
 
     it "should be successful, find all posts and render them as XML" do
-      @user.should_receive(:posts).and_return(@post)
-      @post.should_receive(:recent).and_return(@post)
-      @post.should_receive(:find).with(:all).and_return(@posts)
-      @posts.should_receive(:to_xml).and_return("XML")
+      @user.should_receive(:posts).and_return(@posts)
+      @posts.should_receive(:recent).and_return(@posts)
       do_get
       response.should be_success
       response.body.should == "XML"
     end
   end
-     
+
 
   describe "handling GET /admin/blogs/1/posts" do
 
-    before(:each) do
-      Post.stub!(:find).and_return([@post])
-    end
-
     def do_get
       get :index, :blog_id => "1"
     end
@@ -81,16 +69,13 @@ describe Admin::PostsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
       assigns[:posts].should == [@post]
     end
   end
-          
+
 
   describe "handling GET /admin/blogs/1/posts.xml" do
-
-    before(:each) do
-      Post.stub!(:find).and_return(@posts)
-    end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
@@ -98,54 +83,47 @@ describe Admin::PostsController do
     end
 
     it "should be successful, find all posts and render them as XML" do
-      @blog.should_receive(:posts).and_return(@post)
-      @post.should_receive(:recent).and_return(@post)
-      @post.should_receive(:find).with(:all).and_return(@posts)
-      @posts.should_receive(:to_xml).and_return("XML")
+      @blog.should_receive(:posts).and_return(@posts)
+      @posts.should_receive(:recent).and_return(@posts)
       do_get
       response.should be_success
       response.body.should == "XML"
     end
-  end 
-  
+  end
+
 
   describe "handling GET /admin/blogs/1/users/1/posts" do
-
-    before(:each) do
-      Post.stub!(:find).and_return([@post])
-    end
 
     def do_get
       get :index, :blog_id => "1", :user_id => "1"
     end
 
-    it "should be successful, find the posts for the user and assign the user and posts for the view" do                                
-      @blog.should_receive(:posts).and_return(@post) 
-      @post.should_receive(:by_user).with(@user).and_return(@post) 
+    it "should be successful, find the posts for the user and assign the user and posts for the view" do
+      @blog.should_receive(:posts).and_return(@post)
+      @post.should_receive(:by_user).with(@user).and_return(@post)
       @post.should_receive(:paginate).with(:all, {:include=>[:blog, :comments, :user, :tags], :page=>nil, :per_page=>10}).and_return([@post])
       do_get
       response.should be_success
+      assigns[:blog].should equal(@blog)
       assigns[:user].should equal(@user)
     end
   end
-  
-  
-  describe "handling GET /admin/blogs/1/tags/1/posts" do
 
-    before(:each) do
-      Post.stub!(:find).and_return([@post])        
-    end
+
+  describe "handling GET /admin/blogs/1/tags/1/posts" do
 
     def do_get
       get :index, :blog_id => "1", :tag_id => "1"
     end
 
-    it "should be successful, find the posts for the user and assign the user and posts for the view" do                                
-      @blog.should_receive(:posts).and_return(@post) 
-      @post.should_receive(:with_tag).with(@tag).and_return(@post) 
+    it "should be successful, find the posts for the user and assign the user and posts for the view" do
+      @blog.should_receive(:posts).and_return(@post)
+      @post.should_receive(:with_tag).with(@tag).and_return(@post)
       @post.should_receive(:paginate).with(:all, {:include=>[:blog, :comments, :user, :tags], :page=>nil, :per_page=>10}).and_return([@post])
       do_get
       response.should be_success
+      assigns[:blog].should equal(@blog)
+      assigns[:tag].should equal(@tag)
     end
   end
 
@@ -159,8 +137,8 @@ describe Admin::PostsController do
     it "should be successful, render show template, find the post and assign for the view" do
       Post.should_receive(:find).with("1", {:include=>[:blog, :comments, :user, :tags]}).and_return(@post)
       do_get
-      response.should be_success       
-      response.should render_template('show')   
+      response.should be_success
+      response.should render_template('show')
       assigns[:post].should equal(@post)
     end
   end
@@ -180,9 +158,9 @@ describe Admin::PostsController do
       response.should be_success
       response.body.should == "XML"
     end
-  end   
+  end
 
-  
+
   describe "handling unsuccessful GET for /admin/blogs/1/posts/15155199" do
 
     it "should be redirected with flash message" do
@@ -225,8 +203,8 @@ describe Admin::PostsController do
       do_get
       assigns[:post].should equal(@post)
     end
-  end   
-  
+  end
+
 
   describe "handling GET /admin/blogs/1/posts/1/edit" do
 
@@ -253,8 +231,8 @@ describe Admin::PostsController do
       do_get
       assigns[:post].should equal(@post)
     end
-  end   
-  
+  end
+
 
   describe "handling POST /admin/blogs/1/posts" do
 
@@ -274,7 +252,7 @@ describe Admin::PostsController do
 
       it "should redirect to the new post" do
         do_post
-        response.should redirect_to(admin_blog_post_url("1", "1"))
+        response.should redirect_to(admin_blog_post_url(@blog, @post))
       end
 
     end
@@ -294,8 +272,8 @@ describe Admin::PostsController do
       end
 
     end
-  end 
-  
+  end
+
 
   describe "handling PUT /admin/blogs/1/posts/1" do
 
@@ -324,7 +302,7 @@ describe Admin::PostsController do
 
       it "should redirect to the post" do
         do_put
-        response.should redirect_to(admin_blog_post_url("1", "1"))
+        response.should redirect_to(admin_blog_post_url(@blog, @post))
       end
 
     end
@@ -351,7 +329,7 @@ describe Admin::PostsController do
 
     end
   end
-        
+
 
   describe "handling DELETE /admin/blogs/1/posts/1" do
 
@@ -372,7 +350,7 @@ describe Admin::PostsController do
 
     it "should redirect to the posts list" do
       do_delete
-      response.should redirect_to(admin_blog_posts_url("1"))
+      response.should redirect_to(admin_blog_posts_url(@blog))
     end
   end
 end

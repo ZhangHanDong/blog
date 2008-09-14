@@ -13,7 +13,7 @@ class Blog < ActiveRecord::Base
   acts_as_tagger
   
   named_scope :published, :conditions => {:in_draft => false}
-  
+  named_scope :recent, :limit => 20, :order => "blogs.created_at DESC" 
   
   
 end

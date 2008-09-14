@@ -4,18 +4,19 @@ describe Admin::TagsController do
 
   fixtures :users
 
-   before(:each) do
-     login_as :quentin
-     stub!(:reset_session)
+  before(:each) do
+    login_as :quentin
+    stub!(:reset_session)
 
-     @blog = mock_model(Blog, :title => 'Blog Title')
-     @user = mock_model(User)
-     @tag = mock_model(Tag, :to_xml => "XML")
-     @tags = mock("Array of Tags", :to_xml => "XML")
-     Blog.stub!(:find).and_return(@blog)
-     User.stub!(:find).and_return(@user)
-     Tag.stub!(:find).and_return([@tag])
-   end
+    @blog = mock_model(Blog, :title => 'Blog Title')
+    @user = mock_model(User)
+    @tag = mock_model(Tag)
+    @tags = mock("Array of Tags", :to_xml => "XML")
+
+    Blog.stub!(:find).and_return(@blog)
+    User.stub!(:find).and_return(@user)
+    Tag.stub!(:find).and_return([@tag])
+  end
 
 
   describe "handling GET /admin/blogs/1/tags" do
@@ -30,6 +31,7 @@ describe Admin::TagsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog 
       assigns[:tags].should == [@tag]
     end
 
@@ -38,18 +40,13 @@ describe Admin::TagsController do
 
   describe "handling GET /admin/blogs/1/tags.xml" do
 
-    before(:each) do
-      Tag.stub!(:find).and_return(@tags)
+    def do_get             
       @request.env["HTTP_ACCEPT"] = "application/xml"
-    end
-
-    def do_get
       get :index, :blog_id => "1"
     end
 
     it "should be successful, find all tags and render them as XML" do
       @blog.should_receive(:tags).and_return(@tags)
-      @tags.should_receive(:to_xml).and_return("XML")
       do_get
       response.should be_success
       response.body.should == "XML"
@@ -71,6 +68,8 @@ describe Admin::TagsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
+      assigns[:user].should == @user
       assigns[:tags].should == [@tag]
     end
 
@@ -79,11 +78,8 @@ describe Admin::TagsController do
 
   describe "handling GET /admin/blogs/1/users/1/tags.xml" do
 
-    before(:each) do
+    def do_get                           
       @request.env["HTTP_ACCEPT"] = "application/xml"
-    end
-
-    def do_get
       get :index, :blog_id => "1", :user_id => "1"
     end
 
@@ -146,20 +142,11 @@ describe Admin::TagsController do
       get :show, :id => "1", :blog_id => "1"
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should find the tag requested" do
+    it "should be successful, find the tag and return it as XML" do
       Tag.should_receive(:find).with("1", {:include=>:taggings, :conditions=>["taggings.blog_id = ?", @blog.id]}).and_return(@tag)
-      do_get
-    end
-
-    it "should render the found tag as xml" do
-      Tag.stub!(:find).and_return(@tag)
       @tag.should_receive(:to_xml).and_return("XML")
       do_get
+      response.should be_success
       response.body.should == "XML"
     end
   end

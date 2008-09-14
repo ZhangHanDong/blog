@@ -2,6 +2,7 @@ class Admin::UsersController < ApplicationController
   
   layout 'admin', :except => [ :register, :signup ]
   before_filter   :login_required, :except => [ :register, :signup ]
+              
       
   # GET /admin/users
   # GET /admin/users.xml 
@@ -10,18 +11,17 @@ class Admin::UsersController < ApplicationController
   def index      
     if params[:blog_id]             
       @blog = Blog.find(params[:blog_id])
-      @collection = @blog.users
+      @users = @blog.users
     else
-      @collection = User.find(:all)
+      @users = User
     end
     
     respond_to do |format|
       format.html {
-        @users = @collection.paginate(:page => params[:page], :order => 'created_at DESC', :per_page => 10)
+        @users = @users.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10)
       }
       format.xml  { 
-        @users = User.find(:all)
-        render :xml => @users.to_xml
+        render :xml => @users.find(:all)
       }
     end
   end
@@ -34,7 +34,7 @@ class Admin::UsersController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @user.to_xml }
+      format.xml  { render :xml => @user }
     end
   end
          

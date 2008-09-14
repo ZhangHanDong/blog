@@ -2,6 +2,7 @@ class Admin::PostsController < ApplicationController
    
   layout 'admin'
   before_filter :login_required
+                      
   
   # GET /admin/users/1/posts
   # GET /admin/users/1/posts.xml  
@@ -16,24 +17,24 @@ class Admin::PostsController < ApplicationController
       @blog = Blog.find(params[:blog_id])            
       if params[:user_id] 
         @user = User.find(params[:user_id])
-        @collection = @blog.posts.by_user(@user)
+        @posts = @blog.posts.by_user(@user)
       elsif params[:tag_id]
         @tag = Tag.find(params[:tag_id])
-        @collection = @blog.posts.with_tag(@tag)
+        @posts = @blog.posts.with_tag(@tag)
       else  
-        @collection = @blog.posts
+        @posts = @blog.posts
       end  
     elsif params[:user_id] 
       @user = User.find(params[:user_id])
-      @collection = @user.posts
+      @posts = @user.posts
     end
         
     respond_to do |format|
       format.html {
-        @posts = @collection.paginate(:all, :page => params[:page], :per_page => 10, :include => [:blog, :comments, :user, :tags])
+        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:blog, :comments, :user, :tags])
       }
       format.xml {
-        render :xml => @collection.recent.find(:all)         
+        render :xml => @posts.recent      
       }
     end
   end

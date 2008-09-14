@@ -29,6 +29,10 @@ describe Blog do
     it "should have a published scope that returns blogs with in_draft flag set to false" do
       Blog.should have_named_scope(:published, {:conditions => {:in_draft => false}})
     end
+       
+    it "should have a published scope that returns recent blogs with limit" do
+      Blog.should have_named_scope(:recent, {:limit=>20, :order=>"blogs.created_at DESC"})
+    end
     
   end
          

@@ -11,14 +11,16 @@ class Admin::BlogsController < ApplicationController
   def index
     if params[:user_id]
       @user = User.find(params[:user_id])
-      @blogs = @user.created_blogs.paginate(:page => params[:page], :per_page => 10, :include => [:creator, :posts, :comments, :tags])
+      @blogs = @user.created_blogs
     else
-      @blogs = Blog.paginate(:all, :page => params[:page], :per_page => 10, :include => [:creator, :posts, :comments, :tags])
+      @blogs = Blog
     end
 
     respond_to do |format|
-      format.html
-      format.xml  { render :xml => @blogs }
+      format.html {
+        @blogs = @blogs.paginate(:all, :page => params[:page], :per_page => 10, :include => [:creator, :posts, :comments, :tags])
+      }
+      format.xml  { render :xml => @blogs.recent }
     end
   end
 

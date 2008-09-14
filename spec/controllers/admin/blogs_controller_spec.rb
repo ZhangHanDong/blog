@@ -9,7 +9,6 @@ describe Admin::BlogsController do
     stub!(:reset_session)
 
     @blog   = mock_model(Blog, :title => 'blog 1', :in_draft => true, :shortname => 'blog1', :destroy => true)
-    @blog_2 = mock_model(Blog, :title => 'blog 2', :in_draft => false, :shortname => 'blog_2')
     @user   = mock_model(User)
     @blogs  = mock("Array of Blogs", :to_xml => "XML")
 
@@ -26,11 +25,11 @@ describe Admin::BlogsController do
     end
 
     it "should be successful, render index template and find all blogs, assigning them for the view" do
-      Blog.should_receive(:find).with(:all, {:offset => 0, :include => [:creator, :posts, :comments, :tags], :limit => 10 }).and_return([@blog, @blog_2])
+      Blog.should_receive(:paginate).with(:all, {:page=>nil, :include=>[:creator, :posts, :comments, :tags], :per_page=>10}).and_return([@blog])
       do_get
       response.should be_success
       response.should render_template('index')
-      assigns[:blogs].should == [@blog, @blog_2]
+      assigns[:blogs].should == [@blog]
     end
 
   end
@@ -43,8 +42,9 @@ describe Admin::BlogsController do
       get :index
     end
 
-    it "should be successful, find all blogs and render them as XML" do                                                                          
-      Blog.stub!(:paginate).and_return(@blogs)
+    it "should be successful, find all blogs and render them as XML" do
+      Blog.stub!(:find).and_return(@blogs)
+      Blog.should_receive(:recent).and_return(@blogs)
       do_get
       response.should be_success
       response.body.should == "XML"
@@ -55,7 +55,7 @@ describe Admin::BlogsController do
   describe "handling GET /users/1/blogs" do
 
     before(:each) do
-      User.stub!(:find).and_return(@user) 
+      User.stub!(:find).and_return(@user)
     end
 
     def do_get
@@ -63,12 +63,13 @@ describe Admin::BlogsController do
     end
 
     it "should be successful, render index template and and find all blogs created by the user" do
-      @user.should_receive(:created_blogs).and_return([@blog, @blog_2])
+      @user.should_receive(:created_blogs).and_return(@blogs)
+      @blogs.should_receive(:paginate).with(:all, {:include=>[:creator, :posts, :comments, :tags], :page=>nil, :per_page=>10}).and_return([@blog])
       do_get
       response.should be_success
-      response.should render_template('index')  
+      response.should render_template('index')
       assigns[:user].should == @user
-      assigns[:blogs].should == [@blog, @blog_2]
+      assigns[:blogs].should == [@blog]
     end
   end
 
@@ -82,7 +83,7 @@ describe Admin::BlogsController do
 
     it "should be successful, find all user blogs and render them as XML" do
       @user.should_receive(:created_blogs).and_return(@blogs)
-      @blogs.stub!(:paginate).and_return(@blogs)
+      @blogs.should_receive(:recent).and_return(@blogs)
       do_get
       response.should be_success
       response.body.should == "XML"

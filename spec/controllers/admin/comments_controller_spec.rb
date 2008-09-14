@@ -8,31 +8,37 @@ describe Admin::CommentsController do
     login_as :quentin
     stub!(:reset_session)
                                      
-    @blog = mock_model(Blog, :title => 'Blog Title', :to_param => "1")
-    @post = mock_model(Post, :id => 1, :to_param => "1")
-    @user = mock_model(User, :id => 1)
-    @comment = mock_model(Comment, :to_param => "2", :to_xml => "XML", :destroy => true)
-    @comments = [@comment]             
+    @blog = mock_model(Blog)
+    @post = mock_model(Post)
+    @user = mock_model(User)            
+    @comment = mock_model(Comment, :destroy => true)
+    @comments  = mock("Array of Comments", :to_xml => "XML")
+    
     Blog.stub!(:find).and_return(@blog)
-    Post.stub!(:find).and_return(@post)
-    User.stub!(:find).and_return(@user)
+    Post.stub!(:find).and_return(@post)  
+    
     Comment.stub!(:find).and_return(@comment)
-    @comment.stub!(:post).and_return(@post)
     Comment.stub!(:new).and_return(@comment)
   end
   
   
   describe "handling GET /admin/users/1/comments" do
-
+                                       
     before(:each) do
-      @user.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      User.stub!(:find).and_return(@user)
+    end
+
+    def do_get
+      get :index, :user_id => "1" 
     end
 
     it "should be successful, render template and assign comments for view" do
-      get :index, :user_id => "1"
+      @user.should_receive(:comments).and_return(@comments)
+      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      do_get
       response.should be_success
       response.should render_template('index')     
+      assigns[:user].should == @user
       assigns[:comments].should == [@comment] 
     end
   end
@@ -41,15 +47,19 @@ describe Admin::CommentsController do
   describe "handling GET /admin/users/1/comments.xml" do
 
     before(:each) do
-      @user.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:recent).and_return(@comments)
-      @comments.should_receive(:find).with(:all).and_return(@comments)
+      User.stub!(:find).and_return(@user)
+    end
+    
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :user_id => "1"     
     end
 
     it "should be successful and render comments as xml" do
-      @comments.should_receive(:to_xml).and_return("XML")
-      @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index, :user_id => "1"
+      @user.should_receive(:comments).and_return(@comments)
+      @comments.should_receive(:recent).and_return(@comments)
+      @comments.should_receive(:to_xml).and_return("XML")      
+      do_get
       response.should be_success
     end
   end
@@ -57,15 +67,17 @@ describe Admin::CommentsController do
   
   describe "handling GET /admin/blogs/1/comments" do
 
-    before(:each) do
-      @blog.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+    def do_get
+      get :index, :blog_id => "1"     
     end
 
     it "should be successful, render template and assign comments for view" do
-      get :index, :blog_id => "1"
+      @blog.should_receive(:comments).and_return(@comments)
+      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      do_get
       response.should be_success
-      response.should render_template('index')     
+      response.should render_template('index')
+      assigns[:blog].should == @blog    
       assigns[:comments].should == [@comment] 
     end
   end
@@ -73,53 +85,56 @@ describe Admin::CommentsController do
   
   describe "handling GET /admin/blogs/1/comments.xml" do
 
-    before(:each) do
-      @blog.should_receive(:comments).and_return(@comments) 
-      @comments.should_receive(:recent).and_return(@comments)
-      @comments.should_receive(:find).with(:all).and_return(@comments)
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :blog_id => "1"     
     end
 
     it "should be successful and render comments as xml" do
+      @blog.should_receive(:comments).and_return(@comments) 
+      @comments.should_receive(:recent).and_return(@comments)
       @comments.should_receive(:to_xml).and_return("XML")
-      @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index, :blog_id => "1"
+      do_get
       response.should be_success
     end
   end
   
 
   describe "handling GET /admin/blogs/1/posts/1/comments" do
-
-    before(:each) do              
+                                               
+    def do_get
+      get :index, :blog_id => "1", :post_id => "1"
+    end
+    
+    it "should be successful, render template and assign comments for view" do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:find).and_return(@post)  
       @post.should_receive(:comments).and_return(@comments) 
       @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
-    end
-
-    it "should be successful, render template and assign comments for view" do
-      get :index, :blog_id => "1", :post_id => "1"
+      do_get
       response.should be_success
       response.should render_template('index')     
+      assigns[:blog].should == @blog
+      assigns[:post].should == @post
       assigns[:comments].should == [@comment] 
     end
   end
   
   
   describe "handling GET /admin/blogs/1/posts/1/comments.xml" do
+    
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :blog_id => "1", :post_id => "1"
+    end
 
-    before(:each) do
+    it "should be successful and render comments as xml" do
       @blog.should_receive(:posts).and_return(@post)          
       @post.should_receive(:find).and_return(@post)
       @post.should_receive(:comments).and_return(@comments) 
       @comments.should_receive(:recent).and_return(@comments)   
-      @comments.should_receive(:find).with(:all).and_return(@comments)
-    end
-
-    it "should be successful and render comments as xml" do
       @comments.should_receive(:to_xml).and_return("XML")
-      @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index, :blog_id => "1", :post_id => "1"
+      do_get
       response.should be_success
     end
   end
@@ -127,16 +142,23 @@ describe Admin::CommentsController do
   
   describe "handling GET /admin/blogs/1/users/1/comments" do
 
-    before(:each) do              
-      @blog.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:by_user).with(@user).and_return(@comments) 
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+    before(:each) do
+      User.stub!(:find).and_return(@user)
+    end
+    
+    def do_get
+      get :index, :blog_id => "1", :user_id => "1"
     end
 
     it "should be successful, render template and assign comments for view" do
-      get :index, :blog_id => "1", :user_id => "1"
+      @blog.should_receive(:comments).and_return(@comments)
+      @comments.should_receive(:by_user).with(@user).and_return(@comments) 
+      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      do_get
       response.should be_success
-      response.should render_template('index')     
+      response.should render_template('index')   
+      assigns[:blog].should == @blog
+      assigns[:user].should == @user    
       assigns[:comments].should == [@comment] 
     end
   end
@@ -145,16 +167,20 @@ describe Admin::CommentsController do
   describe "handling GET /admin/blogs/1/users/1/comments.xml" do
 
     before(:each) do
-      @blog.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:by_user).with(@user).and_return(@comments)  
-      @comments.should_receive(:recent).and_return(@comments)  
-      @comments.should_receive(:find).with(:all).and_return(@comments)
+      User.stub!(:find).and_return(@user)
+    end
+    
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :index, :blog_id => "1", :user_id => "1"
     end
 
     it "should be successful and render comments as xml" do
+      @blog.should_receive(:comments).and_return(@comments)
+      @comments.should_receive(:by_user).with(@user).and_return(@comments)  
+      @comments.should_receive(:recent).and_return(@comments)  
       @comments.should_receive(:to_xml).and_return("XML")
-      @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index, :blog_id => "1", :user_id => "1"
+      do_get
       response.should be_success
     end
   end
@@ -293,21 +319,21 @@ describe Admin::CommentsController do
       def do_post                                
         @post.should_receive(:blog).and_return(@blog)
         @post.should_receive(:comments).and_return([])
-        @comment.should_receive(:user=).with(users(:quentin)).and_return(true)
+        @comment.should_receive(:user=).with(users(:aaron)).and_return(true)
         @post.should_receive(:save).and_return(true)
         post :create, :comment => {}, :blog_id => "1", :post_id => "1"
       end
 
       it "should create a new comment with the correct author set" do
         Comment.should_receive(:new).with({}).and_return(@comment)
-        login_as :aaron
+        login_as :aaron     
         do_post
       end
 
       it "should redirect to the new comment" do
         login_as :aaron
         do_post
-        response.should redirect_to(admin_blog_post_comment_url("1", "1", "2"))
+        response.should redirect_to(admin_blog_post_comment_url(@blog, @post, @comment))
       end
 
     end
@@ -317,7 +343,7 @@ describe Admin::CommentsController do
 
       def do_post
         @post.should_receive(:comments).and_return([])
-        @comment.should_receive(:user=).with(users(:quentin)).and_return(true)
+        @comment.should_receive(:user=).with(users(:aaron)).and_return(true)
         @post.should_receive(:save).and_return(false)
         post :create, :comment => {}, :blog_id => "1", :post_id => "1" 
       end
@@ -337,8 +363,9 @@ describe Admin::CommentsController do
     describe "with successful update" do
 
       def do_put 
-        @post.should_receive(:blog).and_return(@blog) 
-        @comment.should_receive(:update_attributes).and_return(true)
+        @comment.should_receive(:update_attributes).and_return(true)   
+        @comment.should_receive(:post).twice.and_return(@post)   
+        @post.should_receive(:blog).and_return(@blog)  
         put :update, :id => "1", :post_id => "1", :comment => { }, :blog_id => "1"
       end
 
@@ -348,7 +375,7 @@ describe Admin::CommentsController do
 
       it "should redirect to the comment" do
         do_put
-        response.should redirect_to(admin_blog_post_comment_url("1", "1", "2"))
+        response.should redirect_to(admin_blog_post_comment_url(@blog, @post, @comment))
       end
 
     end
@@ -372,6 +399,7 @@ describe Admin::CommentsController do
   describe "handling DELETE /admin/posts/1/comments/1" do
 
     def do_delete      
+      @comment.should_receive(:post).twice.and_return(@post)   
       @post.should_receive(:blog).and_return(@blog)
       delete :destroy, :id => "1", :blog_id => "1", :post_id => "1"
     end
@@ -383,7 +411,7 @@ describe Admin::CommentsController do
 
     it "should redirect to the comments list" do
       do_delete
-      response.should redirect_to(admin_blog_post_comments_url("1", "1"))
+      response.should redirect_to(admin_blog_post_comments_url(@blog, @post))
     end
   end
 end

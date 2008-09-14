@@ -2,6 +2,7 @@ class Admin::CommentsController < ApplicationController
   
   layout 'admin'
   before_filter :login_required
+                 
   
   # GET /admin/users/1/comments
   # GET /admin/users/1/comments.xml
@@ -16,24 +17,23 @@ class Admin::CommentsController < ApplicationController
       @blog = Blog.find(params[:blog_id])            
       if params[:user_id] 
         @user = User.find(params[:user_id])
-        @collection = @blog.comments.by_user(@user)
+        @comments = @blog.comments.by_user(@user)
       elsif params[:post_id]
         @post = @blog.posts.find(params[:post_id])
-        @collection = @post.comments
+        @comments = @post.comments
       else  
-        @collection = @blog.comments
+        @comments = @blog.comments
       end  
     elsif params[:user_id] 
       @user = User.find(params[:user_id])
-      @collection = @user.comments
+      @comments = @user.comments
     end               
-   
     
     respond_to do |format|
       format.html {
-        @comments = @collection.paginate(:all, :page => params[:page], :per_page => 10, :include => { :post => :blog })
+        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 10, :include => { :post => :blog })
       }
-      format.xml  { render :xml => @collection.recent.find(:all) }
+      format.xml  { render :xml => @comments.recent }
     end
   end  
   
