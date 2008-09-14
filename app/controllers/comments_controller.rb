@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+              
 
   # GET blogs/1/comments
   # GET blogs/1/comments.atom
@@ -11,20 +12,20 @@ class CommentsController < ApplicationController
 
     if params[:post_id]
       @post = @blog.posts.published.find(params[:post_id])
-      @collection = @post.comments
+      @comments = @post.comments
     elsif params[:user_id]
       @user = User.find(params[:user_id])
-      @collection = @blog.comments.published.by_user(@user)
+      @comments = @blog.comments.published.by_user(@user)
     elsif params[:blog_id]
-      @collection = @blog.comments.published
+      @comments = @blog.comments.published
     end
 
     respond_to do |format|
       format.html {
-        @comments = @collection.paginate(:all, :page => params[:page], :per_page => 10, :include => :post)
+        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 10, :include => :post)
       }
       format.atom {
-        @comments = @collection.recent.find(:all)
+        @comments = @comments.recent
       }
     end
   end
@@ -33,7 +34,7 @@ class CommentsController < ApplicationController
   # GET  blogs/1/posts/1/comments/1
   def show
     @comment = Comment.published.find(params[:id], :include => {:post => :blog})
-    redirect_to blog_post_path(@comment.post.blog, @comment.post, :anchor => "comment-#{@comment.id}")
+    redirect_to blog_post_url(@comment.post.blog, @comment.post, :anchor => "comment-#{@comment.id}")
   end
 
 
@@ -47,7 +48,7 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @comment.save
         flash[:notice] = 'Comment was successfully created.'
-        format.html { redirect_to(blog_post_path(@post.blog, @post)) }
+        format.html { redirect_to(blog_post_url(@post.blog, @post)) }
       else
         format.html { render :action => "new" }
       end

@@ -26,6 +26,7 @@ describe UsersController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
       assigns[:users].should == [@user]
     end
 
@@ -53,6 +54,8 @@ describe UsersController do
       do_get
       response.should be_success
       response.should render_template('show')
+      assigns[:posts].should == @post
+      assigns[:comments].should == @comment
       assigns[:user].should == @user
     end
 

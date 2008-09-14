@@ -1,36 +1,37 @@
 class PostsController < ApplicationController
+          
 
-  # GET /blog/1/posts
-  # GET /blog/1/posts.atom
-  # GET /blog/1/users/1/posts
-  # GET /blog/1/users/1/posts.atom
-  # GET /blog/1/tags/1/posts
-  # GET /blog/1/tags/1/posts.atom
+  # GET /blogs/1/posts
+  # GET /blogs/1/posts.atom
+  # GET /blogs/1/users/1/posts
+  # GET /blogs/1/users/1/posts.atom
+  # GET /blogs/1/tags/1/posts
+  # GET /blogs/1/tags/1/posts.atom
   def index
     @blog = Blog.published.find(params[:blog_id])
 
     if params[:user_id]
       @user = User.find(params[:user_id])
-      @collection = @blog.posts.published.by_user(@user)
+      @posts = @blog.posts.published.by_user(@user)
     elsif params[:tag_id]
       @tag = Tag.find(params[:tag_id])
-      @collection = @blog.posts.published.with_tag(@tag)
+      @posts = @blog.posts.published.with_tag(@tag)
     else
-      @collection = @blog.posts.published
+      @posts = @blog.posts.published
     end
 
     respond_to do |format|
       format.html {
-        @posts = @collection.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
       }
       format.atom {
-        @posts = @collection.recent.find(:all)
+        @posts = @posts.recent
       }
     end
   end
 
 
-  # GET /blog/1/on/:year/:month/:day
+  # GET /blogs/1/on/:year/:month/:day
   def on
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
@@ -49,7 +50,7 @@ class PostsController < ApplicationController
   end
 
 
-  # GET /blog/1/posts/1
+  # GET /blogs/1/posts/1
   def show
     @blog = Blog.published.find(params[:blog_id])
     @post = @blog.posts.published.find(params[:id], :include => [:comments, :user, :tags])

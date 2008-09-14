@@ -6,10 +6,11 @@ describe CommentsController do
   fixtures :users
 
   before(:each) do
-    @blog = mock_model(Blog, :title => 'Blog Title')
-    @post = mock_model(Post)
+    @blog    = mock_model(Blog)
+    @post    = mock_model(Post)
     @comment = mock_model(Comment)
-    @user = mock_model(User)
+    @user    = mock_model(User)
+    
     Blog.stub!(:find).and_return(@blog)
     Post.stub!(:find).and_return(@post)
     Comment.stub!(:find).and_return(@comment)
@@ -29,6 +30,7 @@ describe CommentsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
       assigns[:comments].should == [@comment]
     end
 
@@ -68,6 +70,8 @@ describe CommentsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
+      assigns[:post].should == @post
       assigns[:comments].should == [@comment]
     end
 
@@ -109,6 +113,8 @@ describe CommentsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
+      assigns[:user].should == @user
       assigns[:comments].should == [@comment]
     end
 
@@ -188,7 +194,7 @@ describe CommentsController do
       @comment.should_receive(:post).at_least(1).times.and_return(@post)
       @post.should_receive(:blog).twice.and_return(@blog)
       get :show, :blog_id => "1", :post_id => "1", :id => "1"
-      response.should redirect_to(blog_post_path(@comment.post.blog, @comment.post, :anchor => "comment-#{@comment.id}"))
+      response.should redirect_to(blog_post_url(@comment.post.blog, @comment.post, :anchor => "comment-#{@comment.id}"))
     end
 
   end

@@ -80,7 +80,7 @@ class Admin::CommentsController < ApplicationController
     respond_to do |format|
       if @post.save
         flash[:notice] = 'Comment was successfully created.'
-        format.html { redirect_to(admin_blog_post_comment_path(@post.blog, @post, @comment)) }
+        format.html { redirect_to(admin_blog_post_comment_url(@post.blog, @post, @comment)) }
         format.xml  { render :xml => @comment, :status => :created, :location => @comment }
       else
         format.html { render :action => "new" }
@@ -98,7 +98,7 @@ class Admin::CommentsController < ApplicationController
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
         flash[:notice] = 'Comment was successfully updated.'
-        format.html { redirect_to(admin_blog_post_comment_path(@comment.post.blog, @comment.post, @comment)) }
+        format.html { redirect_to(admin_blog_post_comment_url(@comment.post.blog, @comment.post, @comment)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

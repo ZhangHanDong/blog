@@ -19,6 +19,15 @@ describe User do
   end          
   
   
+  describe 'named scopes' do
+
+    it "should have a recent scope that returns up to 20 users ordered by created_at DESC" do
+      User.should have_named_scope(:recent, {:limit=>20, :order=>"users.created_at DESC"})
+    end
+    
+  end
+  
+  
   describe 'being associated with' do
     
     it "should have created blogs" do

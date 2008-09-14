@@ -45,7 +45,6 @@ describe PostsController do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:recent).and_return(@post)
-      @post.should_receive(:find).with(:all).and_return(@post)
       do_get
       response.should be_success
     end
@@ -86,7 +85,6 @@ describe PostsController do
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:by_user).with(@user).and_return(@post)
       @post.should_receive(:recent).and_return(@post)
-      @post.should_receive(:find).with(:all).and_return(@post)
       do_get
       response.should be_success
       assigns[:user].should equal(@user)
@@ -128,7 +126,6 @@ describe PostsController do
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return(@post)
       @post.should_receive(:recent).and_return(@post)
-      @post.should_receive(:find).with(:all).and_return(@post)
       do_get
       response.should be_success
       assigns[:tag].should equal(@tag)

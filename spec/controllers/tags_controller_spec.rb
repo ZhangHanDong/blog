@@ -3,13 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe TagsController do
 
   before(:each) do
-    @blog = mock_model(Blog, :title => 'Blog Title')
-    @post = mock_model(Post)
+    @blog = mock_model(Blog)
     @user = mock_model(User)
     @tag = mock_model(Tag)
 
     Blog.stub!(:find).and_return(@blog)
-    Post.stub!(:find).and_return(@post)
     User.stub!(:find).and_return(@user)
     Tag.stub!(:find).and_return(@tag)
   end
@@ -27,6 +25,7 @@ describe TagsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
       assigns[:tags].should == [@tag]
     end
 
@@ -46,6 +45,8 @@ describe TagsController do
       do_get
       response.should be_success
       response.should render_template('index')
+      assigns[:blog].should == @blog
+      assigns[:user].should == @user
       assigns[:tags].should == [@tag]
     end
   

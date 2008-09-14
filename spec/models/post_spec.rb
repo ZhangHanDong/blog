@@ -8,7 +8,8 @@ module PostSpecHelper
       :publish_date => Date.today,
       :body => 'Phasellus pulvinar, nulla non *aliquam* eleifend, "tortor":http://google.com wisi scelerisque felis, in sollicitudin arcu ante lacinia leo.',
       :in_draft => false,
-      :user_id => 1
+      :user_id => 1,
+      :blog_id => 1
     }
   end
   
@@ -23,7 +24,7 @@ end
 
 describe Post do
 
-  fixtures :posts, :users
+  fixtures :posts, :users, :blogs
 
   include PostSpecHelper
 
@@ -104,7 +105,7 @@ describe Post do
       Post.should have_named_scope(:published, {:conditions=>{:in_draft=>false}, :order=>"posts.publish_date DESC"})
     end
 
-    it "should have a by_user scope that returns posts tagged with a matching tag" do
+    it "should have a with_tag scope that returns posts tagged with a matching tag" do
       Post.should have_named_scope(:with_tag, {:include=>:taggings, :conditions=>["taggings.tag_id = ?", []]})
     end
 
@@ -132,7 +133,7 @@ describe Post do
   describe 'being associated with' do
 
     it "should have a user" do
-      @post.attributes = valid_post_attributes.with(:user_id => 1)
+      @post.attributes = valid_post_attributes
       @post.save!
       @post.user.should eql(users(:quentin))
     end
@@ -141,6 +142,19 @@ describe Post do
       @post.attributes = valid_post_attributes.with(:tag_list => 'one "two tag" three')
       @post.save!
       @post.tags.length.should eql(3)
+    end
+    
+    it "should have comments" do                 
+      @post.attributes = valid_post_attributes
+      @post.save!
+      @post.comments << Comment.new(:name => 'test', :body => 'test body')
+      @post.comments.length.should eql(1)
+    end 
+    
+    it "should belong to a blog" do
+      @post.attributes = valid_post_attributes
+      @post.save!
+      @post.blog.should eql(blogs(:one))
     end
 
   end

@@ -4,8 +4,8 @@ describe BlogsController do
 
   before(:each) do
     @blog = mock_model(Blog)
-    Blog.stub!(:find).with(:all).and_return(@blog)
   end
+         
 
   describe "handling GET /blogs" do
 
@@ -31,7 +31,7 @@ describe BlogsController do
       get :show, :id => "1"
     end
 
-    it "should be successful, find and assign the blog and redirect to blog posts" do
+    it "should be successful, find and assign the blog and redirect to blog posts url" do
       Blog.should_receive(:find).with("1").and_return(@blog)
       do_get                                                                
       assigns[:blog].should equal(@blog)

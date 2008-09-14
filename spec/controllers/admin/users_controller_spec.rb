@@ -47,7 +47,7 @@ describe Admin::UsersController do
     end
 
     it "should be successful, find all users and render as XML" do
-      User.should_receive(:find).with(:all).and_return(@users)
+      User.should_receive(:find).with(:all).and_return(@users)      
       do_get
       response.body.should == "XML"
       response.should be_success
@@ -79,8 +79,8 @@ describe Admin::UsersController do
     end
 
     it "should be successful, find all users and render as XML" do
-      @blog.should_receive(:users).and_return(@user)
-      @user.should_receive(:find).with(:all).and_return(@users)
+      @blog.should_receive(:users).and_return(@users)
+      @users.should_receive(:recent).and_return(@users)
       do_get
       response.body.should == "XML"
       response.should be_success

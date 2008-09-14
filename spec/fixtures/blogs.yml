@@ -1,11 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
+one:           
+  id: 1
   title: Blog One
   short_name: blogone
   in_draft: false
   created_by_id: 1
 two:
+  id: 2
   title: Blog Two
   short_name: blogtwo
   in_draft: true

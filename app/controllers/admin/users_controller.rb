@@ -20,9 +20,7 @@ class Admin::UsersController < ApplicationController
       format.html {
         @users = @users.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10)
       }
-      format.xml  { 
-        render :xml => @users.find(:all)
-      }
+      format.xml { render :xml => @users.recent }
     end
   end
            

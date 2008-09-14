@@ -22,7 +22,7 @@ class Admin::TagsController < ApplicationController
       format.html {
         @tags = @tags.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10, :include => :taggings)
       }
-      format.xml { render :xml => @tags }
+      format.xml { render :xml => @tags.recent }
     end
   end
          

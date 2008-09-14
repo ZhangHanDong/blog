@@ -64,7 +64,7 @@ class Admin::BlogsController < ApplicationController
     respond_to do |format|
       if @blog.save
         flash[:notice] = 'Blog was successfully created.'
-        format.html { redirect_to(admin_blog_path(@blog)) }
+        format.html { redirect_to(admin_blog_url(@blog)) }
         format.xml  { render :xml => @blog, :status => :created, :location => @blog }
       else
         format.html { render :action => "new" }
@@ -82,7 +82,7 @@ class Admin::BlogsController < ApplicationController
     respond_to do |format|
       if @blog.update_attributes(params[:blog])
         flash[:notice] = 'Blog was successfully updated.'
-        format.html { redirect_to(admin_blog_path(@blog)) }
+        format.html { redirect_to(admin_blog_url(@blog)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

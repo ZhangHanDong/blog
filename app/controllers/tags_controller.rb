@@ -1,4 +1,5 @@
 class TagsController < ApplicationController
+               
   
   # GET /blogs/3/tags
   def index              
@@ -6,14 +7,14 @@ class TagsController < ApplicationController
     
     if params[:user_id]
       @user = User.find(params[:user_id])
-      @collection = @blog.tags.by_user(@user)
+      @tags = @blog.tags.by_user(@user)
     else
-      @collection = @blog.tags
+      @tags = @blog.tags
     end
     
     respond_to do |format|
       format.html {
-        @tags = @collection.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10, :include => :taggings)
+        @tags = @tags.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10, :include => :taggings)
       }
     end
   end

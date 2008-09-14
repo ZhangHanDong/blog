@@ -1,8 +1,9 @@
 class Tag < ActiveRecord::Base
   has_many :taggings
-  has_many :blogs, :through => :taggings, :uniq => true 
-  named_scope :by_user,  lambda { |*user| {:conditions =>  ["taggings.user_id = ?", user], :include => :taggings}}      
+  has_many :blogs, :through => :taggings, :uniq => true                         
   
+  named_scope :by_user,  lambda { |*user| {:conditions =>  ["taggings.user_id = ?", user], :include => :taggings}}      
+  named_scope :recent, :limit => 20, :order => "tags.id DESC"
   
   # Parse a text string into an array of tokens for use as tags
   def self.parse(list)

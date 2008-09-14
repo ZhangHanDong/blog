@@ -4,3 +4,4 @@ normal_tagging:
   taggable_id: 1
   taggable_type: Post
   user_id: 1
+  blog_id: 1

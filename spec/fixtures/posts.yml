@@ -7,6 +7,7 @@ normal_post:
   body_formatted: MyText
   in_draft: false 
   user_id: 1
+  blog_id: 1
 
 draft_post:
   title: MyString
@@ -17,3 +18,4 @@ draft_post:
   body_formatted: MyText
   in_draft: true
   user_id: 2
+  blog_id: 1

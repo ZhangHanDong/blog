@@ -95,8 +95,12 @@ module ActiveRecord
                 end
               end
             
-              Tag.parse(@new_tag_list).each do |name|
-                Tag.find_or_create_by_name(name).tag(self, @new_user_id, @new_blog_id)
+              Tag.parse(@new_tag_list).each do |name|                    
+                if self.blog
+                  Tag.find_or_create_by_name(name).tag(self, @new_user_id, self.blog_id)
+                else                                                                    
+                  Tag.find_or_create_by_name(name).tag(self, @new_user_id)
+                end
               end
 
               tags.reset

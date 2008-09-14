@@ -33,9 +33,7 @@ class Admin::PostsController < ApplicationController
       format.html {
         @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:blog, :comments, :user, :tags])
       }
-      format.xml {
-        render :xml => @posts.recent      
-      }
+      format.xml { render :xml => @posts.recent }
     end
   end
          
@@ -82,7 +80,7 @@ class Admin::PostsController < ApplicationController
     respond_to do |format|
       if @post.save
         flash[:notice] = 'Post was successfully created.'
-        format.html { redirect_to(admin_blog_post_path(@blog, @post)) }
+        format.html { redirect_to(admin_blog_post_url(@blog, @post)) }
         format.xml  { render :xml => @post, :status => :created, :location => @post }
       else
         format.html { render :action => "new" }
@@ -100,7 +98,7 @@ class Admin::PostsController < ApplicationController
     respond_to do |format|
       if @post.update_attributes(params[:post])
         flash[:notice] = 'Post was successfully updated.'
-        format.html { redirect_to(admin_blog_post_path(@post.blog, @post)) }
+        format.html { redirect_to(admin_blog_post_url(@post.blog, @post)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -117,7 +115,7 @@ class Admin::PostsController < ApplicationController
     @post.destroy                     
     
     respond_to do |format|
-      format.html { redirect_to(admin_blog_posts_path(@post.blog)) }
+      format.html { redirect_to(admin_blog_posts_url(@post.blog)) }
       format.xml  { head :ok }
     end
   end           

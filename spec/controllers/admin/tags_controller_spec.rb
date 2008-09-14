@@ -46,7 +46,8 @@ describe Admin::TagsController do
     end
 
     it "should be successful, find all tags and render them as XML" do
-      @blog.should_receive(:tags).and_return(@tags)
+      @blog.should_receive(:tags).and_return(@tags) 
+      @tags.should_receive(:recent).and_return(@tags) 
       do_get
       response.should be_success
       response.body.should == "XML"
@@ -86,6 +87,7 @@ describe Admin::TagsController do
     it "should be successful, find all tags for the user and render them as XML" do
       @blog.should_receive(:tags).and_return(@tags)
       @tags.should_receive(:by_user).with(@user).and_return(@tags)
+      @tags.should_receive(:recent).and_return(@tags)
       do_get
       response.should be_success
       response.body.should == "XML"
