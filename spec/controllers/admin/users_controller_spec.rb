@@ -94,26 +94,31 @@ describe Admin::UsersController do
       get :show, :id => "1"
     end
 
-    it "should be successful" do
+    it "should be successful, render show template and find the user requested and assign" do
+      User.should_receive(:find).with("1").and_return(@user)   
       do_get
-      response.should be_success
-    end
-
-    it "should render show template" do
-      do_get
-      response.should render_template('show')
-    end
-
-    it "should find the user requested" do
-      User.should_receive(:find).with("1").and_return(@user)
-      do_get
-    end
-
-    it "should assign the found user for the view" do
-      do_get
-      assigns[:user].should equal(@user)
+      response.should be_success            
+      response.should render_template('show')     
+      assigns[:user].should equal(@user) 
     end
   end    
+
+
+  describe "handling GET /users/1.xml" do
+
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/xml"
+      get :show, :id => "1"
+    end
+
+    it "should be successful, find the user requested and render as XML" do     
+      User.should_receive(:find).with("1").and_return(@user)  
+      @user.should_receive(:to_xml).and_return("XML")     
+      do_get
+      response.should be_success          
+      response.body.should == "XML"        
+    end
+  end  
   
   
   describe "handling unsuccessful GET for /admin/users/15155199" do
@@ -127,31 +132,6 @@ describe Admin::UsersController do
     
   end
   
-  
-
-  describe "handling GET /users/1.xml" do
-
-    def do_get
-      @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :show, :id => "1"
-    end
-
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should find the user requested" do
-      User.should_receive(:find).with("1").and_return(@user)
-      do_get
-    end
-
-    it "should render the found user as xml" do
-      @user.should_receive(:to_xml).and_return("XML")
-      do_get
-      response.body.should == "XML"
-    end
-  end
 
   describe "handling GET /users/new" do
 

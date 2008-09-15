@@ -29,7 +29,6 @@ describe UsersController do
       assigns[:blog].should == @blog
       assigns[:users].should == [@user]
     end
-
   end
   
   
@@ -58,7 +57,6 @@ describe UsersController do
       assigns[:comments].should == @comment
       assigns[:user].should == @user
     end
-
   end
   
   

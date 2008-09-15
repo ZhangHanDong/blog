@@ -6,7 +6,7 @@ module CommentSpecHelper
     {
       :name => 'Jon Johnsson',
       :body => 'Phasellus pulvinar, nulla non *aliquam* eleifend, "tortor":http://google.com wisi scelerisque felis, in sollicitudin arcu ante lacinia leo.',
-      :post => posts(:normal_post)
+      :post_id => 1
     }
   end
 
@@ -14,8 +14,6 @@ end
 
 describe Comment do
       
-  fixtures :comments, :posts
-
   include CommentSpecHelper
 
   before(:each) do
@@ -65,9 +63,11 @@ describe Comment do
     end
     
     it "should have a post" do
+      @post = Post.create!(:title => 'Post Title', :publish_date => Date.today, :body => 'test', :user_id => 1)
       @comment.attributes = valid_comment_attributes         
+      @post.comments << @comment
       @comment.save!                                                                    
-      @comment.post.should eql(posts(:normal_post))
+      @comment.post.should eql(@post)
     end
     
   end
@@ -91,7 +91,7 @@ describe Comment do
     end
 
     it "should have an error on body" do
-      @comment.attributes = valid_comment_attributes.except(:post)
+      @comment.attributes = valid_comment_attributes.except(:post_id)
       @comment.should have(1).error_on(:post_id)
     end
     

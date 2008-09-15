@@ -192,25 +192,14 @@ describe Admin::CommentsController do
       get :show, :id => "1", :blog_id => "1", :post_id => "1"
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render show template" do
-      do_get
-      response.should render_template('show')
-    end
-
-    it "should find the comment requested" do
+    it "should be successful, render show template find the comment and assign for the view" do
       Comment.should_receive(:find).with("1", {:include=>[:post, :user]}).and_return(@comment)
       do_get
+      response.should be_success
+      response.should render_template('show')                                                 
+      assigns[:comment].should equal(@comment)      
     end
-
-    it "should assign the found comment for the view" do
-      do_get
-      assigns[:comment].should equal(@comment)
-    end
+                                              
   end  
   
 
@@ -221,20 +210,12 @@ describe Admin::CommentsController do
       get :show, :id => "1", :blog_id => "1", :post_id => "1"
     end
 
-    it "should be successful" do
+    it "should be successful, render as XML and find the comment and assign for the view" do   
+      Comment.should_receive(:find).with("1", {:include=>[:post, :user]}).and_return(@comment)   
+      @comment.should_receive(:to_xml).and_return("XML")  
       do_get
-      response.should be_success
-    end
-
-    it "should find the comment requested" do
-      Comment.should_receive(:find).with("1", {:include=>[:post, :user]}).and_return(@comment)
-      do_get
-    end
-
-    it "should render the found comment as xml" do
-      @comment.should_receive(:to_xml).and_return("XML")
-      do_get
-      response.body.should == "XML"
+      response.should be_success       
+       response.body.should == "XML" 
     end
   end 
   

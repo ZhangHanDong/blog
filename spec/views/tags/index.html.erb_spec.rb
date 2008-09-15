@@ -17,6 +17,7 @@ describe "/tags/index" do
   
   it "should render list of tags" do
     render 'tags/index' 
+    response.should have_tag("h1",  :text => "Blog Title 1 tags")
   end      
   
 end

@@ -4,7 +4,9 @@ describe "/admin/posts/index.html.erb" do
   include Admin::PostsHelper
   
   before(:each) do           
-    blog = mock_model(Blog, :title => 'Blog Title')
+    blog = mock_model(Blog, :title => 'Blog Title') 
+    @user = mock_model(User, :name => 'Cowboy Joe')
+    @tag = mock_model(Tag, :name => 'fitchy')  
     post_98 = mock_model(Post)               
     post_98.stub!(:blog).and_return(blog)  
     post_98.should_receive(:title).and_return("MyString")
@@ -25,10 +27,24 @@ describe "/admin/posts/index.html.erb" do
     assigns[:posts].stub!(:total_pages).and_return(0)
   end
 
-  it "should render list of posts" do
-    render "/admin/posts/index.html.erb"
+  it "should render list of posts for a blog" do
+    render "/admin/posts/index.html.erb"            
+    response.should have_tag("h1",  :text => "Blog Title posts")      
     response.should have_tag("tr>td", "MyString", 2)
     response.should have_tag("tr>td", "MyString", 2)
   end
+  
+  it "should show title for a list of user posts in a blog" do
+    assigns[:user] = @user      
+    render "/admin/posts/index.html.erb"            
+    response.should have_tag("h1",  :text => "Blog Title posts by Cowboy Joe")      
+  end
+    
+  it "should show title for a list of posts in a blog tagged with a tag" do
+    assigns[:tag] = @tag      
+    render "/admin/posts/index.html.erb"            
+    response.should have_tag("h1",  :text => "Blog Title posts tagged with fitchy")      
+  end
+  
 end
 

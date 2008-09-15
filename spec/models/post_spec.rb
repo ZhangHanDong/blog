@@ -24,7 +24,7 @@ end
 
 describe Post do
 
-  fixtures :posts, :users, :blogs
+  fixtures  :users
 
   include PostSpecHelper
 
@@ -67,7 +67,7 @@ describe Post do
       @draft_post = Post.create!(valid_post_attributes.with(:in_draft => true))
       @draft_post.in_draft.should eql(true)
       Post.find(:all).length.should eql(4)
-      Post.published.should eql([@post, posts(:normal_post)])
+      Post.published.length.should eql(2)
     end
 
     it "should have a recent scope, and find recent posts (limited and ordered)" do
@@ -151,10 +151,11 @@ describe Post do
       @post.comments.length.should eql(1)
     end 
     
-    it "should belong to a blog" do
-      @post.attributes = valid_post_attributes
+    it "should belong to a blog" do                               
+      @blog = Blog.create!(:title => 'test', :short_name => 'test', :created_by_id => 1)
+      @post.attributes = valid_post_attributes.with(:blog => @blog)    
       @post.save!
-      @post.blog.should eql(blogs(:one))
+      @post.blog.should eql(@blog)
     end
 
   end

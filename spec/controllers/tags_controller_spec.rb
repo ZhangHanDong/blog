@@ -28,7 +28,6 @@ describe TagsController do
       assigns[:blog].should == @blog
       assigns[:tags].should == [@tag]
     end
-
   end
 
 
@@ -49,7 +48,6 @@ describe TagsController do
       assigns[:user].should == @user
       assigns[:tags].should == [@tag]
     end
-  
   end  
 
 end

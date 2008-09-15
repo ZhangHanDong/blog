@@ -8,7 +8,8 @@ describe "/posts/index" do
   before(:each) do
     
     blog = mock_model(Blog, :title => 'Blog Title')
-                    
+    @user = mock_model(User, :name => 'Jett Loe')
+    @tag = mock_model(Tag, :name => 'tag name') 
     # with summary
     post_98 = mock_model(Post)
     post_98.should_receive(:title).and_return("MyStringTitle1")
@@ -35,12 +36,34 @@ describe "/posts/index" do
   end
 
   it "should render list of posts" do
-    render "/posts/index.html.erb" 
+    render "/posts/index.html.erb"      
+    response.should have_tag("h1",  :text => "Blog Title posts") 
     response.should have_tag("h2>a", "MyStringTitle1", 1)
     response.should have_tag("p", "Not Blank", 1)    
     response.should have_tag("p>a", "no comments yet, post one now", 1)
     
     response.should have_tag("h2>a", "MyStringTitle2", 1)         
     response.should have_tag("p>a", "2 comments", 1)
+  end    
+  
+  it "should show title for users blog posts" do
+    assigns[:user] = @user
+    render "/posts/index.html.erb"                               
+    response.should have_tag("h1",  :text => "Blog Title posts by Jett Loe")
   end
+
+  it "should show title for blog posts tagged with" do
+    assigns[:tag] = @tag
+    render "/posts/index.html.erb"                               
+    response.should have_tag("h1",  :text => "Blog Title posts tagged with tag name")
+  end
+  
+  it "should show title for users blog posts tagged with" do
+    assigns[:user] = @user
+    assigns[:tag] = @tag
+    render "/posts/index.html.erb"                               
+    response.should have_tag("h1",  :text => "Blog Title posts tagged with tag name by Jett Loe")
+  end
+
+  
 end   

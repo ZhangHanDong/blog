@@ -33,7 +33,6 @@ describe CommentsController do
       assigns[:blog].should == @blog
       assigns[:comments].should == [@comment]
     end
-
   end
 
 
@@ -51,7 +50,6 @@ describe CommentsController do
       do_get
       response.should be_success
     end
-
   end
 
 
@@ -74,7 +72,6 @@ describe CommentsController do
       assigns[:post].should == @post
       assigns[:comments].should == [@comment]
     end
-
   end
 
 
@@ -94,7 +91,6 @@ describe CommentsController do
       do_get
       response.should be_success
     end
-
   end
 
 
@@ -137,7 +133,6 @@ describe CommentsController do
       do_get
       response.should be_success
     end
-
   end
 
 

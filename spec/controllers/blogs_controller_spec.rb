@@ -21,7 +21,6 @@ describe BlogsController do
       response.should render_template('index')
       assigns[:blogs].should == [@blog]
     end
-
   end
 
 
@@ -36,8 +35,7 @@ describe BlogsController do
       do_get                                                                
       assigns[:blog].should equal(@blog)
       response.should redirect_to blog_posts_url(@blog)
-    end
-                   
+    end            
   end
 
 

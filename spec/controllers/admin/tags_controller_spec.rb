@@ -102,25 +102,12 @@ describe Admin::TagsController do
       get :show, :id => "1", :blog_id => "1"
     end
 
-    it "should be successful" do
+    it "should be successful, render show template, find the tag requested and assign for the view" do        
+      Tag.should_receive(:find).with("1", {:include=>:taggings, :conditions=>["taggings.blog_id = ?", @blog.id]}).and_return(@tag)  
       do_get
-      response.should be_success
-    end
-
-    it "should render show template" do
-      do_get
-      response.should render_template('show')
-    end
-
-    it "should find the tag requested" do
-      Tag.should_receive(:find).with("1", {:include=>:taggings, :conditions=>["taggings.blog_id = ?", @blog.id]}).and_return(@tag)
-      do_get
-    end
-
-    it "should assign the found tag for the view" do
-      Tag.stub!(:find).and_return(@tag)
-      do_get
-      assigns[:tag].should equal(@tag)
+      response.should be_success  
+      response.should render_template('show')  
+      assigns[:tag].should equal(@tag)       
     end
   end
 

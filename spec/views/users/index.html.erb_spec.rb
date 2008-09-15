@@ -16,7 +16,8 @@ describe "/users/index" do
     assigns[:users].stub!(:total_pages).and_return(0)
   end
   
-  it "should render list of users" do
-    render 'users/index' 
+  it "should render list of users" do    
+    render 'users/index'             
+    response.should have_tag("h1",  :text => "Blog Title 1 users")    
   end
 end

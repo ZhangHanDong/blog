@@ -15,7 +15,7 @@ end
 
 describe Blog do
   
-  fixtures :blogs, :users
+  fixtures :users
 
   include BlogSpecHelper
 

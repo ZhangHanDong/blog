@@ -15,7 +15,8 @@ describe "/admin/tags/index" do
   end
 
   it "should render list of tags" do
-    render "/admin/tags/index.html.erb"
+    render "/admin/tags/index.html.erb"              
+    response.should have_tag("h1",  :text => "Blog Title tags") 
     response.should have_tag("tr>td", "MyString", 2)
     response.should have_tag("tr>td", "MyString", 2)
   end

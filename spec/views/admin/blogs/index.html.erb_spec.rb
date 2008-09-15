@@ -29,7 +29,14 @@ describe "/admin/blogs/index.html.erb" do
 
   it "should render list of blogs" do
     render "/admin/blogs/index.html.erb"
+    response.should have_tag("h1",  :text => "Blogs")
     response.should have_tag("tr>td", "MyString", 2)
+  end  
+  
+  it "should show title for list of users blogs" do
+    assigns[:user] = @user
+    render "/admin/blogs/index.html.erb"
+    response.should have_tag("h1",  :text => "Blogs by Cowboy Joe")
   end
 end
 
