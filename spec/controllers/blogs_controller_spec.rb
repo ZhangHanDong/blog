@@ -34,7 +34,7 @@ describe BlogsController do
       Blog.should_receive(:find).with("1").and_return(@blog)
       do_get                                                                
       assigns[:blog].should equal(@blog)
-      response.should redirect_to blog_posts_url(@blog)
+      response.should redirect_to(blog_posts_url(@blog))
     end            
   end
 
