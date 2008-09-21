@@ -10,17 +10,23 @@ ActionController::Routing::Routes.draw do |map|
   # public resources
   map.resource  :session
   map.resources :blogs, :collection => { :on => :get } do |blog|
-
+     
     map.connect 'blogs/:blog_id/on/:year/:month/:day',
                         :controller => 'posts',
                         :action     => 'on',
                         :month => nil, :day => nil,
                         :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/ }
+    
 
     blog.resources :posts, :has_many => :comments
     blog.resources :comments
     blog.resources :tags, :has_many => :posts
-    blog.resources :users, :has_many => [:posts, :comments, :tags]
+    blog.resources :users, :has_many => [:posts, :comments, :tags]             
+    
+                                                                                                                              
+    map.connect 'blogs/:blog_id/:tag',         :controller => 'posts', :action => 'tagged'
+    map.connect 'blogs/:blog_id/:tag.:format', :controller => 'posts', :action => 'tagged'
+    
   end
 
 

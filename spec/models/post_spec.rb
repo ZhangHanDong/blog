@@ -54,6 +54,18 @@ describe Post do
       range[:start].to_date.should eql(Time.utc("2006", "2", "28").to_date)
       range[:end].to_date.should eql(Time.utc("2006", "2", "28").end_of_day.to_date)
       range[:descriptor].should eql(' on Tuesday February 28, 2006')
+    end    
+    
+    it "should return current day if range params are invalid" do
+      range = Post.get_date_range("2006", "13", "700")
+      range[:start].to_date.should eql(Time.now.to_date)
+      range[:end].to_date.should eql(Time.now.end_of_day.to_date)
+    end
+    
+    it "should create a permalink string" do
+      Post.create_permalink('I am a post title, a relatively normal one too').should eql('i-am-a-post-title-a-relatively-normal-one-too')
+      Post.create_permalink('   2 3 4 /\\/n\n"bracjets()*&f ^%$ f £@!"').should eql('2-3-4-nnbracjetsf-f-lb')
+      Post.create_permalink('check one two three four').should eql('check-one-two-three-four')
     end
 
   end
@@ -125,7 +137,11 @@ describe Post do
       @post.save!
       @post.update_attribute(:body, 'wejfn iewjnf wek *efwef*')
       @post.body_formatted.should eql('<p>wejfn iewjnf wek <strong>efwef</strong></p>')
-    end
+    end       
+    
+    it "should create and set permalink using title (create)"
+    it "should create and set permalink using title (update)"
+    
 
   end
 

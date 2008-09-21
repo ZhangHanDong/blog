@@ -168,6 +168,29 @@ describe PostsController do
       response.should redirect_to(blog_posts_url(@blog))
     end
 
+  end   
+  
+  
+  describe "handling GET blogs/1/tag_name" do
+
+    def do_get
+      get :index, :blog_id => "1", :tag => 'some_tag'
+    end
+
+    it "should be successful, render index template and assign posts for the view"
+
+  end
+
+
+  describe "handling GET /blogs/1/tag_name.atom" do
+
+    def do_get
+      @request.env["HTTP_ACCEPT"] = "application/atom+xml"
+      get :index, :blog_id => "1", :tag => 'some_tag'  
+    end
+
+    it "should be successful, render recent limited posts as XML"
+    
   end
 
 

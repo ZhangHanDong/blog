@@ -1,4 +1,4 @@
-# Patches to acts_as_taggable_redux plugin for belonging to blog and admin path helper
+# Patches to acts_as_taggable_redux plugin for belonging to blog
 
 # vendor/plugins/acts_as_taggable_redux/lib/acts_as_taggable.rb
 # allowing tag to be created with blog reference
@@ -39,16 +39,6 @@ module ActiveRecord
         end
       end
     end
-  end
-end
-
-
-# vendor/plugins/acts_as_taggable_redux/lib/acts_as_taggable_helper.rb
-# helper for linking
-module ActsAsTaggableHelper
-
-  def link_to_admin_tag(tag)
-    link_to(tag.name, admin_tag_url(tag), :rel => 'tag')
   end
 end
 
