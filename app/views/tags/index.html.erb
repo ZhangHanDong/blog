@@ -7,7 +7,7 @@
 
 <% for tag in @tags %>
   <tr>
-    <td><%= link_to( h(tag.name), blog_tag_posts_path(@blog, tag)) %></td>
+    <td><%= link_to( h(tag.name), blog_tag_name_path(@blog, tag)) %></td>
   </tr>
 <% end %>
 </table> 

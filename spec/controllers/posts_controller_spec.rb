@@ -174,10 +174,22 @@ describe PostsController do
   describe "handling GET blogs/1/tag_name" do
 
     def do_get
-      get :index, :blog_id => "1", :tag => 'some_tag'
+      get :tagged, :blog_id => "1", :tag => 'SoMe_taG'
     end
 
-    it "should be successful, render index template and assign posts for the view"
+    it "should be successful, render index template and assign posts for the view" do
+      Tag.should_receive(:find_by_name).with('some tag', :limit => 1).and_return(@tag)
+      @blog.should_receive(:posts).and_return(@post)
+      @post.should_receive(:published).and_return(@post)
+      @post.should_receive(:with_tag).with(@tag).and_return(@post)
+      @post.should_receive(:empty?).and_return(false)
+      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      do_get
+      response.should be_success
+      response.should render_template('index')
+      assigns[:tag].should equal(@tag)
+      assigns[:posts].should == [@post]
+    end
 
   end
 
@@ -186,10 +198,22 @@ describe PostsController do
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/atom+xml"
-      get :index, :blog_id => "1", :tag => 'some_tag'  
+      get :tagged, :blog_id => "1", :tag => 'some_tag'  
     end
 
-    it "should be successful, render recent limited posts as XML"
+    it "should be successful, render recent limited posts as XML" do
+      Tag.should_receive(:find_by_name).with('some tag', :limit => 1).and_return(@tag)
+      @blog.should_receive(:posts).and_return(@post)
+      @post.should_receive(:published).and_return(@post)
+      @post.should_receive(:with_tag).with(@tag).and_return(@post)
+      @post.should_receive(:empty?).and_return(false)
+      @post.should_receive(:recent).and_return([@post])
+      do_get
+      response.should be_success
+      response.should render_template('index')
+      assigns[:tag].should equal(@tag)
+      assigns[:posts].should == [@post]
+    end
     
   end
 

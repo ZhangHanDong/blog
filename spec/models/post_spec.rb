@@ -62,10 +62,10 @@ describe Post do
       range[:end].to_date.should eql(Time.now.end_of_day.to_date)
     end
     
-    it "should create a permalink string" do
+    it "should create a permalink string with different titles" do
       Post.create_permalink('I am a post title, a relatively normal one too').should eql('i-am-a-post-title-a-relatively-normal-one-too')
       Post.create_permalink('   2 3 4 /\\/n\n"bracjets()*&f ^%$ f £@!"').should eql('2-3-4-nnbracjetsf-f-lb')
-      Post.create_permalink('check one two three four').should eql('check-one-two-three-four')
+      Post.create_permalink('check one two three four (â Â, ê Ê, î Î, ô Ô, û Û, ŵ)').should eql('check-one-two-three-four-a-a-e-e-i-i-o-o-u-u-w')
     end
 
   end
@@ -139,8 +139,18 @@ describe Post do
       @post.body_formatted.should eql('<p>wejfn iewjnf wek <strong>efwef</strong></p>')
     end       
     
-    it "should create and set permalink using title (create)"
-    it "should create and set permalink using title (update)"
+    it "should create and set permalink using title (create)" do
+      @post.attributes = valid_post_attributes.with(:title => 'check one two three four (â Â, ê Ê, î Î, ô Ô, û Û, ŵ) http://google.com')
+      @post.save!
+      @post.permalink.should eql('check-one-two-three-four-a-a-e-e-i-i-o-o-u-u-w-httpgooglecom')
+    end
+    
+    it "should create and set permalink using title (update)" do
+      @post.attributes = valid_post_attributes.with(:title => 'check one two three four (â Â)')
+      @post.save!
+      @post.update_attribute(:title, 'wejfn iewjnf wek *efwef* //`~`&@@@ |! kebf le')
+      @post.permalink.should eql('wejfn-iewjnf-wek-efwef-kebf-le')
+    end
     
 
   end

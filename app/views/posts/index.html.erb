@@ -16,7 +16,7 @@
   <% unless post.tags.empty? -%>
   <ul>
     <% post.tags.each do |tag| -%>
-      <li><%= link_to h(tag.name), blog_tag_posts_path(@blog, tag) %></li>
+      <li><%= link_to h(tag.name), blog_tag_name_path(@blog, tag) %></li>
     <% end -%>
   </ul>       
   <% end -%>

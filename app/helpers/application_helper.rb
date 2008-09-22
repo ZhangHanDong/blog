@@ -15,4 +15,9 @@ module ApplicationHelper
     trunc
   end
   
+  # create path for blogs/:blog_id/:tag_name (mapped in routes)
+  def blog_tag_name_path(blog, tag)
+    "#{blog_path(blog)}/#{tag.name.gsub(' ', '_')}"
+  end
+  
 end
