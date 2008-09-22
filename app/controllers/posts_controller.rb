@@ -58,7 +58,7 @@ class PostsController < ApplicationController
   end
 
 
-  # GET /blogs/1/on/:year/:month/:day
+  # GET /blogs/1/:year/:month/:day
   def on
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
@@ -85,6 +85,19 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html
+    end
+  end
+  
+  
+  # GET /blogs/1/:year/:month/:permalink
+  def permalink
+    @blog = Blog.published.find(params[:blog_id])
+    @date_range = Post.get_date_range(params[:year], params[:month], nil)
+    @post = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).find_by_permalink(params[:permalink], :include => [:comments, :user, :tags])
+    @comment = Comment.new
+
+    respond_to do |format|
+      format.html { render :action => 'show' }
     end
   end
 

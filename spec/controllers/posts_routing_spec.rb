@@ -20,16 +20,16 @@ describe PostsController do
       route_for(:controller => "posts", :action => "show", :blog_id => "1", :id => "1").should == "/blogs/1/posts/1"
     end
 
-    it "should map { :controller => 'posts', :action => 'on', :blog_id => '1', :year => '2008' } to /blogs/1/on/2008" do
-      route_for(:controller => "posts", :action => "on", :blog_id => "1", :year => "2008").should == "/blogs/1/on/2008"
+    it "should map { :controller => 'posts', :action => 'on', :blog_id => '1', :year => '2008' } to /blogs/1/2008" do
+      route_for(:controller => "posts", :action => "on", :blog_id => "1", :year => "2008").should == "/blogs/1/2008"
     end
 
-    it "should map { :controller => 'posts', :action => 'on', :blog_id => '1', :year => '2007', :month => '6' } to /blogs/1/on/2007/6" do
-      route_for(:controller => "posts", :action => "on", :blog_id => "1", :year => "2007", :month => "6").should == "/blogs/1/on/2007/6"
+    it "should map { :controller => 'posts', :action => 'on', :blog_id => '1', :year => '2007', :month => '6' } to /blogs/1/2007/6" do
+      route_for(:controller => "posts", :action => "on", :blog_id => "1", :year => "2007", :month => "6").should == "/blogs/1/2007/6"
     end
 
-    it "should map { :controller => 'posts', :action => 'on', :blog_id => '1', :year => '2006', :month => '4', :day => '22' } to /blogs/1/on/2006/4/22" do
-      route_for(:controller => "posts", :action => "on", :blog_id => "1", :year => "2006", :month => '4', :day => '22').should == "/blogs/1/on/2006/4/22"
+    it "should map { :controller => 'posts', :action => 'on', :blog_id => '1', :year => '2006', :month => '4', :day => '22' } to /blogs/1/2006/4/22" do
+      route_for(:controller => "posts", :action => "on", :blog_id => "1", :year => "2006", :month => '4', :day => '22').should == "/blogs/1/2006/4/22"
     end
     
     it "should map { :controller => 'posts', :action => 'tagged', :blog_id => '1', :tag => 'tag_name' } to /blogs/1/tag_name" do
@@ -69,16 +69,16 @@ describe PostsController do
       params_from(:get, "/blogs/1/posts/1").should == {:controller => "posts", :action => "show", :blog_id => "1", :id => "1"}
     end
 
-    it "should generate params { :controller => 'posts', action => 'on', :blog_id => 1, :year => 2008 } from GET /blogs/1/on/2008" do
-      params_from(:get, "/blogs/1/on/2008").should == {:controller => "posts", :action => "on", :year => "2008", :blog_id => "1"}
+    it "should generate params { :controller => 'posts', action => 'on', :blog_id => 1, :year => 2008 } from GET /blogs/1/2008" do
+      params_from(:get, "/blogs/1/2008").should == {:controller => "posts", :action => "on", :year => "2008", :blog_id => "1"}
     end
 
-    it "should generate params { :controller => 'posts', action => 'on', :blog_id => 1, :year => 2007, :month => 8 } from GET /blogs/1/on/2007/8" do
-      params_from(:get, "/blogs/1/on/2007/8").should == {:controller => "posts", :action => "on", :year => "2007", :month => "8", :blog_id => "1"}
+    it "should generate params { :controller => 'posts', action => 'on', :blog_id => 1, :year => 2007, :month => 8 } from GET /blogs/1/2007/8" do
+      params_from(:get, "/blogs/1/2007/8").should == {:controller => "posts", :action => "on", :year => "2007", :month => "8", :blog_id => "1"}
     end
 
-    it "should generate params { :controller => 'posts', action => 'on', :blog_id => 1, :year => 2006, :month => 10, :day => 22, :blog_id => 1 } from GET /blogs/1/on/2006/10/22" do
-      params_from(:get, "/blogs/1/on/2006/10/22").should == {:controller => "posts", :action => "on", :year => "2006", :month => "10", :day => "22", :blog_id => "1"}
+    it "should generate params { :controller => 'posts', action => 'on', :blog_id => 1, :year => 2006, :month => 10, :day => 22, :blog_id => 1 } from GET /blogs/1/2006/10/22" do
+      params_from(:get, "/blogs/1/2006/10/22").should == {:controller => "posts", :action => "on", :year => "2006", :month => "10", :day => "22", :blog_id => "1"}
     end    
     
     it "should generate params { :controller => 'posts', action => 'tagged', :blog_id => 1 } from GET /blogs/1/tag_name" do

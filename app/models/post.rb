@@ -40,16 +40,25 @@ class Post < ActiveRecord::Base
   end
   
   def format_permalink
-    self.permalink = Post.create_permalink(self.title)
+    self.permalink = Post.create_permalink(self.title, self.publish_date, self.blog)
   end
   
-  def self.create_permalink(text, seperator='-', max_length = 255)
+  
+  def self.create_permalink(text, publish_date = nil, blog = nil)
     # convert chars
-    t = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
-    t = t.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', seperator)
-    t = (t.blank?) ? seperator : t
+    permalink = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
+    permalink = permalink.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
+    permalink = (permalink.blank?) ? '-' : permalink
+    
+    # check existing posts in blog, for same month for the same permalink
+    if publish_date && blog
+      date_range = Post.get_date_range(publish_date.year, publish_date.month, nil)
+      posts = blog.posts.in_range(date_range[:start], date_range[:end]).find(:all, :conditions => ['permalink = ?', permalink])
+      permalink = "#{permalink}-#{(posts.length+1)}" if posts.length > 1
+    end
+    
     # limit length
-    t = t[0, max_length]
+    return permalink[0, 127]
   end
 
 end
