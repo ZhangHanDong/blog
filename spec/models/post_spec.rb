@@ -24,7 +24,7 @@ end
 
 describe Post do
 
-  fixtures  :users
+  fixtures  :users, :posts
 
   include PostSpecHelper
 
@@ -62,10 +62,13 @@ describe Post do
       range[:end].to_date.should eql(Time.now.end_of_day.to_date)
     end
     
-    it "should create a permalink string with different titles" do
-      Post.create_permalink('I am a post title, a relatively normal one too').should eql('i-am-a-post-title-a-relatively-normal-one-too')
-      Post.create_permalink('   2 3 4 /\\/n\n"bracjets()*&f ^%$ f £@!"').should eql('2-3-4-nnbracjetsf-f-lb')
-      Post.create_permalink('check one two three four (â Â, ê Ê, î Î, ô Ô, û Û, ŵ)').should eql('check-one-two-three-four-a-a-e-e-i-i-o-o-u-u-w')
+    it "should give different permalinks for posts with the same title on same day"
+    
+    it "should give different permalinks for posts with the same title on same day (taking permalink name from last permalink added)"
+    
+    it "should shorten permalink string for a long title" do
+      @post = Post.create!(valid_post_attributes.with(:title => '123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z too long here'))    
+      @post.permalink.should eql('123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z')       
     end
 
   end
@@ -145,7 +148,7 @@ describe Post do
       @post.permalink.should eql('check-one-two-three-four-a-a-e-e-i-i-o-o-u-u-w-httpgooglecom')
     end
     
-    it "should create and set permalink using title (update)" do
+    it "should update and set permalink using title (update)" do
       @post.attributes = valid_post_attributes.with(:title => 'check one two three four (â Â)')
       @post.save!
       @post.update_attribute(:title, 'wejfn iewjnf wek *efwef* //`~`&@@@ |! kebf le')

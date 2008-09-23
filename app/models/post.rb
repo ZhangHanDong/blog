@@ -16,7 +16,29 @@ class Post < ActiveRecord::Base
   named_scope :in_range, lambda { |*dates| {:conditions =>  ["posts.publish_date >= ? AND posts.publish_date <= ?", dates[0].to_s(:db), dates[1].to_s(:db)]}}
   named_scope :by_user,  lambda { |*user| {:conditions =>  ["posts.user_id = ?", user]}}
   named_scope :with_tag, lambda { |*tag| {:include => :taggings, :conditions =>  ["taggings.tag_id = ?", tag]}}
+          
 
+  def create_permalink
+    # convert chars and shorten
+    permalink = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(self.title)
+    permalink = permalink.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
+    permalink = permalink[0, 120]
+    
+    # check other existing posts in blog, for same day and same permalink
+    if self.publish_date && self.blog
+      date_range = Post.get_date_range(self.publish_date.year, self.publish_date.month, self.publish_date.day)
+      posts = self.blog.posts.in_range(date_range[:start], date_range[:end]).find(:all, 
+                                                                                  :conditions => ["permalink LIKE ? AND id != ?", "#{permalink}%", self.id], 
+                                                                                  :order => 'permalink DESC')
+      unless posts.empty?                                                    
+        postfix = (posts.first.permalink.split('-').last.to_i)+1
+        permalink = "#{permalink}-#{postfix}"
+      end
+    end
+    
+    permalink
+  end
+  
 
   def self.get_date_range(year, month = 1, day = 1)
     start_date = end_date = Time.utc(year, month, day) rescue Time.now
@@ -32,7 +54,7 @@ class Post < ActiveRecord::Base
     end
     {:start => start_date, :end => end_date, :descriptor => descriptor}
   end
-
+  
 
   private
   def format_body
@@ -40,25 +62,7 @@ class Post < ActiveRecord::Base
   end
   
   def format_permalink
-    self.permalink = Post.create_permalink(self.title, self.publish_date, self.blog)
-  end
-  
-  
-  def self.create_permalink(text, publish_date = nil, blog = nil)
-    # convert chars
-    permalink = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(text)
-    permalink = permalink.downcase.strip.gsub(/[^-_\s[:alnum:]]/, '').squeeze(' ').tr(' ', '-')
-    permalink = (permalink.blank?) ? '-' : permalink
-    
-    # check existing posts in blog, for same month for the same permalink
-    if publish_date && blog
-      date_range = Post.get_date_range(publish_date.year, publish_date.month, nil)
-      posts = blog.posts.in_range(date_range[:start], date_range[:end]).find(:all, :conditions => ['permalink = ?', permalink])
-      permalink = "#{permalink}-#{(posts.length+1)}" if posts.length > 1
-    end
-    
-    # limit length
-    return permalink[0, 127]
-  end
+    self.permalink = self.create_permalink
+  end   
 
 end

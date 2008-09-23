@@ -12,8 +12,9 @@ describe "/posts/show" do
     @post = mock_model(Post, :to_param => 1)
     @comment = mock_model(Comment)   
      
-    @post.should_receive(:title).and_return("MyStringTitle1")
-    @post.should_receive(:publish_date).and_return(Time.now)
+    @post.should_receive(:title).and_return("MyStringTitle1") 
+    @post.should_receive(:permalink).at_least(1).times.and_return("my-string-title-1") 
+    @post.should_receive(:publish_date).at_least(1).times.and_return(Time.now)
     @post.should_receive(:user).twice.and_return(mock_model(User, :name => 'matt'))   
     @post.should_receive(:comments).twice.and_return([])
     @post.should_receive(:tags).and_return([])      

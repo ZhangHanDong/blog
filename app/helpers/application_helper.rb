@@ -18,6 +18,12 @@ module ApplicationHelper
   # create path for blogs/:blog_id/:tag_name (mapped in routes)
   def blog_tag_name_path(blog, tag)
     "#{blog_path(blog)}/#{tag.name.gsub(' ', '_')}"
+  end 
+  
+  # create path for blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
+  def blog_post_permalink(blog, post, options = {})
+    path = "#{blog_path(blog)}/#{post.publish_date.year}/#{post.publish_date.month}/#{post.publish_date.day}/#{post.permalink}"
+    options[:anchor].nil? ? path : "#{path}##{options[:anchor]}"
   end
   
 end

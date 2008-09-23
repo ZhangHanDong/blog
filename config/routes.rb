@@ -11,10 +11,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resource  :session
   map.resources :blogs, :collection => { :on => :get } do |blog|
    
-    map.connect 'blogs/:blog_id/:year/:month/:permalink',
+    map.connect 'blogs/:blog_id/:year/:month/:day/:permalink',
                         :controller => 'posts',
                         :action     => 'permalink',
-                        :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :permalink => /[^-_\s[:alnum:]]/ }
+                        :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/ }
    
     map.connect 'blogs/:blog_id/:year/:month/:day',
                         :controller => 'posts',
