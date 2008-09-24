@@ -4,4 +4,4 @@
   <%= render :partial => 'form', :locals => { :f => f } -%>
 <% end %>
 
-<%= link_to 'Back to post', blog_post_permalink(@post.blog, @post) %>
+<%= link_to 'Back to post', blog_post_permalink_url(@post) %>

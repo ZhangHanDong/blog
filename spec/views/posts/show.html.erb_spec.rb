@@ -18,6 +18,7 @@ describe "/posts/show" do
     @post.should_receive(:user).twice.and_return(mock_model(User, :name => 'matt'))   
     @post.should_receive(:comments).twice.and_return([])
     @post.should_receive(:tags).and_return([])      
+    @post.should_receive(:blog).and_return(@blog)      
     @post.should_receive(:summary).and_return('Not Blank')       
     @post.should_receive(:body_formatted).and_return('Body Text')        
                                  

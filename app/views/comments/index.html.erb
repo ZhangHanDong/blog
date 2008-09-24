@@ -1,4 +1,4 @@
-<h1><%= h(@comments.first.post.blog.title) unless @comments.empty? %> comments <%= "#{ "on #{link_to h(@post.title), blog_post_permalink(@post.blog, @post)}" if @post }#{ "by #{h(@user.name)}" if @user }" %></h1>     
+<h1><%= h(@comments.first.post.blog.title) unless @comments.empty? %> comments <%= "#{ "on #{link_to h(@post.title), blog_post_permalink_url(@post)}" if @post }#{ "by #{h(@user.name)}" if @user }" %></h1>     
 
 <% unless @comments.empty? %>  
   <%= render :partial => 'comments/comment', :collection => @comments -%>

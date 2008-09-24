@@ -17,7 +17,8 @@ describe "/posts/index" do
     post_98.should_receive(:publish_date).at_least(1).times.and_return(Time.now)
     post_98.should_receive(:user).twice.and_return(mock_model(User, :name => 'matt'))   
     post_98.should_receive(:comments).and_return([])
-    post_98.should_receive(:tags).and_return([])      
+    post_98.should_receive(:tags).and_return([])  
+    post_98.should_receive(:blog).twice.and_return(blog)          
     post_98.should_receive(:summary).twice.and_return('Not Blank')       
     post_98.should_not_receive(:body_formatted)
                   
@@ -30,6 +31,7 @@ describe "/posts/index" do
     post_99.should_receive(:user).twice.and_return(mock_model(User, :name => 'jett')) 
     post_99.should_receive(:comments).twice.and_return([mock_model(Comment), mock_model(Comment)])
     post_99.should_receive(:tags).and_return([])
+    post_99.should_receive(:blog).twice.and_return(blog)
     post_99.should_receive(:summary).and_return('')
               
     assigns[:blog] = blog

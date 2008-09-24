@@ -1,4 +1,4 @@
-<h1><%=link_to h(@post.title), blog_post_permalink(@blog, @post) %></h1>
+<h1><%=link_to h(@post.title), blog_post_permalink_url(@post) %></h1>
 <ul>
   <li>added on <%= @post.publish_date %> by <%= link_to h(@post.user.name), blog_user_path(@blog, @post.user) %></li>   
 </ul>           

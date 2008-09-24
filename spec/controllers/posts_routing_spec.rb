@@ -35,6 +35,10 @@ describe PostsController do
     it "should map { :controller => 'posts', :action => 'tagged', :blog_id => '1', :tag => 'tag_name' } to /blogs/1/tag_name" do
       route_for(:controller => "posts", :action => "tagged", :blog_id => "1", :tag => "tag_name").should == "/blogs/1/tag_name"
     end
+    
+    it "should map { :controller => 'posts', :action => 'permalink', :blog_id => '1', :year => '2006', :month => '4', :day => '22', :permalink => 'some-perma-title' } to /blogs/1/2006/4/22" do
+      route_for(:controller => "posts", :action => "permalink", :blog_id => "1", :year => "2006", :month => '4', :day => '22', :permalink => 'some-perma-title').should == "/blogs/1/2006/4/22/some-perma-title"
+    end
 
   end
 
@@ -83,6 +87,10 @@ describe PostsController do
     
     it "should generate params { :controller => 'posts', action => 'tagged', :blog_id => 1 } from GET /blogs/1/tag_name" do
       params_from(:get, "/blogs/1/tag_name").should == {:controller => "posts", :action => "tagged", :tag => "tag_name", :blog_id => "1"}
+    end 
+    
+    it "should generate params { :controller => 'posts', action => 'permalink', :blog_id => 1, :year => 2006, :month => 10, :day => 22, :blog_id => 1, :permalink => 'perma-link-title-1'} from GET /blogs/1/2006/10/22/perma-link-title-1" do
+      params_from(:get, "/blogs/1/2006/10/22/perma-link-title-1").should == {:controller => "posts", :action => "permalink", :year => "2006", :month => "10", :day => "22", :blog_id => "1", :permalink => 'perma-link-title-1'}
     end
 
   end
