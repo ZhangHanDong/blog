@@ -5,6 +5,7 @@
     <th>User</th> 
   </tr>
 
+
 <% for user in @users %>
   <tr>
     <td><%= link_to( h(user.name), blog_user_path(@blog, user)) %> | <%= link_to( 'posts', blog_user_posts_path(@blog, user)) %> | <%= link_to( 'comments', blog_user_comments_path(@blog, user)) %></td>
