@@ -190,6 +190,17 @@ describe PostsController do
       assigns[:tag].should equal(@tag)
       assigns[:posts].should == [@post]
     end
+    
+    
+    it "should be redirect to blog posts url when no posts found" do
+      Tag.should_receive(:find_by_name).with('some tag', :limit => 1).and_return(@tag)
+      @blog.should_receive(:posts).and_return(@post)
+      @post.should_receive(:published).and_return(@post)
+      @post.should_receive(:with_tag).with(@tag).and_return([])
+      do_get
+      flash[:notice].should_not be_empty
+      response.should redirect_to(blog_posts_url(@blog))
+    end
 
   end
 
@@ -229,6 +240,33 @@ describe PostsController do
 
     def do_get
       get :show, :id => "1", :blog_id => "1"
+    end
+
+    it "should be successful, render show template and asssign the post for the view" do
+      do_get
+      response.should be_success
+      response.should render_template('show')
+      assigns[:post].should equal(@post)
+    end
+
+  end
+  
+  
+  describe "handling GET /blogs/1/:year/:month/:permalink" do
+
+    before(:each) do
+      date_range = { :start => Time.utc("2008", "7", "1").to_date, :end => Time.utc("2008", "7", "31").to_date }
+      Post.should_receive(:get_date_range).with('2008', '7', nil).and_return(date_range)
+      @blog.should_receive(:posts).and_return(@post)
+      @post.should_receive(:published).and_return(@post)
+      @post.should_receive(:in_range).with(date_range[:start], date_range[:end]).and_return(@post)
+      @post.should_receive(:find_by_permalink).with('some-post-title', {:include=>[:comments, :user, :tags]}).and_return(@post)
+      
+      Comment.should_receive(:new).and_return(mock_model(Comment))
+    end
+
+    def do_get
+      get :permalink, :blog_id => "1", :year => "2008", :month => "7", :permalink => 'some-post-title'
     end
 
     it "should be successful, render show template and asssign the post for the view" do
