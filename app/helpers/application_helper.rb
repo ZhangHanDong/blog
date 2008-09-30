@@ -16,8 +16,8 @@ module ApplicationHelper
   end
   
   # create path for blogs/:blog_id/:tag_name (mapped in routes)
-  def blog_tag_name_path(blog, tag, options = {})
-    url_for({:controller => "posts", :action => "tagged", :blog_id => "#{blog.id}", :tag => tag.name.gsub(' ', '_')}.merge(options))
+  def blog_tag_name_url(blog, tag, options = {})
+    url_for({:only_path => false, :controller => "posts", :action => "tagged", :blog_id => "#{blog.id}", :tag => tag.name.gsub(' ', '_')}.merge(options))
   end 
   
   # create path for http://host:protocol .. etc .. /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)

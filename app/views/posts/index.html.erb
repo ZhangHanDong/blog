@@ -1,25 +1,31 @@
 <h1><%= "#{h(@blog.title)} posts#{(@tag.nil? ? '' : " tagged with #{h(@tag.name)}")}#{(@user.nil? ? '' : " by #{h(@user.name)}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
 <hr/>
 <% for post in @posts %>
-  <h2><%=link_to h(post.title), blog_post_permalink_url(post) %></h2>
-  <ul>
-    <li>added on <%= post.publish_date %> by <%= link_to h(post.user.name), blog_user_path(@blog, post.user) %></li>   
-  </ul>               
-  <% unless post.summary.blank? -%>
-  <p><%= h(post.summary) %></p>   
-  <% else -%>
-  <%= truncate_words(post.body_formatted, 300) %>
-  <% end -%>
+<div class="hentry">
+  <h2 class="entry-title"><%=link_to h(post.title), blog_post_permalink_url(post), { :rel => 'bookmark' } %></h2>
+  <p>
+    added on <abbr class="updated" title="<%= post.publish_date.iso8601 %>"><%= post.publish_date.to_s(:long) %></abbr> 
+    by  <span class="vcard author"><%= link_to h(post.user.name), blog_user_path(@blog, post.user), { :class => 'url fn' } %></span>
+  </p>
+  <div class="entry-summary">            
+    <% unless post.summary.blank? -%>
+    <p><%= h(post.summary) %></p>   
+    <% else -%>
+    <%= truncate_words(post.body_formatted, 300) %>
+    <% end -%>
+  </div>
   <p>
     <%= post.comments.length == 0 ? link_to('no comments yet, post one now', blog_post_permalink_url(post, :anchor => 'new-comment')) : link_to(pluralize(post.comments.length, 'comment'), blog_post_permalink_url(post, :anchor => 'comments')) %>
   </p>
   <% unless post.tags.empty? -%>
   <ul>
     <% post.tags.each do |tag| -%>
-      <li><%= link_to h(tag.name), blog_tag_name_path(@blog, tag) %></li>
+      <li><%= link_to h(tag.name), blog_tag_name_url(@blog, tag), { :rel => 'tag' } %></li>
     <% end -%>
   </ul>       
   <% end -%>
   <hr/>
+</div>
 <% end %>
+
 <p><%= will_paginate @posts %></p>

@@ -19,7 +19,7 @@ describe "/posts/show" do
     @post.should_receive(:comments).twice.and_return([])
     @post.should_receive(:tags).and_return([])      
     @post.should_receive(:blog).and_return(@blog)      
-    @post.should_receive(:summary).and_return('Not Blank')       
+    @post.should_receive(:summary).at_least(1).and_return('Not Blank')       
     @post.should_receive(:body_formatted).and_return('Body Text')        
                                  
     @comment.stub!(:new_record?).and_return(true)

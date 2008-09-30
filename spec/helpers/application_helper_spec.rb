@@ -16,7 +16,7 @@ describe ApplicationHelper do
      end
    end
    
-   describe "blog_tag_name_path url generation" do
+   describe "blog_tag_name_url generation" do
      
      before(:each) do
        @blog = mock_model(Blog)
@@ -24,18 +24,18 @@ describe ApplicationHelper do
      
      it "should generate relative path to tag name via blog/id" do    
        tag = mock_model(Tag, :name => 'mr bo jangles')
-       blog_tag_name_path(@blog, tag).should eql("/blogs/#{@blog.id}/mr_bo_jangles")
+       blog_tag_name_url(@blog, tag).should eql("http://test.host/blogs/#{@blog.id}/mr_bo_jangles")
      end
      
      it "should generate relative path to tag name atom feed" do    
         tag = mock_model(Tag, :name => 'mr bo jangles')
-        blog_tag_name_path(@blog, tag, {:format => :atom}).should eql("/blogs/#{@blog.id}/mr_bo_jangles.atom")
+        blog_tag_name_url(@blog, tag, {:format => :atom}).should eql("http://test.host/blogs/#{@blog.id}/mr_bo_jangles.atom")
       end
      
      it "should play nice converting crazy tag names" do    
         tag = mock_model(Tag, :name => 'mr     \nâ Â, ê Ê, î Î, ô Ô, û Û, ŵ jangles')
-        blog_tag_name_path(@blog, tag).should \
-          eql("/blogs/#{@blog.id}/mr_____%5Cn%C3%A2_%C3%82,_%C3%AA_%C3%8A,_%C3%AE_%C3%8E,_%C3%B4_%C3%94,_%C3%BB_%C3%9B,_%C5%B5_jangles")
+        blog_tag_name_url(@blog, tag).should \
+          eql("http://test.host/blogs/#{@blog.id}/mr_____%5Cn%C3%A2_%C3%82,_%C3%AA_%C3%8A,_%C3%AE_%C3%8E,_%C3%B4_%C3%94,_%C3%BB_%C3%9B,_%C5%B5_jangles")
       end
    end 
    
