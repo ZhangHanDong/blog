@@ -17,7 +17,7 @@ describe "/posts/index" do
     post_98.should_receive(:publish_date).at_least(1).times.and_return(Time.now)
     post_98.should_receive(:user).twice.and_return(mock_model(User, :name => 'matt'))   
     post_98.should_receive(:comments).and_return([])
-    post_98.should_receive(:tags).and_return([])  
+    post_98.should_receive(:tags).at_least(1).times.and_return([@tag])  
     post_98.should_receive(:blog).twice.and_return(blog)          
     post_98.should_receive(:summary).twice.and_return('Not Blank')       
     post_98.should_not_receive(:body_formatted)
@@ -30,7 +30,7 @@ describe "/posts/index" do
     post_99.should_receive(:publish_date).at_least(1).times.and_return(Time.now)
     post_99.should_receive(:user).twice.and_return(mock_model(User, :name => 'jett')) 
     post_99.should_receive(:comments).twice.and_return([mock_model(Comment), mock_model(Comment)])
-    post_99.should_receive(:tags).and_return([])
+    post_99.should_receive(:tags).at_least(1).times.and_return([@tag])
     post_99.should_receive(:blog).twice.and_return(blog)
     post_99.should_receive(:summary).and_return('')
               
@@ -68,6 +68,22 @@ describe "/posts/index" do
     render "/posts/index.html.erb"                               
     response.should have_tag("h1",  :text => "Blog Title posts tagged with tag name by Jett Loe")
   end
-
+  
+  
+  describe "hAtom feed" do
+  
+    it "should have the basic attributes on posts for hEntry, hCard and rel-tag" do
+      render "/posts/index.html.erb"
+      # post
+      response.should have_tag('div[class=?]>h2[class=?]>a[rel=?]', "hentry", "entry-title", "bookmark")
+      response.should have_tag('abbr[class=?]', "updated")
+      response.should have_tag('div[class=?]', "entry-summary")  
+      # author
+      response.should have_tag('span[class=?]>a[class=?]', "vcard author", "url fn")
+      # tag  
+      response.should have_tag('a[rel=?]', "tag")
+    end
+    
+  end
   
 end   
