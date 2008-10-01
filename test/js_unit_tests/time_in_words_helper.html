@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>distanceOfTimeInWords javascript unittests</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
+  <script src="javascripts/unittest.js" type="text/javascript"></script>
+  <script src="../../public/javascripts/time_in_words_helper.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="stylesheets/test.css" type="text/css"/>
+</head>
+<body>
+<h1>distanceOfTimeInWords javascript unittests</h1>
+<h2>Results</h2>
+<div id="testlog"></div>
+<!-- here go any elements you do the testing on -->
+<h2>Output</h2>
+<p id="testExample" class="updated" title="2008-08-23T19:00:00Z">4th Oct 2008</p>
+
+<!-- Tests -->
+<script type="text/javascript" language="javascript">
+  var now = new Date();
+  function nowPlusSeconds(seconds) {
+    var date = new Date()
+    date.setTime(now.getTime() + (seconds * 1000))
+    return date
+  }
+  function nowPlusMinutes(minutes) {
+    return nowPlusSeconds(minutes * 60)
+  }
+  new Test.Unit.Runner({
+    setup: function() {
+      this.assertTimeDistanceInWordsEquals = function(expected, toTime, includeSeconds) {
+        this.assertEqual(expected, TimeInWordsHelper.distanceInWords(now, toTime, includeSeconds));
+      }
+      this.now = new Date();
+    },
+    testTimeAgoInWordsSubMinute: function() {
+      with (this) {
+        assertTimeDistanceInWordsEquals("less than 5 seconds", now, true);
+        assertTimeDistanceInWordsEquals("less than 5 seconds", nowPlusSeconds(4), true);
+        assertTimeDistanceInWordsEquals("less than 10 seconds", nowPlusSeconds(5), true);
+        assertTimeDistanceInWordsEquals("less than 10 seconds", nowPlusSeconds(9), true);
+        assertTimeDistanceInWordsEquals("less than 20 seconds", nowPlusSeconds(10), true);
+        assertTimeDistanceInWordsEquals("less than 20 seconds", nowPlusSeconds(19), true);
+        assertTimeDistanceInWordsEquals("half a minute", nowPlusSeconds(20), true);
+        assertTimeDistanceInWordsEquals("half a minute", nowPlusSeconds(39), true);
+        assertTimeDistanceInWordsEquals("less than a minute", nowPlusSeconds(40), true);
+        assertTimeDistanceInWordsEquals("less than a minute", nowPlusSeconds(59), true);
+        assertTimeDistanceInWordsEquals("1 minute", nowPlusSeconds(60), true);
+      }
+    },
+    testTimeAgoInWordsSubMinuteIgnoringSeconds: function() {
+      with (this) {
+        assertTimeDistanceInWordsEquals("less than a minute", now, false);
+        assertTimeDistanceInWordsEquals("1 minute", nowPlusSeconds(40), false);
+      }
+    },
+    testTimeAgoInWords: function() {
+      with (this) {
+        assertTimeDistanceInWordsEquals("2 minutes", nowPlusMinutes(2), true);
+        assertTimeDistanceInWordsEquals("44 minutes", nowPlusMinutes(44), true);
+        assertTimeDistanceInWordsEquals("about 1 hour", nowPlusMinutes(45), true);
+        assertTimeDistanceInWordsEquals("about 1 hour", nowPlusMinutes(89), true);
+        assertTimeDistanceInWordsEquals("about 2 hours", nowPlusMinutes(90), true);
+        assertTimeDistanceInWordsEquals("about 2 hours", nowPlusMinutes(120), true);
+        assertTimeDistanceInWordsEquals("about 24 hours", nowPlusMinutes(1439), true);
+        assertTimeDistanceInWordsEquals("1 day", nowPlusMinutes(1440), true);
+        assertTimeDistanceInWordsEquals("1 day", nowPlusMinutes(2879), true);
+        assertTimeDistanceInWordsEquals("2 days", nowPlusMinutes(2880), true);
+        assertTimeDistanceInWordsEquals("30 days", nowPlusMinutes(43199), true);
+        assertTimeDistanceInWordsEquals("about 1 month", nowPlusMinutes(43200), true);
+        assertTimeDistanceInWordsEquals("about 1 month", nowPlusMinutes(86399), true);
+        assertTimeDistanceInWordsEquals("2 months", nowPlusMinutes(86400), true);
+        assertTimeDistanceInWordsEquals("12 months", nowPlusMinutes(525599), true);
+        assertTimeDistanceInWordsEquals("about 1 year", nowPlusMinutes(525600), true);
+        assertTimeDistanceInWordsEquals("about 1 year", nowPlusMinutes(1051199), true);
+        assertTimeDistanceInWordsEquals("over 2 years", nowPlusMinutes(1051200), true);
+      }
+    },
+    testConvertToTimeAgoInWords: function() {
+      with (this) {
+        var e = $('testExample');
+        var d = new Date();
+        d.setISO8601(e.title);
+        var expectedNewTitle = e.innerHTML;
+        var expectedDateInWords = TimeInWordsHelper.distanceInWords(new Date, d, false);
+        TimeInWordsHelper.convertBySelector('.updated');
+        assertEqual('yes', 'yes');
+        assertEqual(expectedDateInWords + ' ago', $('testExample').innerHTML)
+        assertEqual(expectedNewTitle, $('testExample').title)
+      }
+    }
+  });
+</script>
+</body>
+</html>
