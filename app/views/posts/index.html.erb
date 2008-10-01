@@ -30,6 +30,4 @@
 
 <p><%= will_paginate @posts %></p>
 
-<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
-<script src="/javascripts/time_in_words_helper.js" type="text/javascript"></script>
-<script>TimeInWordsHelper.convertBySelector('.updated');</script>
+<% javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>") -%>

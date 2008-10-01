@@ -29,4 +29,10 @@ describe "/users/show" do
     response.should have_text(/MyString2/)
     response.should have_text(/MyString3/) 
   end
+  
+  describe "hCard" do
+  
+    it "should have the basic attributes on the user for hCard support"
+    
+  end
 end

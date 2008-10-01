@@ -32,4 +32,11 @@ module ApplicationHelper
              :permalink => post.permalink}.merge(options))                          
   end
   
+  # append script string or js file includes in layouts
+  def javascript(script = '', files = [])        
+    js = ""
+    files.each { |file| js += "<script src=\"#{file}\" type=\"text/javascript\"></script>\n    " }
+    content_for(:javascript) { js + script }
+  end
+  
 end

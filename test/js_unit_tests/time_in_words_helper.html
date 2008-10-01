@@ -4,11 +4,11 @@
   <title>distanceOfTimeInWords javascript unittests</title>
   <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
   <script src="javascripts/unittest.js" type="text/javascript"></script>
-  <script src="../../public/javascripts/time_in_words_helper.js" type="text/javascript"></script>
+  <script src="../../public/javascripts/application.js" type="text/javascript"></script>
   <link rel="stylesheet" href="stylesheets/test.css" type="text/css"/>
 </head>
 <body>
-<h1>distanceOfTimeInWords javascript unittests</h1>
+<h1>distanceOfTimeInWords javascript unit tests</h1>
 <h2>Results</h2>
 <div id="testlog"></div>
 <!-- here go any elements you do the testing on -->
@@ -26,10 +26,13 @@
   function nowPlusMinutes(minutes) {
     return nowPlusSeconds(minutes * 60)
   }
+  function nowMinusMinutes(minutes) {
+    return nowPlusSeconds(minutes * -60)
+  }
   new Test.Unit.Runner({
     setup: function() {
-      this.assertTimeDistanceInWordsEquals = function(expected, toTime, includeSeconds) {
-        this.assertEqual(expected, TimeInWordsHelper.distanceInWords(now, toTime, includeSeconds));
+      this.assertTimeDistanceInWordsEquals = function(expected, toTime, includeSeconds, includePrefix) {
+        this.assertEqual(expected, TimeInWordsHelper.distanceInWords(now, toTime, includeSeconds, includePrefix));
       }
       this.now = new Date();
     },
@@ -52,6 +55,14 @@
       with (this) {
         assertTimeDistanceInWordsEquals("less than a minute", now, false);
         assertTimeDistanceInWordsEquals("1 minute", nowPlusSeconds(40), false);
+      }
+    },
+	testTimeAgoInWordsSubMinuteIncludingPrefix: function() {
+      with (this) {
+        assertTimeDistanceInWordsEquals("less than a minute from now", now, false, true);
+        assertTimeDistanceInWordsEquals("1 minute from now", nowPlusSeconds(40), false, true);
+		assertTimeDistanceInWordsEquals("10 minutes ago", nowMinusMinutes(10), false, true);
+        assertTimeDistanceInWordsEquals("about 2 hours ago", nowMinusMinutes(90), false, true);
       }
     },
     testTimeAgoInWords: function() {
@@ -81,12 +92,9 @@
         var e = $('testExample');
         var d = new Date();
         d.setISO8601(e.title);
-        var expectedNewTitle = e.innerHTML;
-        var expectedDateInWords = TimeInWordsHelper.distanceInWords(new Date, d, false);
+        var expectedDateInWords = TimeInWordsHelper.distanceInWords(new Date, d, true, true);
         TimeInWordsHelper.convertBySelector('.updated');
-        assertEqual('yes', 'yes');
-        assertEqual(expectedDateInWords + ' ago', $('testExample').innerHTML)
-        assertEqual(expectedNewTitle, $('testExample').title)
+        assertEqual(expectedDateInWords, $('testExample').innerHTML)
       }
     }
   });

@@ -15,7 +15,11 @@
   <hr/>
   <p style="color: green"><%= flash[:notice] %></p>
 
-  <%= yield  %>   
+  <%= yield %>   
+
+    <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
+    <script src="/javascripts/application.js" type="text/javascript"></script>
+    <%= yield :javascript -%>
 
   </body>
 </html>

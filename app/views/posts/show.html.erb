@@ -1,7 +1,7 @@
 <div class="hentry">
   <h1 class="entry-title"><%=link_to h(@post.title), blog_post_permalink_url(@post), { :rel => 'bookmark' } %></h1>
   <p>
-    added on <abbr class="updated" title="<%= @post.publish_date.iso8601 %>"><%= @post.publish_date.to_s(:long) %></abbr> 
+    added <abbr class="updated" title="<%= @post.publish_date.iso8601 %>"><%= @post.publish_date.to_s(:long) %></abbr> 
     by <span class="vcard author"><%= link_to h(@post.user.name), blog_user_path(@blog, @post.user), { :class => 'url fn' } %></span>
   </p>
   <% unless @post.summary.blank? -%><p class="entry-summary"><%=h @post.summary %></p><% end -%>   
@@ -38,3 +38,5 @@
 
 <%= link_to 'return to all posts', blog_posts_path(@blog) %>
 
+
+<% javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>") -%>
