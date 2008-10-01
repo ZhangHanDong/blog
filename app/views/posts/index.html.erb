@@ -4,7 +4,7 @@
 <div class="hentry">
   <h2 class="entry-title"><%=link_to h(post.title), blog_post_permalink_url(post), { :rel => 'bookmark' } %></h2>
   <p>
-    added on <abbr class="updated" title="<%= post.publish_date.iso8601 %>"><%= post.publish_date.to_s(:long) %></abbr> 
+    added <abbr class="updated" title="<%= post.publish_date.iso8601 %>">on <%= post.publish_date.to_s(:long) %></abbr> 
     by  <span class="vcard author"><%= link_to h(post.user.name), blog_user_path(@blog, post.user), { :class => 'url fn' } %></span>
   </p>
   <div class="entry-summary">            
@@ -29,3 +29,7 @@
 <% end %>
 
 <p><%= will_paginate @posts %></p>
+
+<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
+<script src="/javascripts/time_in_words_helper.js" type="text/javascript"></script>
+<script>TimeInWordsHelper.convertBySelector('.updated');</script>
