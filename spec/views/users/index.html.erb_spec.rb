@@ -20,4 +20,14 @@ describe "/users/index" do
     render 'users/index'             
     response.should have_tag("h1",  :text => "Blog Title 1 users")    
   end
+  
+  describe "hCard" do
+  
+    it "users listing represented in hCard format" do
+      render "/users/index"
+      response.should have_tag('td[class=?]>a[class=?]', "vcard", "url fn")
+    end
+    
+  end
+  
 end

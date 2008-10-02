@@ -1,0 +1,23 @@
+development: &non_production_settings
+  spam_questions:
+    - question: 'Is ice hot or cold?'
+      answer: 'cold'
+      id: 1
+    - question: 'What color is an orange?'
+      answer: 'orange'
+      id: 2
+    - question: 'What is 2+3?'
+      answer: '5'
+      id: 3
+    - question: 'The pen is mightier than the what?'
+      answer: 'sword'
+      id: 4    
+    
+test:
+  spam_questions:
+    - question: 'Is ice hot or cold?'
+      answer: 'cold'
+      id: 1
+    - question: 'What color is an orange?'
+      answer: 'orange'
+      id: 2

@@ -5,7 +5,7 @@
   <p>login: <span class="fn nickname"><%=h @user.login %></span></p>
   <p>email: <a class="email" href="mailto:<%=h @user.email %>"><%=h @user.email %></a></p>
   <% if @user.photo -%>    
-    <p><img src="http://<%= "#{request.host_with_port}#{@user.photo.url(:thumb)}" %>" alt="small photo of <%= @user.name %>" class="photo"/>
+    <p><img src="http://<%= "#{request.host_with_port}#{@user.photo.url(:thumb)}" %>" alt="small photo of <%= @user.name %>" class="photo"/></p>
   <% end -%>
   <%=  %>
   <p><%= @posts.length == 0 ? "no posts" : link_to("#{@posts.length} posts", blog_user_posts_path(@blog, @user)) %> and <%= @comments.length == 0 ? "no comments" : link_to("#{@comments.length} comments", blog_user_comments_path(@blog, @user)) %></p>

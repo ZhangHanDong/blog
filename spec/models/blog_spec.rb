@@ -62,7 +62,7 @@ describe Blog do
     it "should have comments" do
       @blog.attributes = valid_blog_attributes
       @post = Post.create!(:title => 'test', :body => 'test body', :publish_date => Date.today, :user => users(:quentin))
-      Comment.create!(:name => 'test', :body => 'test body', :post => @post) 
+      Comment.create!(:name => 'test', :body => 'test body', :post => @post, :spam_question_id => 1, :spam_answer => 'cold') 
       @blog.posts << @post
       @blog.save!
       @blog.comments.length.should eql(1)

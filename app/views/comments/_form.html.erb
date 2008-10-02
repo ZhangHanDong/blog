@@ -1,5 +1,4 @@
-<%= f.error_messages %>     
-
+<%= f.error_messages %>
 <p>
   <%= f.label :name %> (required)<br />
   <%= f.text_field :name, :value => (h(current_user.name) if @comment.name.blank? && current_user) %>
@@ -15,7 +14,13 @@
 <p>
   <%= f.label :body %> (required)<br />
   <%= f.text_area :body %>  
-</p> 
+</p>
+<p>
+  <% question = Comment.random_spam_question -%>
+  <%= question['question'] %> (required)<br />
+  <input name="comment[spam_answer]" id="comment_spam_answer" type="text" />
+  <input name="comment[spam_question_id]" id="comment_spam_question_id" type="hidden" value="<%= question['id'] %>" />
+</p>
 <p>
   <%= f.submit "Add new comment" %>
 </p>

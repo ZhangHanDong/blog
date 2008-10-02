@@ -64,4 +64,11 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
+  
+  # check gems are installed ok
+  config.gem "mini_magick" 
+  config.gem "will_paginate"
 end
+
+# load application config file for the current environment
+APP_CONFIG = YAML.load(File.read(RAILS_ROOT + "/config/config.yml"))[RAILS_ENV]

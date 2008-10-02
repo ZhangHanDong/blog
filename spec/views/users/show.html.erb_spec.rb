@@ -12,10 +12,12 @@ describe "/users/show" do
     @comment = mock_model(Comment)
     @post = mock_model(Post)   
     
+    Paperclip::Attachment.stub!(:url).and_return("some_url")
+    
     @user.stub!(:login).and_return("MyString1")
     @user.stub!(:name).and_return("MyString2")
     @user.stub!(:email).and_return("MyString3")    
-    @user.should_receive(:photo)     
+    @user.should_receive(:photo).twice.and_return(Paperclip::Attachment)     
     
     assigns[:blog] = blog_1    
     assigns[:user] = @user
@@ -32,7 +34,13 @@ describe "/users/show" do
   
   describe "hCard" do
   
-    it "should have the basic attributes on the user for hCard support"
+    it "user represented in hCard format" do
+      render "/users/show"
+      # user
+      response.should have_tag('div[class=?]>h1>a[class=?]', "vcard", "url fn")
+      response.should have_tag('a[class=?]', "email")
+      response.should have_tag('img[class=?]', "photo")
+    end
     
   end
 end

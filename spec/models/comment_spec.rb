@@ -6,7 +6,9 @@ module CommentSpecHelper
     {
       :name => 'Jon Johnsson',
       :body => 'Phasellus pulvinar, nulla non *aliquam* eleifend, "tortor":http://google.com wisi scelerisque felis, in sollicitudin arcu ante lacinia leo.',
-      :post_id => 1
+      :post_id => 1,
+      :spam_question_id => 1, 
+      :spam_answer => 'cold'
     }
   end
 
@@ -19,6 +21,16 @@ describe Comment do
   before(:each) do
     @comment = Comment.new
   end          
+  
+  
+  describe "helper methods" do
+    
+    it "should return a random spam question from those defined in application config" do
+      APP_CONFIG['spam_questions'].select { |q| q == Comment.random_spam_question }.should_not be_nil
+    end
+    
+  end
+  
           
   describe 'named scopes' do  
     
@@ -56,7 +68,7 @@ describe Comment do
 
    
   describe 'being associated with' do  
-    
+
     it "should have a user" do
       @comment.attributes = valid_comment_attributes.with(:user_id => 1)
       @comment.save!
@@ -70,6 +82,26 @@ describe Comment do
       @comment.post.should eql(@post)
     end
     
+  end
+  
+  
+  describe "spam protection" do
+    
+    it "should error on an invalid answer to the spam question during validate" do
+      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, :spam_answer => 'bananas')
+      @comment.should have(1).error_on(:base)
+    end
+    
+    it "should be valid with a correct answer to the spam question" do
+      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, :spam_answer => 'cold')
+      @comment.should be_valid
+    end
+    
+    it "should be valid with a case-insensitive string answer to the spam question" do
+      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, :spam_answer => '  it is cOlD! ewfw  ')
+      @comment.should be_valid
+    end
+        
   end
         
   

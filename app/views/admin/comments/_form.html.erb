@@ -17,5 +17,11 @@
   <%= f.text_area :body %>  
 </p>
 <p>
+  <% question = Comment.random_spam_question -%>
+  <%= question['question'] %> (required)<br />
+  <input name="comment[spam_answer]" id="comment_spam_answer" type="text" />
+  <input name="comment[spam_question_id]" id="comment_spam_question_id" type="hidden" value="<%= question['id'] %>" />
+</p>
+<p>
    <%= f.submit label %>   
 </p>
