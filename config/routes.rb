@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-
+  
   # mapped routes
   map.admin  '/admin',  :controller => 'admin/blogs'
   map.logout '/logout', :controller => 'sessions',   :action => 'destroy'
@@ -44,6 +44,7 @@ ActionController::Routing::Routes.draw do |map|
     end
 
     admin.resources :users, :has_many => [:blogs, :posts, :comments]
+    admin.resources :uploads
   end
 
 

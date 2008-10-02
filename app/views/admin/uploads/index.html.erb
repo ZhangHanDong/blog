@@ -1,0 +1,24 @@
+<h1>Listing uploads</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Blog</th>
+    <th>User</th>
+  </tr>
+
+<% for upload in @uploads %>
+  <tr>
+    <td><%=h upload.title %></td>
+    <td><%=h upload.blog_id %></td>
+    <td><%=h upload.user_id %></td>
+    <td><%= link_to 'Show', admin_upload_path(upload) %></td>
+    <td><%= link_to 'Edit', edit_admin_upload_path(upload) %></td>
+    <td><%= link_to 'Destroy', admin_upload_path(upload), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New upload', new_admin_upload_path %>

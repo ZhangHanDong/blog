@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
   has_many :posts, :order => "posts.created_at DESC"
   has_many :comments, :order => "comments.created_at DESC"
   has_many :blogs, :through => :posts, :uniq => true
+  has_many :uploads
+  
   acts_as_tagger
 
 

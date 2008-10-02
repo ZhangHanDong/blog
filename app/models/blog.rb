@@ -9,6 +9,7 @@ class Blog < ActiveRecord::Base
   has_many   :users, :through => :posts, :uniq => true
   has_many   :posts, :dependent => :destroy
   has_many   :comments, :through => :posts
+  has_many   :uploads
   acts_as_tagger
   
   named_scope :published, :conditions => {:in_draft => false}
