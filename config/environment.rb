@@ -66,7 +66,6 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
   
   # check gems are installed ok
-  config.gem "mini_magick" 
   config.gem "will_paginate"
 end
 
