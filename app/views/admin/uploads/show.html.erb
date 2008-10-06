@@ -4,8 +4,7 @@
 </p>
 
 <p>
-  <b>Blog:</b>
-  <%=h @upload.blog_id %>
+  <%= image_tag @upload.asset.url(:thumb) if @upload.asset %>
 </p>
 
 <p>
@@ -14,5 +13,4 @@
 </p>
 
 
-<%= link_to 'Edit', edit_admin_upload_path(@upload) %> |
 <%= link_to 'Back', admin_uploads_path %>

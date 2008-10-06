@@ -2,18 +2,17 @@
 
 <table>
   <tr>
+    <th></th>
     <th>Title</th>
-    <th>Blog</th>
     <th>User</th>
   </tr>
 
 <% for upload in @uploads %>
   <tr>
+    <td><%= image_tag upload.asset.url(:thumb) if upload.asset %></td>
     <td><%=h upload.title %></td>
-    <td><%=h upload.blog_id %></td>
     <td><%=h upload.user_id %></td>
     <td><%= link_to 'Show', admin_upload_path(upload) %></td>
-    <td><%= link_to 'Edit', edit_admin_upload_path(upload) %></td>
     <td><%= link_to 'Destroy', admin_upload_path(upload), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
@@ -29,15 +28,10 @@
     <%= f.text_field :title %>
   </p>
   <p>
-    <%= f.label :blog_id %><br />
-    <%= f.text_field :blog_id %>
+    <%= f.file_field :asset %>
   </p>
   <p>
-    <%= f.label :user_id %><br />
-    <%= f.text_field :user_id %>
-  </p>
-  <p>
-    <%= f.submit "Create" %>
+    <%= f.submit "Upload" %>
   </p>
 <% end %>
 
