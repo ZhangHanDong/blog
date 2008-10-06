@@ -14,6 +14,7 @@ describe "/uploads/index.html.erb" do
     upload_99.should_receive(:user_id).and_return("1")
 
     assigns[:uploads] = [upload_98, upload_99]
+    assigns[:upload] =  Upload.new
   end
 
   it "should render list of uploads" do

@@ -131,75 +131,7 @@ describe Admin::UploadsController do
     end
   end
 
-  describe "handling GET /uploads/new" do
-
-    before(:each) do
-      @upload = mock_model(Upload)
-      Upload.stub!(:new).and_return(@upload)
-    end
-
-    def do_get
-      get :new
-    end
-
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render new template" do
-      do_get
-      response.should render_template('new')
-    end
-
-    it "should create an new upload" do
-      Upload.should_receive(:new).and_return(@upload)
-      do_get
-    end
-
-    it "should not save the new upload" do
-      @upload.should_not_receive(:save)
-      do_get
-    end
-
-    it "should assign the new upload for the view" do
-      do_get
-      assigns[:upload].should equal(@upload)
-    end
-  end
-
-  describe "handling GET /uploads/1/edit" do
-
-    before(:each) do
-      @upload = mock_model(Upload)
-      Upload.stub!(:find).and_return(@upload)
-    end
-
-    def do_get
-      get :edit, :id => "1"
-    end
-
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render edit template" do
-      do_get
-      response.should render_template('edit')
-    end
-
-    it "should find the upload requested" do
-      Upload.should_receive(:find).and_return(@upload)
-      do_get
-    end
-
-    it "should assign the found Upload for the view" do
-      do_get
-      assigns[:upload].should equal(@upload)
-    end
-  end
-
+  
   describe "handling POST /uploads" do
 
     before(:each) do
@@ -241,57 +173,7 @@ describe Admin::UploadsController do
     end
   end
 
-  describe "handling PUT /uploads/1" do
-
-    before(:each) do
-      @upload = mock_model(Upload, :to_param => "1")
-      Upload.stub!(:find).and_return(@upload)
-    end
-
-    describe "with successful update" do
-
-      def do_put
-        @upload.should_receive(:update_attributes).and_return(true)
-        put :update, :id => "1"
-      end
-
-      it "should find the upload requested" do
-        Upload.should_receive(:find).with("1").and_return(@upload)
-        do_put
-      end
-
-      it "should update the found upload" do
-        do_put
-        assigns(:upload).should equal(@upload)
-      end
-
-      it "should assign the found upload for the view" do
-        do_put
-        assigns(:upload).should equal(@upload)
-      end
-
-      it "should redirect to the upload" do
-        do_put
-        response.should redirect_to(admin_upload_url("1"))
-      end
-
-    end
-
-    describe "with failed update" do
-
-      def do_put
-        @upload.should_receive(:update_attributes).and_return(false)
-        put :update, :id => "1"
-      end
-
-      it "should re-render 'edit'" do
-        do_put
-        response.should render_template('edit')
-      end
-
-    end
-  end
-
+  
   describe "handling DELETE /uploads/1" do
 
     before(:each) do
