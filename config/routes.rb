@@ -41,10 +41,10 @@ ActionController::Routing::Routes.draw do |map|
       blog.resources :comments
       blog.resources :tags, :has_many => :posts
       blog.resources :users, :has_many => [:posts, :comments, :tags]
+      blog.resources :uploads
     end
 
     admin.resources :users, :has_many => [:blogs, :posts, :comments]
-    admin.resources :uploads
   end
 
 

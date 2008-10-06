@@ -24,6 +24,10 @@
   <%= @blog.comments.length == 0 ? @blog.comments.length : link_to(@blog.comments.length, admin_blog_comments_path(@blog)) %>
 </p>
 <p>
+  <b>Uploads:</b>
+  <%= @blog.uploads.length == 0 ? @blog.uploads.length : link_to(@blog.uploads.length, admin_blog_uploads_path(@blog)) %>
+</p>
+<p>
   <b>Users:</b>
   <%= @blog.users.length == 0 ? @blog.users.length : link_to(@blog.users.length, admin_blog_users_path(@blog)) %>
 </p>

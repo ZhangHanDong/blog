@@ -2,23 +2,29 @@ class Admin::UploadsController < ApplicationController
   
   layout 'admin'
   before_filter :login_required
-  
-  # GET /uploads
-  # GET /uploads.xml
+
+  # GET /admin/blogs/1/uploads
+  # GET /admin/blogs/1/uploads.xml
   def index
-    @uploads = Upload.find(:all)
+    @blog = Blog.find(params[:blog_id])
     @upload = Upload.new
     
+
     respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @uploads }
+      format.html {
+        @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 10,  :include => [:blog, :user])
+      }
+      format.xml { render :xml => @blog.uploads.recent }
     end
+    
   end
 
-  # GET /uploads/1
-  # GET /uploads/1.xml
+
+  # GET /admin/blogs/1/uploads/1
+  # GET /admin/blogs/1/uploads/1.xml
   def show
-    @upload = Upload.find(params[:id])
+    @blog = Blog.find(params[:blog_id])
+    @upload = @blog.uploads.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -26,32 +32,39 @@ class Admin::UploadsController < ApplicationController
     end
   end
 
-  # POST /uploads
-  # POST /uploads.xml
+
+  # POST /admin/blogs/1/uploads
+  # POST /admin/blogs/1/uploads.xml
   def create
+    @blog = Blog.find(params[:blog_id])
     @upload = Upload.new(params[:upload])
+    @upload.user = @current_user      
+    @blog.uploads << @upload
 
     respond_to do |format|
       if @upload.save
         flash[:notice] = 'Upload was successfully created.'
-        format.html { redirect_to(admin_upload_url(@upload)) }
+        format.html { redirect_to(admin_blog_uploads_url(@blog)) }
         format.xml  { render :xml => @upload, :status => :created, :location => @upload }
       else
-        format.html { render :action => "new" }
+        format.html { render :action => "index" }
         format.xml  { render :xml => @upload.errors, :status => :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /uploads/1
-  # DELETE /uploads/1.xml
+
+  # DELETE /admin/blogs/1/uploads/1
+  # DELETE /admin/blogs/1/uploads/1.xml
   def destroy
-    @upload = Upload.find(params[:id])
+    @upload = Upload.find(params[:id], :include => :blog)
     @upload.destroy
 
     respond_to do |format|
-      format.html { redirect_to(admin_uploads_url) }
+      format.html { redirect_to(admin_blog_uploads_url(@upload.blog)) }
       format.xml  { head :ok }
     end
   end
+  
+  
 end

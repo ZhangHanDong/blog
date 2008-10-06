@@ -1,16 +1,18 @@
+<h1><%= h(@upload.asset_file_name) %></h1>
+<p><%= number_to_human_size(@upload.asset_file_size) %></p>
+<p><%= link_to 'show original', @upload.asset.url, :target => '_blank' %> | <%= link_to 'delete?', admin_blog_upload_path(@blog, @upload), :confirm => 'Are you sure?', :method => :delete %></p>
+<p><%= @upload.asset.url %></p>
 <p>
-  <b>Title:</b>
-  <%=h @upload.title %>
+  <%= image_tag @upload.asset.url(:preview) if @upload.asset %>
 </p>
 
 <p>
-  <%= image_tag @upload.asset.url(:thumb) if @upload.asset %>
+  added by <%=link_to(h(@upload.user.name), admin_user_path(@upload.user)) if @upload.user %> on <%= @upload.created_at.to_s(:long) %>
 </p>
 
 <p>
-  <b>User:</b>
-  <%=h @upload.user_id %>
+  
 </p>
 
 
-<%= link_to 'Back', admin_uploads_path %>
+<%= link_to 'Back', admin_blog_uploads_path(@blog) %>

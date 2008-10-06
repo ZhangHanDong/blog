@@ -1,32 +1,19 @@
 <h1>Listing uploads</h1>
 
 <table>
-  <tr>
-    <th></th>
-    <th>Title</th>
-    <th>User</th>
-  </tr>
-
 <% for upload in @uploads %>
   <tr>
     <td><%= image_tag upload.asset.url(:thumb) if upload.asset %></td>
-    <td><%=h upload.title %></td>
-    <td><%=h upload.user_id %></td>
-    <td><%= link_to 'Show', admin_upload_path(upload) %></td>
-    <td><%= link_to 'Destroy', admin_upload_path(upload), :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', admin_blog_upload_path(@blog, upload) %></td>
   </tr>
 <% end %>
 </table>
+<p><%= will_paginate @uploads %></p>
 
 <h1>New upload</h1>
 
-<% form_for [:admin, @upload] do |f| %>
+<% form_for [:admin, @blog, @upload], :html => { :multipart => true } do |f| %>
   <%= f.error_messages %>
-
-  <p>
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </p>
   <p>
     <%= f.file_field :asset %>
   </p>
@@ -35,7 +22,7 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', admin_uploads_path %>
+<%= link_to 'Back', admin_blog_uploads_path(@blog) %>
 
 <br />
 
