@@ -4,7 +4,7 @@
   <% else -%>
   <li>name: <%= h comment.name %></li>                                                     
   <% end %> 
-  <li>date: <%= comment.created_at %></li> 
+  <li>date: <%= comment.created_at.to_s(:long) %></li> 
   <li>email: <%= h comment.email %></li>
   <li>website: <%= link_to h(comment.website), comment.website %></li>
   <li>body: <%= h comment.body %></li>  

@@ -14,7 +14,7 @@
   <tr>
     <td><%=h post.title %></td>
     <td><%= post.comments.length == 0 ? post.comments.length : link_to(post.comments.length, admin_blog_post_comments_path(post.blog, post)) %></td>
-    <td><%=h post.publish_date %></td>
+    <td><%=h post.publish_date.to_s(:long) %></td>
     <td><%=h post.in_draft %></td>
     <td><%=link_to h(post.blog.title), admin_blog_path(post.blog) %></td>       
     <td><%=link_to(h(post.user.name), admin_user_path(post.user)) if post.user %></td>       

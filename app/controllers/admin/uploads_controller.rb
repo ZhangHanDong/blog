@@ -8,7 +8,6 @@ class Admin::UploadsController < ApplicationController
   def index
     @blog = Blog.find(params[:blog_id])
     @upload = Upload.new
-    
 
     respond_to do |format|
       format.html {
