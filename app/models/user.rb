@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   acts_as_tagger
 
 
-  has_attached_file :photo, :styles => { :tiny => ["30x30>", :gif], :thumb => ["60x60>", :gif] },
+  has_attached_file :photo, :styles => { :tiny => ["32x32>", :gif], :thumb => ["64x64>", :gif] },
                             :path => ":rails_root/public/images/u/:class/:id/:style_:basename.:extension",
                             :url => "/images/u/:class/:id/:style_:basename.:extension",
                             :default_url   => "/images/missing_:class.gif"

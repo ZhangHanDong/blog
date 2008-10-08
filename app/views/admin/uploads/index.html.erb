@@ -1,28 +1,22 @@
-<h1>Listing uploads</h1>
+<h1>Uploaded Files</h1>
 
-<table>
+<ul id="files">
 <% for upload in @uploads %>
-  <tr>
-    <td><%= image_tag upload.asset.url(:thumb) if upload.asset %></td>
-    <td><%= link_to 'Show', admin_blog_upload_path(@blog, upload) %></td>
-  </tr>
+  <li>
+    <%= link_to((image_tag(upload.asset.url(:thumb))), admin_blog_upload_path(@blog, upload)) if upload.asset %><br/>
+    <%= link_to truncate_filename(h(upload.asset_file_name)), admin_blog_upload_path(@blog, upload)%>
+  </li>
 <% end %>
-</table>
-<p><%= will_paginate @uploads %></p>
+</ul>
 
-<h1>New upload</h1>
+
+<p style="clear:both;"><%= will_paginate @uploads %></p>
+
+<h2>Upload a new file</h2>
 
 <% form_for [:admin, @blog, @upload], :html => { :multipart => true } do |f| %>
   <%= f.error_messages %>
   <p>
-    <%= f.file_field :asset %>
-  </p>
-  <p>
-    <%= f.submit "Upload" %>
+    <%= f.file_field :asset, :onchange => 'submit()' %>
   </p>
 <% end %>
-
-<%= link_to 'Back', admin_blog_uploads_path(@blog) %>
-
-<br />
-

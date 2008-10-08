@@ -11,7 +11,7 @@ class Admin::UploadsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 10,  :include => [:blog, :user])
+        @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12,  :include => [:blog, :user])
       }
       format.xml { render :xml => @blog.uploads.recent }
     end
