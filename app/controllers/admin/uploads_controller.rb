@@ -5,15 +5,24 @@ class Admin::UploadsController < ApplicationController
 
   # GET /admin/blogs/1/uploads
   # GET /admin/blogs/1/uploads.xml
+  # GET /admin/blogs/1/users/1/uploads
+  # GET /admin/blogs/1/users/1/uploads.xml
   def index
-    @blog = Blog.find(params[:blog_id])
     @upload = Upload.new
-
+    
+    @blog = Blog.find(params[:blog_id])
+    if params[:user_id] 
+      @user = User.find(params[:user_id])
+      @uploads = @blog.uploads.by_user(@user)
+    else
+      @uploads = @blog.uploads
+    end
+    
     respond_to do |format|
       format.html {
-        @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12,  :include => [:blog, :user])
+        @uploads = @uploads.paginate(:page => params[:page], :per_page => 12, :include => [:blog, :user])
       }
-      format.xml { render :xml => @blog.uploads.recent }
+      format.xml { render :xml => @uploads.recent }
     end
     
   end
@@ -23,7 +32,7 @@ class Admin::UploadsController < ApplicationController
   # GET /admin/blogs/1/uploads/1.xml
   def show
     @blog = Blog.find(params[:blog_id])
-    @upload = @blog.uploads.find(params[:id])
+    @upload = @blog.uploads.find(params[:id], :include => [:blog, :user])
 
     respond_to do |format|
       format.html # show.html.erb

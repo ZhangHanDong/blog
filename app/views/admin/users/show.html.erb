@@ -22,12 +22,12 @@
 </p>
 
 <p>
-  <b>Created Posts:</b>
+  <b>Created Posts (All):</b>
   <%= @user.posts.length == 0 ? @user.posts.length : link_to(@user.posts.length, admin_user_posts_path(@user)) %>
 </p>
 
 <p>
-  <b>Created Comments:</b>
+  <b>Created Comments (All):</b>
   <%= @user.comments.length == 0 ? @user.comments.length : link_to(@user.comments.length, admin_user_comments_path(@user)) %>
 </p>
 
@@ -38,12 +38,14 @@
     blog_posts_count = blog.posts.by_user(@user).length
     blog_comments_count = blog.comments.by_user(@user).length
     blog_tags_count = blog.tags.by_user(@user).length
+    blog_uploads_count = blog.uploads.by_user(@user).length
     -%>
     <li><%= link_to h(blog.title), admin_blog_path(blog) %> 
     (
       posted <%= blog_posts_count == 0 ? "nothing" : link_to("#{blog_posts_count} times", admin_blog_user_posts_path(blog, @user)) %> |
       commented <%= blog_comments_count == 0 ? "nothing" : link_to("#{blog_comments_count} times", admin_blog_user_comments_path(blog, @user)) %> |
-      tagged <%= blog_tags_count == 0 ? "nothing" : link_to("#{blog_tags_count} items", admin_blog_user_tags_path(blog, @user)) %>
+      tagged <%= blog_tags_count == 0 ? "nothing" : link_to("#{blog_tags_count} items", admin_blog_user_tags_path(blog, @user)) %> | 
+      uploaded <%= blog_uploads_count == 0 ? "nothing" : link_to("#{blog_uploads_count} files", admin_blog_user_uploads_path(blog, @user)) %>
     )
     </li>
   <% end -%>

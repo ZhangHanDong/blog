@@ -1,4 +1,4 @@
-<h1>Uploaded Files</h1>
+<h1><%= "#{h(@blog.title)} uploaded files#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
 
 <ul id="files">
 <% for upload in @uploads %>

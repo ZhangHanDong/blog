@@ -9,6 +9,7 @@
     <th># Comments</th>
     <th># Users</th> 
     <th># Tags</th> 
+    <th># Uploads</th> 
   </tr>
 
 <% for blog in @blogs %> 
@@ -16,10 +17,11 @@
     <td><%= link_to h(blog.title), admin_blog_posts_path(blog) %></td>
     <td><%=h blog.short_name %></td>
     <td><%= link_to h(blog.creator.name), admin_user_path(blog.creator) %></td>
-    <td><%= blog.posts.length == 0 ? blog.posts.length : link_to(blog.posts.length, admin_blog_posts_path(blog)) %></td>
+    <td><%= blog.posts.length == 0 ? link_to('add', admin_blog_posts_path(blog)) : link_to(blog.posts.length, admin_blog_posts_path(blog)) %></td>
     <td><%= blog.comments.length == 0 ? blog.comments.length : link_to(blog.comments.length, admin_blog_comments_path(blog)) %></td>
     <td><%= blog.users.length == 0 ? blog.users.length : link_to(blog.users.length, admin_blog_users_path(blog)) %></td>
     <td><%= blog.tags.length == 0 ? blog.tags.length : link_to(blog.tags.length, admin_blog_tags_path(blog)) %></td>
+    <td><%= blog.uploads.length == 0 ? link_to('add', admin_blog_uploads_path(blog)) : link_to(blog.uploads.length, admin_blog_uploads_path(blog)) %></td>
     <td><%= link_to 'Show', admin_blog_path(blog) %></td>
     <td><%= link_to 'Edit', edit_admin_blog_path(blog) %></td>
     <td><%= link_to 'Destroy', admin_blog_path(blog), :confirm => 'Are you sure?', :method => :delete %></td>

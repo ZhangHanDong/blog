@@ -12,5 +12,6 @@ class Upload < ActiveRecord::Base
   #validates_attachment_content_type :asset, :content_type => ["image/png", "image/jpeg", "image/jpg", "image/gif"]
   
   named_scope :recent, :limit => 20, :order => "uploads.created_at DESC"
+  named_scope :by_user,  lambda { |*user| {:conditions =>  ["uploads.user_id = ?", user]}}
   
 end
