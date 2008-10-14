@@ -16,7 +16,7 @@
   <tr>
     <td><%= link_to h(blog.title), admin_blog_posts_path(blog) %></td>
     <td><%=h blog.short_name %></td>
-    <td><%= link_to h(blog.creator.name), admin_user_path(blog.creator) %></td>
+    <td><%= link_to h(blog.creator.name), admin_user_path(blog.creator) if blog.creator %></td>
     <td><%= blog.posts.length == 0 ? link_to('add', admin_blog_posts_path(blog)) : link_to(blog.posts.length, admin_blog_posts_path(blog)) %></td>
     <td><%= blog.comments.length == 0 ? blog.comments.length : link_to(blog.comments.length, admin_blog_comments_path(blog)) %></td>
     <td><%= blog.users.length == 0 ? blog.users.length : link_to(blog.users.length, admin_blog_users_path(blog)) %></td>
