@@ -13,7 +13,7 @@
 </p>
 <p>
   <b>Created By:</b>
-  <%= link_to h(@blog.creator.name), admin_user_path(@blog.creator) %>
+  <%= link_to h(@blog.creator.name), admin_user_path(@blog.creator) if @blog.creator %>
 </p>
 <p>
   <b>Posts:</b>
