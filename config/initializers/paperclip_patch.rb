@@ -1,16 +1,16 @@
 module Paperclip
 
   class Attachment
-
-    private
-
+    
     # PATCH check thumbnailable, ie. is an image or PDF content type
-    def thumbnailable?
+    def self.thumbnailable?(content_type)
       [ 'image/jpeg', 'image/pjpeg',
         'image/gif', 'image/png',
         'image/x-png', 'image/jpg',
-      'application/pdf' ].include?(@instance[:"#{@name}_content_type"])
+      'application/pdf' ].include?(content_type)
     end
+
+    private
 
     def post_process #:nodoc:
       return if @queued_for_write[:original].nil?
@@ -19,8 +19,8 @@ module Paperclip
           dimensions, format = args
           dimensions = dimensions.call(instance) if dimensions.respond_to? :call
           # PATCH check to see if thumbnailable, and if PDF, then send pdf page number
-          thumbnailable? || raise(PaperclipError.new("Can not create thumbnails \
-          if the content type is not an image."))
+          Paperclip::Attachment.thumbnailable?(@instance[:"#{@name}_content_type"]) || raise(PaperclipError.new("Can not create thumbnails \
+                                                                                                                 if the content type is not an image."))
           @instance[:"#{@name}_content_type"] == 'application/pdf' ? pdf_page = '[0]' : pdf_page = nil
           @queued_for_write[name] = Thumbnail.make(@queued_for_write[:original],
           dimensions,

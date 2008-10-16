@@ -1,5 +1,4 @@
 <h1><%= h(@upload.asset_file_name) %></h1>
-<p><%= number_to_human_size(@upload.asset_file_size) %></p>
 <p>
   <%= link_to 'show original', @upload.asset.url, :target => '_blank' %>
   or 
@@ -11,11 +10,15 @@
 
 
 <p>
-  <%= image_tag @upload.asset.url(:preview) if @upload.asset %>
+  <% if Paperclip::Attachment.thumbnailable?(@upload.asset_content_type) -%>
+    <%= link_to image_tag(@upload.asset.url(:preview)), @upload.asset.url, :target => '_blank' %>
+  <% else -%>
+    <%= link_to image_tag('admin/mime_types/generic.gif'), @upload.asset.url, :target => '_blank' %>
+  <% end %>
 </p>
 
 <p>
-  added by <%=link_to(h(@upload.user.name), admin_user_path(@upload.user)) if @upload.user %> on <%= @upload.created_at.to_s(:long) %>
+  <%= number_to_human_size(@upload.asset_file_size) %> uploaded by <%=link_to(h(@upload.user.name), admin_user_path(@upload.user)) if @upload.user %> on <%= @upload.created_at.to_s(:long) %>
 </p>
 
 <p>

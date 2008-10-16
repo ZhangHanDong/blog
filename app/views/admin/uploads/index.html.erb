@@ -3,7 +3,13 @@
 <ul id="files">
 <% for upload in @uploads %>
   <li>
-    <%= link_to((image_tag(upload.asset.url(:thumb))), admin_blog_upload_path(@blog, upload)) if upload.asset %><br/>
+    <span>
+    <% if Paperclip::Attachment.thumbnailable?(upload.asset_content_type) -%>
+      <%= link_to((image_tag(upload.asset.url(:thumb))), admin_blog_upload_path(@blog, upload)) %>
+    <% else -%>
+      <%= link_to((image_tag('admin/mime_types/generic.gif')), admin_blog_upload_path(@blog, upload)) %>
+    <% end %>
+    </span>
     <%= link_to truncate_filename(h(upload.asset_file_name)), admin_blog_upload_path(@blog, upload)%>
   </li>
 <% end %>

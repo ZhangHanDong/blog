@@ -7,17 +7,22 @@ describe Admin::UploadsController do
   before(:each) do
     login_as :quentin
     stub!(:reset_session)
+    
+    @blog = mock_model(Blog)
+    Blog.stub!(:find).and_return(@blog)
   end
 
   describe "handling GET /uploads" do
 
     before(:each) do
       @upload = mock_model(Upload)
+      @blog.should_receive(:uploads).and_return(@upload)
       Upload.stub!(:find).and_return([@upload])
+      @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
     end
 
     def do_get
-      get :index
+      get :index, :blog_id => "1"
     end
 
     it "should be successful" do
@@ -30,11 +35,6 @@ describe Admin::UploadsController do
       response.should render_template('index')
     end
 
-    it "should find all uploads" do
-      Upload.should_receive(:find).with(:all).and_return([@upload])
-      do_get
-    end
-
     it "should assign the found uploads for the view" do
       do_get
       assigns[:uploads].should == [@upload]
@@ -45,22 +45,19 @@ describe Admin::UploadsController do
 
     before(:each) do
       @uploads = mock("Array of Uploads", :to_xml => "XML")
+      @blog.should_receive(:uploads).and_return(@uploads)
+      @uploads.should_receive(:recent).and_return(@uploads)
       Upload.stub!(:find).and_return(@uploads)
     end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :index
+      get :index, :blog_id => "1"
     end
 
     it "should be successful" do
       do_get
       response.should be_success
-    end
-
-    it "should find all uploads" do
-      Upload.should_receive(:find).with(:all).and_return(@uploads)
-      do_get
     end
 
     it "should render the found uploads as xml" do
@@ -74,11 +71,12 @@ describe Admin::UploadsController do
 
     before(:each) do
       @upload = mock_model(Upload)
-      Upload.stub!(:find).and_return(@upload)
+      @blog.should_receive(:uploads).and_return(@upload)
+      @upload.should_receive(:find).with("1", :include => [:blog, :user]).and_return(@upload)
     end
 
     def do_get
-      get :show, :id => "1"
+      get :show, :id => "1", :blog_id => "1"
     end
 
     it "should be successful" do
@@ -91,11 +89,6 @@ describe Admin::UploadsController do
       response.should render_template('show')
     end
 
-    it "should find the upload requested" do
-      Upload.should_receive(:find).with("1").and_return(@upload)
-      do_get
-    end
-
     it "should assign the found upload for the view" do
       do_get
       assigns[:upload].should equal(@upload)
@@ -106,22 +99,18 @@ describe Admin::UploadsController do
 
     before(:each) do
       @upload = mock_model(Upload, :to_xml => "XML")
-      Upload.stub!(:find).and_return(@upload)
+      @blog.should_receive(:uploads).and_return(@upload)
+      @upload.should_receive(:find).with("1", :include => [:blog, :user]).and_return(@upload)
     end
 
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
-      get :show, :id => "1"
+      get :show, :id => "1", :blog_id => "1"
     end
 
     it "should be successful" do
       do_get
       response.should be_success
-    end
-
-    it "should find the upload requested" do
-      Upload.should_receive(:find).with("1").and_return(@upload)
-      do_get
     end
 
     it "should render the found upload as xml" do
@@ -136,6 +125,9 @@ describe Admin::UploadsController do
 
     before(:each) do
       @upload = mock_model(Upload, :to_param => "1")
+      @blog.should_receive(:uploads).and_return(@upload)
+      @upload.should_receive(:user=).with(users(:quentin)).and_return(true)
+      @upload.should_receive(:<<)
       Upload.stub!(:new).and_return(@upload)
     end
 
@@ -143,7 +135,7 @@ describe Admin::UploadsController do
 
       def do_post
         @upload.should_receive(:save).and_return(true)
-        post :create, :upload => {}
+        post :create, :upload => {}, :blog_id => "1"
       end
 
       it "should create a new upload" do
@@ -151,9 +143,9 @@ describe Admin::UploadsController do
         do_post
       end
 
-      it "should redirect to the new upload" do
+      it "should redirect to the blog uploads" do
         do_post
-        response.should redirect_to(admin_upload_url("1"))
+        response.should redirect_to(admin_blog_uploads_url(@blog))
       end
 
     end
@@ -162,12 +154,12 @@ describe Admin::UploadsController do
 
       def do_post
         @upload.should_receive(:save).and_return(false)
-        post :create, :upload => {}
+        post :create, :upload => {}, :blog_id => "1"
       end
 
       it "should re-render 'new'" do
         do_post
-        response.should render_template('new')
+        response.should render_template('admin/uploads/index')
       end
 
     end
@@ -178,15 +170,16 @@ describe Admin::UploadsController do
 
     before(:each) do
       @upload = mock_model(Upload, :destroy => true)
+      @upload.should_receive(:blog).and_return(@blog)
       Upload.stub!(:find).and_return(@upload)
     end
 
     def do_delete
-      delete :destroy, :id => "1"
+      delete :destroy, :id => "1", :blog_id => "1"
     end
 
     it "should find the upload requested" do
-      Upload.should_receive(:find).with("1").and_return(@upload)
+      Upload.should_receive(:find).with("1", :include => :blog).and_return(@upload)
       do_delete
     end
 
@@ -197,7 +190,7 @@ describe Admin::UploadsController do
 
     it "should redirect to the uploads list" do
       do_delete
-      response.should redirect_to(admin_uploads_url)
+      response.should redirect_to(admin_blog_uploads_url(@blog))
     end
   end
 end
