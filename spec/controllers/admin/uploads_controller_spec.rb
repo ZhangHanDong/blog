@@ -130,6 +130,14 @@ describe Admin::UploadsController do
       @upload.should_receive(:<<)
       Upload.stub!(:new).and_return(@upload)
     end
+    
+    describe "performing upload" do
+      
+      it "should upload file successfully" do
+        post :create, :upload => ActionController::TestUploadedFile.new('/u/apps/blog/public/images/missing_uploads.gif')
+      end
+      
+    end
 
     describe "with successful save" do
 
