@@ -9,10 +9,13 @@ describe Admin::UploadsController do
     stub!(:reset_session)
     
     @blog = mock_model(Blog)
+    @user = mock_model(User)
     Blog.stub!(:find).and_return(@blog)
+    User.stub!(:find).and_return(@user)
   end
+  
 
-  describe "handling GET /uploads" do
+  describe "handling GET /admin/blogs/1/uploads" do
 
     before(:each) do
       @upload = mock_model(Upload)
@@ -25,23 +28,17 @@ describe Admin::UploadsController do
       get :index, :blog_id => "1"
     end
 
-    it "should be successful" do
+    it "should be successful, render index template and assign uploads for the view" do
       do_get
       response.should be_success
-    end
-
-    it "should render index template" do
-      do_get
       response.should render_template('index')
-    end
-
-    it "should assign the found uploads for the view" do
-      do_get
       assigns[:uploads].should == [@upload]
     end
+
   end
 
-  describe "handling GET /uploads.xml" do
+
+  describe "handling GET /admin/blogs/1/uploads.xml" do
 
     before(:each) do
       @uploads = mock("Array of Uploads", :to_xml => "XML")
@@ -55,19 +52,42 @@ describe Admin::UploadsController do
       get :index, :blog_id => "1"
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render the found uploads as xml" do
+    it "should be successful and render the found uploads as xml" do
       @uploads.should_receive(:to_xml).and_return("XML")
       do_get
+      response.should be_success
       response.body.should == "XML"
     end
+
+  end
+  
+  
+  describe "handling GET /admin/blogs/1/users/1/uploads" do
+
+    before(:each) do
+      @upload = mock_model(Upload)
+      @blog.should_receive(:uploads).and_return(@upload)
+      Upload.stub!(:find).and_return(@upload)
+      @upload.should_receive(:by_user).with(@user).and_return(@upload)
+      @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
+    end
+
+    def do_get
+      get :index, :blog_id => "1", :user_id => "1"
+    end
+
+    it "should be successful, render index template and assign uploads for the view" do
+      do_get
+      response.should be_success
+      response.should render_template('index')
+      assigns[:uploads].should == [@upload]
+      assigns[:user].should == @user
+    end
+
   end
 
-  describe "handling GET /uploads/1" do
+
+  describe "handling GET /admin/blogs/1/uploads/1" do
 
     before(:each) do
       @upload = mock_model(Upload)
@@ -79,23 +99,17 @@ describe Admin::UploadsController do
       get :show, :id => "1", :blog_id => "1"
     end
 
-    it "should be successful" do
+    it "should be successful, render show template and assign the found upload for the view" do
       do_get
       response.should be_success
-    end
-
-    it "should render show template" do
-      do_get
       response.should render_template('show')
-    end
-
-    it "should assign the found upload for the view" do
-      do_get
       assigns[:upload].should equal(@upload)
     end
+
   end
 
-  describe "handling GET /uploads/1.xml" do
+
+  describe "handling GET /admin/blogs/1/uploads/1.xml" do
 
     before(:each) do
       @upload = mock_model(Upload, :to_xml => "XML")
@@ -108,20 +122,17 @@ describe Admin::UploadsController do
       get :show, :id => "1", :blog_id => "1"
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render the found upload as xml" do
+    it "should be successful and render the found upload as xml" do
       @upload.should_receive(:to_xml).and_return("XML")
       do_get
+      response.should be_success
       response.body.should == "XML"
     end
+
   end
 
   
-  describe "handling POST /uploads" do
+  describe "handling POST /admin/blogs/1/uploads" do
 
     before(:each) do
       @upload = mock_model(Upload, :to_param => "1")
@@ -131,38 +142,26 @@ describe Admin::UploadsController do
       Upload.stub!(:new).and_return(@upload)
     end
     
-    describe "performing upload" do
+    describe "performing successful upload with test file" do
       
-      it "should upload file successfully" do
-        post :create, :upload => ActionController::TestUploadedFile.new('/u/apps/blog/public/images/missing_uploads.gif')
-      end
-      
-    end
-
-    describe "with successful save" do
-
       def do_post
         @upload.should_receive(:save).and_return(true)
-        post :create, :upload => {}, :blog_id => "1"
+        post :create, :upload => ActionController::TestUploadedFile.new('/u/apps/blog/public/images/missing_uploads.gif'), :blog_id => "1"
       end
-
-      it "should create a new upload" do
-        Upload.should_receive(:new).with({}).and_return(@upload)
-        do_post
-      end
-
-      it "should redirect to the blog uploads" do
+      
+      it "should upload file successfully and redirect to blog uploads" do
+        Upload.should_receive(:new).with(anything()).and_return(@upload)
         do_post
         response.should redirect_to(admin_blog_uploads_url(@blog))
       end
-
+      
     end
 
-    describe "with failed save" do
+    describe "performing failed upload with test file" do
 
       def do_post
         @upload.should_receive(:save).and_return(false)
-        post :create, :upload => {}, :blog_id => "1"
+        post :create, :upload => ActionController::TestUploadedFile.new('/u/apps/blog/public/images/missing_uploads.gif'), :blog_id => "1"
       end
 
       it "should re-render 'new'" do
@@ -174,7 +173,7 @@ describe Admin::UploadsController do
   end
 
   
-  describe "handling DELETE /uploads/1" do
+  describe "handling DELETE /admin/blogs/1/uploads/1" do
 
     before(:each) do
       @upload = mock_model(Upload, :destroy => true)
@@ -186,19 +185,12 @@ describe Admin::UploadsController do
       delete :destroy, :id => "1", :blog_id => "1"
     end
 
-    it "should find the upload requested" do
+    it "should find the upload requested, call destroy and redirect to uploads list" do
       Upload.should_receive(:find).with("1", :include => :blog).and_return(@upload)
-      do_delete
-    end
-
-    it "should call destroy on the found upload" do
       @upload.should_receive(:destroy)
-      do_delete
-    end
-
-    it "should redirect to the uploads list" do
       do_delete
       response.should redirect_to(admin_blog_uploads_url(@blog))
     end
+    
   end
 end
