@@ -15,9 +15,8 @@ describe "/admin/blogs/new.html.erb" do
   it "should render new form" do
     render "/admin/blogs/new.html.erb"
     
-    response.should have_tag("form[action=?][method=post]", admin_blogs_path) do
-      with_tag("input#blog_title[name=?]", "blog[title]")
-    end
+    response.should have_tag("form[action=?][method=post]", admin_blogs_path)
+    response.should have_tag("input#blog_title[name=?]", "blog[title]")
   end
 end
 

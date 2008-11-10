@@ -23,12 +23,11 @@ describe "/admin/posts/edit.html.erb" do
   it "should render edit post form" do
     render "/admin/posts/edit.html.erb"
     
-    response.should have_tag("form[action=#{admin_blog_post_path(@blog, @post)}][method=post]") do
-      with_tag('input#post_title[name=?]', "post[title]")
-      with_tag('textarea#post_summary[name=?]', "post[summary]")
-      with_tag('textarea#post_body[name=?]', "post[body]") 
-      with_tag('input#post_in_draft[name=?]', "post[in_draft]")
-    end
+    response.should have_tag("form[action=#{admin_blog_post_path(@blog, @post)}][method=post]")
+    response.should have_tag('input#post_title[name=?]', "post[title]")
+    response.should have_tag('textarea#post_summary[name=?]', "post[summary]")
+    response.should have_tag('textarea#post_body[name=?]', "post[body]") 
+    response.should have_tag('input#post_in_draft[name=?]', "post[in_draft]")
   end
 end
 

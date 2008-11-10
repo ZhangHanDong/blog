@@ -21,12 +21,11 @@ describe "/admin/comments/edit.html.erb" do
   it "should render edit comment form" do
     render "/admin/comments/edit.html.erb"
     
-    response.should have_tag("form[action=#{admin_blog_post_comment_path(@blog, @post, @comment)}][method=post]") do
-      with_tag('input#comment_name[name=?]', "comment[name]")
-      with_tag('input#comment_email[name=?]', "comment[email]")
-      with_tag('input#comment_website[name=?]', "comment[website]") 
-      with_tag('textarea#comment_body[name=?]', "comment[body]")
-    end
+    response.should have_tag("form[action=#{admin_blog_post_comment_path(@blog, @post, @comment)}][method=post]")
+    response.should have_tag('input#comment_name[name=?]', "comment[name]")
+    response.should have_tag('input#comment_email[name=?]', "comment[email]")
+    response.should have_tag('input#comment_website[name=?]', "comment[website]") 
+    response.should have_tag('textarea#comment_body[name=?]', "comment[body]")
   end
 end
 

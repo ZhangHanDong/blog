@@ -14,9 +14,8 @@ describe "/admin/blogs/edit.html.erb" do
   it "should render edit form" do
     render "/admin/blogs/edit.html.erb"
     
-    response.should have_tag("form[action=#{admin_blog_path(@blog)}][method=post]") do
-      with_tag('input#blog_title[name=?]', "blog[title]")
-    end
+    response.should have_tag("form[action=#{admin_blog_path(@blog)}][method=post]")
+    response.should have_tag('input#blog_title[name=?]', "blog[title]")
   end
 end
 

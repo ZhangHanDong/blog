@@ -23,12 +23,11 @@ describe "/admin/posts/new.html.erb" do
   it "should render new post form" do
     render "/admin/posts/new.html.erb"
     
-    response.should have_tag("form[action=?][method=post]", admin_blog_posts_path(@blog)) do
-      with_tag("input#post_title[name=?]", "post[title]")
-      with_tag("textarea#post_summary[name=?]", "post[summary]")
-      with_tag("textarea#post_body[name=?]", "post[body]")   
-      with_tag("input#post_in_draft[name=?]", "post[in_draft]")
-    end
+    response.should have_tag("form[action=?][method=post]", admin_blog_posts_path(@blog))
+    response.should have_tag("input#post_title[name=?]", "post[title]")
+    response.should have_tag("textarea#post_summary[name=?]", "post[summary]")
+    response.should have_tag("textarea#post_body[name=?]", "post[body]")   
+    response.should have_tag("input#post_in_draft[name=?]", "post[in_draft]")
   end
 end
 

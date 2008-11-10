@@ -7,6 +7,4 @@ failing_examples:spec/previous_failures.txt
 spec/previous_failures.txt
 --loadby
 mtime
---reverse 
-
-
+--reverse

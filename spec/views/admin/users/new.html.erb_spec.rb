@@ -19,13 +19,12 @@ describe "/admin/posts/new.html.erb" do
   it "should render new user form" do
     render "/admin/users/new.html.erb"
     
-    response.should have_tag("form[action=?][method=post]", admin_users_path) do
-      with_tag('input#user_login[name=?]', "user[login]")
-      with_tag('input#user_name[name=?]', "user[name]")
-      with_tag('input#user_email[name=?]', "user[email]")
-      with_tag('input#user_password[name=?]', "user[password]")
-      with_tag('input#user_password_confirmation[name=?]', "user[password_confirmation]")
-    end
+    response.should have_tag("form[action=?][method=post]", admin_users_path)
+    response.should have_tag('input#user_login[name=?]', "user[login]")
+    response.should have_tag('input#user_name[name=?]', "user[name]")
+    response.should have_tag('input#user_email[name=?]', "user[email]")
+    response.should have_tag('input#user_password[name=?]', "user[password]")
+    response.should have_tag('input#user_password_confirmation[name=?]', "user[password_confirmation]")
   end
 end
 

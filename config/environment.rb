@@ -64,9 +64,6 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
-  
-  # check gems are installed ok
-  config.gem "will_paginate"
 end
 
 # load application config file for the current environment

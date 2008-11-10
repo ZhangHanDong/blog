@@ -49,12 +49,11 @@ describe "/posts/show" do
     stub!(:reset_session)
     render "/posts/show"                  
     
-    response.should have_tag("form[action=?][method=post]", blog_post_comments_path(@blog, @post)) do  
-      with_tag('input#comment_name[value=?]', 'Quentin Bart')
-      with_tag('input#comment_email[value=?]', 'quentin@example.com')
-      with_tag('input#comment_spam_question_id')
-      with_tag('input#comment_spam_answer')
-    end
+    response.should have_tag("form[action=?][method=post]", blog_post_comments_path(@blog, @post))
+    response.should have_tag('input#comment_name[value=?]', 'Quentin Bart')
+    response.should have_tag('input#comment_email[value=?]', 'quentin@example.com')
+    response.should have_tag('input#comment_spam_question_id')
+    response.should have_tag('input#comment_spam_answer')
   end  
   
   
