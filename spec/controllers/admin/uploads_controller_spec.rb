@@ -146,7 +146,7 @@ describe Admin::UploadsController do
       
       def do_post
         @upload.should_receive(:save).and_return(true)
-        post :create, :upload => ActionController::TestUploadedFile.new('/u/apps/blog/public/images/missing_uploads.gif'), :blog_id => "1"
+        post :create, :upload => fixture_file_upload('50x50.png', 'image/png'), :blog_id => "1"
       end
       
       it "should upload file successfully and redirect to blog uploads" do
@@ -161,7 +161,7 @@ describe Admin::UploadsController do
 
       def do_post
         @upload.should_receive(:save).and_return(false)
-        post :create, :upload => ActionController::TestUploadedFile.new('/u/apps/blog/public/images/missing_uploads.gif'), :blog_id => "1"
+        post :create, :upload => fixture_file_upload('50x50.png', 'image/png'), :blog_id => "1"
       end
 
       it "should re-render 'new'" do
