@@ -9,7 +9,6 @@ module UploadSpecHelper
       :user_id => 1
     }
   end
-
 end
 
 describe Upload do
@@ -25,8 +24,13 @@ describe Upload do
 
   describe 'named scopes' do
 
-    it "should have a recent scope, and find recent uploads"
-    it "should have a by user scope, and find uploads by a user"
+    it "should have a by user scope, and find uploads by a user" do
+      Upload.should have_named_scope(:by_user, {:conditions=>["uploads.user_id = ?", []]})
+    end
+    
+    it "should have a recent scope that returns up to 20 uploads ordered by created_at DESC" do
+      Upload.should have_named_scope(:recent, {:limit=>20, :order=>"uploads.created_at DESC"})
+    end
 
   end
 
