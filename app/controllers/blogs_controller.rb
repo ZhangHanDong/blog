@@ -1,6 +1,5 @@
 class BlogsController < ApplicationController
 
-  
   # GET /blogs
   def index
     respond_to do |format|

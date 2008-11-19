@@ -17,7 +17,6 @@ class Post < ActiveRecord::Base
   named_scope :by_user,  lambda { |*user| {:conditions =>  ["posts.user_id = ?", user]}}
   named_scope :with_tag, lambda { |*tag| {:include => :taggings, :conditions =>  ["taggings.tag_id = ?", tag]}}
 
-
   def create_permalink
     # convert chars and shorten
     permalink = Iconv.new('ASCII//TRANSLIT', 'utf-8').iconv(self.title)

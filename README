@@ -25,8 +25,7 @@ Check the latest commit logs and the following revision information for a list o
 
 * abstraction of posts, comments to a blog container model
 * user has many and belongs to blogs
-* basic blog settings and meta information
-* proper perma-links for posts (without dates)
+* proper perma-links for posts (with dates)
 * public tags controller with restful routes
 * hAtom rendering for front-end, posts, comments
 * hCard rendering for users
@@ -37,17 +36,19 @@ Check the latest commit logs and the following revision information for a list o
                                                                          
 
 
-== Plugins Used
+== Plugins Used (and vendored)
 
 * Paperclip
 * Restful Authentication
 * Acts as Taggable Redux
-* Will Paginate     
+* Will Paginate   
+* Rspec
+* Rspec Rails  
         
 == Versions
 
-* Rails 2.1
-* Rspec 1.1.4    
+* Rails 2.1.2
+* Rspec 1.1.11    
 * Ruby 1.8.7     
 
 == The Real World

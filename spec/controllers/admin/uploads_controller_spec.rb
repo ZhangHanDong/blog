@@ -136,7 +136,6 @@ describe Admin::UploadsController do
 
     before(:each) do
       @upload = mock_model(Upload, :to_param => "1")
-      @blog.should_receive(:uploads).and_return(@upload)
       @upload.should_receive(:user=).with(users(:quentin)).and_return(true)
       @upload.should_receive(:<<)
       Upload.stub!(:new).and_return(@upload)
@@ -145,6 +144,7 @@ describe Admin::UploadsController do
     describe "performing successful upload with test file" do
       
       def do_post
+        @blog.should_receive(:uploads).and_return(@upload)
         @upload.should_receive(:save).and_return(true)
         post :create, :upload => fixture_file_upload('50x50.png', 'image/png'), :blog_id => "1"
       end
@@ -160,7 +160,9 @@ describe Admin::UploadsController do
     describe "performing failed upload with test file" do
 
       def do_post
+        @blog.should_receive(:uploads).twice.and_return(@upload)
         @upload.should_receive(:save).and_return(false)
+        @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
         post :create, :upload => fixture_file_upload('50x50.png', 'image/png'), :blog_id => "1"
       end
 

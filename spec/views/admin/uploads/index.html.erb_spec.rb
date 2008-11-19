@@ -18,8 +18,19 @@ describe "/uploads/index.html.erb" do
     assigns[:uploads].stub!(:total_pages).and_return(0)
   end
 
-  it "should render list of uploads" do
+  it "should render list of uploads for blog with upload form" do
     render "/admin/uploads/index.html.erb"
+    response.should have_tag("form[action=?][method=post]", admin_blog_uploads_path(@blog))
   end
+  
+  it "should show uploads by user in blog (and no upload form)" do
+    @user = mock_model(User)
+    assigns[:user] = @user
+    @user.stub!(:name).and_return('Jett')
+    render "/admin/uploads/index.html.erb"
+    response.should_not have_tag("form[action=?][method=post]", admin_blog_uploads_path(@blog))
+    response.should have_tag("a", "upload new file to blog title")
+  end
+  
 end
 

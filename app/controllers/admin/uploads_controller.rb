@@ -49,14 +49,17 @@ class Admin::UploadsController < ApplicationController
     @upload = Upload.new(params[:upload])
     @upload.user = @current_user      
     @blog.uploads << @upload
-
+    
     respond_to do |format|
       if @upload.save
         flash[:notice] = 'Upload was successfully created.'
         format.html { redirect_to(admin_blog_uploads_url(@blog)) }
         format.xml  { render :xml => @upload, :status => :created, :location => @upload }
       else
-        format.html { render :action => "index" }
+        format.html { 
+          @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12, :include => [:blog, :user])
+          render :action => "index" 
+        }
         format.xml  { render :xml => @upload.errors, :status => :unprocessable_entity }
       end
     end

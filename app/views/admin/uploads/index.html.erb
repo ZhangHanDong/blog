@@ -18,11 +18,15 @@
 
 <p style="clear:both;"><%= will_paginate @uploads %></p>
 
-<h2>Upload a new file</h2>
+<% if @user -%>
+  <p><%= link_to("upload new file to #{h(@blog.title)}", admin_blog_uploads_path(@blog)) %></p>
+<% else -%>
+  <h2>Upload a new file</h2>
 
-<% form_for [:admin, @blog, @upload], :html => { :multipart => true } do |f| %>
-  <%= f.error_messages %>
-  <p>
-    <%= f.file_field :asset, :onchange => 'submit()' %>
-  </p>
-<% end %>
+  <% form_for [:admin, @blog, @upload], :html => { :multipart => true } do |f| %>
+    <%= f.error_messages %>
+    <p>
+      <%= f.file_field :asset, :onchange => 'submit()' %>
+    </p>
+  <% end %>
+<% end -%>
