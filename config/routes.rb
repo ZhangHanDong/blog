@@ -7,10 +7,12 @@ ActionController::Routing::Routes.draw do |map|
   map.signup '/signup', :controller => 'admin/users', :action => 'signup'
 
 
+  
   # public resources
   map.resource  :session
   map.resources :blogs, :collection => { :on => :get } do |blog|
    
+    map.connect 'blogs/page/:page', :controller => 'blogs', :action => 'index', :requirements => { :page => /\d+/}, :page => nil
     map.connect 'blogs/:blog_id/:year/:month/:day/:permalink',
                         :controller => 'posts',
                         :action     => 'permalink',

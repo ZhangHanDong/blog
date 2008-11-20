@@ -1,5 +1,7 @@
 class Admin::BlogsController < ApplicationController
 
+  cache_sweeper :blog_sweeper, :only => [:create, :update, :destroy]
+
   layout 'admin'
   before_filter :login_required
 

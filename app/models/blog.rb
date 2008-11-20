@@ -12,7 +12,7 @@ class Blog < ActiveRecord::Base
   has_many   :uploads, :order => "uploads.created_at DESC" 
   acts_as_tagger
   
-  named_scope :published, :conditions => {:in_draft => false}
+  named_scope :published, :conditions => {:in_draft => false}, :order => 'blogs.created_at DESC'
   named_scope :recent, :limit => 20, :order => "blogs.created_at DESC" 
   
   
