@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-              
+       
+  caches_page :index, :show       
   
   # GET /blogs/1/users
   def index

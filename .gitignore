@@ -1,4 +1,5 @@
-*.log     
+*.log
+public/cache
 log/*.log
 db/schema.rb
 tmp/sessions/*.*

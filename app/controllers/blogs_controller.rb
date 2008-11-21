@@ -2,13 +2,11 @@ class BlogsController < ApplicationController
 
   caches_page :index
 
-  PER_PAGE = 2
-
   # GET /blogs
   def index
     respond_to do |format|
       format.html {
-        @blogs = Blog.published.paginate(:all, :page => params[:page], :per_page => BlogsController::PER_PAGE)
+        @blogs = Blog.published.paginate(:all, :page => params[:page], :per_page => 10)
       }
     end
   end

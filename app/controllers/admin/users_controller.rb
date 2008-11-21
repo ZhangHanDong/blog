@@ -1,5 +1,7 @@
 class Admin::UsersController < ApplicationController
   
+  cache_sweeper :user_sweeper, :only => [:create, :update, :destroy]
+  
   layout 'admin', :except => [ :register, :signup ]
   before_filter   :login_required, :except => [ :register, :signup ]
               

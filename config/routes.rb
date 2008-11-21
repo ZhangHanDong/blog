@@ -12,7 +12,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resource  :session
   map.resources :blogs, :collection => { :on => :get } do |blog|
    
+    # paginated indexes
     map.connect 'blogs/page/:page', :controller => 'blogs', :action => 'index', :requirements => { :page => /\d+/}, :page => nil
+    map.connect 'blogs/:blog_id/tags/page/:page', :controller => 'tags', :action => 'index', :requirements => { :page => /\d+/}, :page => nil
+    map.connect 'blogs/:blog_id/users/page/:page', :controller => 'users', :action => 'index', :requirements => { :page => /\d+/}, :page => nil
+    
     map.connect 'blogs/:blog_id/:year/:month/:day/:permalink',
                         :controller => 'posts',
                         :action     => 'permalink',
