@@ -19,7 +19,7 @@ class UserSweeper < ActionController::Caching::Sweeper
   def expire_all(user)
     user.blogs.each do |blog|
       BlogSweeper::sweep("blogs/#{blog.id}/users")
-      #expire_page(:controller => '/users', :blog_id => blog.id, :action => 'index', :page => nil)
+      expire_page(:controller => "blogs/#{blog.id}", :action => 'users')
     end
   end
   

@@ -1,4 +1,6 @@
 class Admin::CommentsController < ApplicationController     
+   
+  cache_sweeper :comment_sweeper, :only => [:create, :update, :destroy]
   
   layout 'admin'
   before_filter :login_required
