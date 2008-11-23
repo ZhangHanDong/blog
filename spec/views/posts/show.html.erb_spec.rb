@@ -14,12 +14,11 @@ describe "/posts/show" do
     @tag = mock_model(Tag, :name => 'Tag Name')
      
     @post.should_receive(:title).and_return("MyStringTitle1") 
-    @post.should_receive(:permalink).at_least(1).times.and_return("my-string-title-1") 
+    @post.should_receive(:permalink_url).at_least(1).times.and_return({})
     @post.should_receive(:publish_date).at_least(1).times.and_return(Time.now)
     @post.should_receive(:user).twice.and_return(mock_model(User, :name => 'matt'))   
     @post.should_receive(:comments).twice.and_return([])
-    @post.should_receive(:tags).at_least(1).times.and_return([@tag])      
-    @post.should_receive(:blog).and_return(@blog)      
+    @post.should_receive(:tags).at_least(1).times.and_return([@tag])           
     @post.should_receive(:summary).at_least(1).and_return('Not Blank')       
     @post.should_receive(:body_formatted).and_return('Body Text')        
                                  

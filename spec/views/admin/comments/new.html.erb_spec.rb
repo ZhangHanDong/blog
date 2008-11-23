@@ -12,6 +12,7 @@ describe "/admin/comments/new.html.erb" do
     @post = mock_model(Post)    
     @post.stub!(:blog).and_return(@blog)
     @post.stub!(:title).and_return('Post Title')
+    @post.stub!(:permalink_url).and_return({})
     @comment = mock_model(Comment)     
     @comment.stub!(:post).and_return(@post)
     @comment.stub!(:new_record?).and_return(true)  

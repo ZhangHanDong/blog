@@ -25,7 +25,7 @@ describe Admin::BlogsController do
     end
 
     it "should be successful, render index template and find all blogs, assigning them for the view" do
-      Blog.should_receive(:paginate).with({:page=>nil, :include=>[:creator, :posts, :comments, :tags], :per_page=>10}).and_return([@blog])
+      @blog.should_receive(:paginate).with({:page=>nil, :include=>[:creator, :posts, :comments, :tags], :per_page=>10}).and_return([@blog])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -44,7 +44,7 @@ describe Admin::BlogsController do
 
     it "should be successful, find all blogs and render them as XML" do
       Blog.stub!(:find).and_return(@blogs)
-      Blog.should_receive(:recent).and_return(@blogs)
+      @blogs.should_receive(:recent).and_return(@blogs)
       do_get
       response.should be_success
       response.body.should == "XML"

@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
 
-  caches_page :index, :permalink, :on, :tagged
+  caches_page :index, :tagged, :on, :permalink
 
   # GET /blogs/1/posts
   # GET /blogs/1/posts.atom

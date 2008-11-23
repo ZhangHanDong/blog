@@ -228,28 +228,6 @@ describe PostsController do
     
   end
 
-
-  describe "handling GET /blogs/1/posts/1" do
-
-    before(:each) do
-      @blog.should_receive(:posts).and_return(@post)
-      @post.should_receive(:published).and_return(@post)
-      Comment.should_receive(:new).and_return(mock_model(Comment))
-      @post.should_receive(:find).with("1", {:include=>[:comments, :user, :tags]}).and_return(@post)
-    end
-
-    def do_get
-      get :show, :id => "1", :blog_id => "1"
-    end
-
-    it "should be successful, render show template and asssign the post for the view" do
-      do_get
-      response.should be_success
-      response.should render_template('show')
-      assigns[:post].should equal(@post)
-    end
-
-  end
   
   
   describe "handling GET /blogs/1/:year/:month/:permalink" do
@@ -279,12 +257,15 @@ describe PostsController do
   end
 
   
-  describe "handling unsuccessful GET for /blogs/1/posts/15155199" do
+  describe "handling unsuccessful GET for /blogs/1/:year/:month/:permalink-not-existing" do
     it "should be redirected with flash message" do
+      date_range = { :start => Time.utc("2008", "7", "1").to_date, :end => Time.utc("2008", "7", "31").to_date }
+      Post.should_receive(:get_date_range).with('2008', '7', nil).and_return(date_range)
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
-      @post.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
-      get :show, :id => "15155199", :blog_id => "1"
+      @post.should_receive(:in_range).with(date_range[:start], date_range[:end]).and_return(@post)
+      @post.should_receive(:find_by_permalink).and_raise(ActiveRecord::RecordNotFound)
+      get :permalink, :blog_id => "1", :year => "2008", :month => "7", :permalink => 'some-post-title-not-exist'
       response.should redirect_to(root_url)
       flash[:notice].should_not be_empty
     end

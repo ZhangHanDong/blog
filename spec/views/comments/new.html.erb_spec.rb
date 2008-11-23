@@ -11,11 +11,10 @@ describe "/comments/new" do
     # comment form          
     @blog = mock_model(Blog, :title => 'Blog Title')
     @post = mock_model(Post)       
-    @post.should_receive(:blog).twice.and_return(@blog)  
+    @post.should_receive(:blog).and_return(@blog)  
     @post.stub!(:title).and_return('Post Title') 
-    @post.should_receive(:permalink).at_least(1).times.and_return("post-title")    
-    @post.should_receive(:publish_date).at_least(1).times.and_return(Time.now)  
-   
+    @post.stub!(:permalink_url).and_return({})
+       
     @comment = Comment.new
     @comment.stub!(:new_record?).and_return(true)
     

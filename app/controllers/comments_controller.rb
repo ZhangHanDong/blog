@@ -23,7 +23,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 2, :include => :post)
+        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 10, :include => :post)
       }
       format.atom {
         @comments = @comments.recent

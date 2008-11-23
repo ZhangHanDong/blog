@@ -10,7 +10,7 @@ describe "/admin/posts/show.html.erb" do
     @post.stub!(:blog).and_return(blog)   
     @post.stub!(:title).and_return("MyString") 
     @post.stub!(:user).and_return(@user) 
-    @post.stub!(:permalink).and_return("MyString")
+    @post.stub!(:permalink_url).and_return({})
     @post.stub!(:publish_date).and_return(Time.now)
     @post.stub!(:summary).and_return("MyText")
     @post.stub!(:body).and_return("MyText")

@@ -146,14 +146,21 @@ describe CommentsController do
     describe "with setting comment in post collection (and sucessful save)" do
 
       def do_post
-        @post.should_receive(:blog).and_return(@blog)
+        @post.should_receive(:permalink_url).and_return({:only_path => false, 
+         :controller => "/posts", 
+         :action => "permalink",  
+         :blog_id => "1",
+         :year => "2008", 
+         :month => "11", 
+         :day => "23",
+         :permalink => 'blarf!'})
         @comment.should_receive(:save).and_return(true)
         post :create, :comment => {}, :blog_id => "1"
       end
 
       it "should redirect to the original post" do
         do_post
-        response.should redirect_to(blog_post_url(@blog.id, @post.id))
+        response.should redirect_to('http://test.host/blogs/1/2008/11/23/blarf!')
       end
 
       it "should set comment user to current_user if logged in" do
@@ -186,10 +193,18 @@ describe CommentsController do
 
     it "should be redirected to blog post comment anchor" do
       Comment.should_receive(:find).with("1", {:include=>{:post=>:blog}}).and_return(@comment)
-      @comment.should_receive(:post).at_least(1).times.and_return(@post)
-      @post.should_receive(:blog).twice.and_return(@blog)
+      @comment.should_receive(:post).at_least(1).times.and_return(@post)      
+      @post.should_receive(:permalink_url).and_return({:only_path => false, 
+       :controller => "/posts", 
+       :action => "permalink",  
+       :blog_id => "1",
+       :year => "2008", 
+       :month => "11", 
+       :day => "23",
+       :permalink => 'blarf!',
+       :anchor => "comment-#{@comment.id}"})
       get :show, :blog_id => "1", :post_id => "1", :id => "1"
-      response.should redirect_to(blog_post_url(@comment.post.blog, @comment.post, :anchor => "comment-#{@comment.id}"))
+      response.should redirect_to("http://test.host/blogs/1/2008/11/23/blarf!#comment-#{@comment.id}")
     end
 
   end

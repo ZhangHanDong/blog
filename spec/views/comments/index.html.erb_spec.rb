@@ -12,7 +12,8 @@ describe "/comments/index" do
     @user_1 = mock_model(User, :name => 'User Name 1')
     @comment_1 = mock_model(Comment, :name => 'somebody random', :created_at => Time.now, :email => 'hh@kk.com', :website => '', :body => '')
     @comment_1.should_receive(:post).at_least(1).times.and_return(@post_1)
-    @post_1.should_receive(:blog).at_least(1).times.and_return(@blog_1)    
+    @post_1.should_receive(:blog).at_least(1).times.and_return(@blog_1)  
+    @post_1.stub!(:permalink_url).and_return({})  
     
     @comment_1.should_receive(:user).and_return(nil)
     
@@ -26,8 +27,6 @@ describe "/comments/index" do
   end
   
   it "should render list of comments on post" do    
-    @post_1.should_receive(:publish_date).at_least(1).times.and_return(Time.now)  
-    @post_1.should_receive(:permalink).at_least(1).times.and_return('post-title-1')  
     assigns[:post] = @post_1
     render 'comments/index' 
     response.should have_tag("h1",  :text => "Blog Title 1 comments on Post Title 1") 
