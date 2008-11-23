@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
               
+  caches_page :index
 
   # GET blogs/1/comments
   # GET blogs/1/comments.atom
@@ -22,7 +23,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 10, :include => :post)
+        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 2, :include => :post)
       }
       format.atom {
         @comments = @comments.recent
@@ -34,7 +35,7 @@ class CommentsController < ApplicationController
   # GET  blogs/1/posts/1/comments/1
   def show
     @comment = Comment.published.find(params[:id], :include => {:post => :blog})
-    redirect_to blog_post_url(@comment.post.blog, @comment.post, :anchor => "comment-#{@comment.id}")
+    redirect_to url_for(@comment.post.permalink_url({:anchor => "comment-#{@comment.id}"}))
   end
 
 
@@ -48,7 +49,7 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @comment.save
         flash[:notice] = 'Comment was successfully created.'
-        format.html { redirect_to(blog_post_url(@post.blog, @post)) }
+        format.html { redirect_to url_for(@post.permalink_url) }
       else
         format.html { render :action => "new" }
       end

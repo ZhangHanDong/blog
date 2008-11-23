@@ -37,6 +37,18 @@ class Post < ActiveRecord::Base
 
     permalink
   end
+  
+  # url_for hash options for /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
+  def permalink_url(options = {})
+    {:only_path => false, 
+             :controller => "/posts", 
+             :action => "permalink",  
+             :blog_id => "#{self.blog.id}",
+             :year => "#{self.publish_date.year}", 
+             :month => "#{self.publish_date.month}", 
+             :day => "#{self.publish_date.day}",
+             :permalink => self.permalink}.merge(options)                          
+  end
 
 
   def self.get_date_range(year, month = 1, day = 1)

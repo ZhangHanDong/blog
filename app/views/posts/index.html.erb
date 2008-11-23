@@ -2,7 +2,7 @@
 <hr/>
 <% for post in @posts %>
 <div class="hentry">
-  <h2 class="entry-title"><%=link_to h(post.title), blog_post_permalink_url(post), { :rel => 'bookmark' } %></h2>
+  <h2 class="entry-title"><%=link_to h(post.title), url_for(post.permalink_url), { :rel => 'bookmark' } %></h2>
   <p>
     added <abbr class="updated" title="<%= post.publish_date.iso8601 %>">on <%= post.publish_date.to_s(:long) %></abbr> 
     by  <span class="vcard author"><%= link_to h(post.user.name), blog_user_path(@blog, post.user), { :class => 'url fn' } %></span>
@@ -15,7 +15,7 @@
     <% end -%>
   </div>
   <p>
-    <%= post.comments.length == 0 ? link_to('no comments yet, post one now', blog_post_permalink_url(post, :anchor => 'new-comment')) : link_to(pluralize(post.comments.length, 'comment'), blog_post_permalink_url(post, :anchor => 'comments')) %>
+    <%= post.comments.length == 0 ? link_to('no comments yet, post one now', url_for(post.permalink_url({:anchor => 'new-comment'}))) : link_to(pluralize(post.comments.length, 'comment'), url_for(post.permalink_url({:anchor => 'comments'}))) %>
   </p>
   <% unless post.tags.empty? -%>
   <ul>

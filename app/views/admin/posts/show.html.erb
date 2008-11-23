@@ -11,7 +11,7 @@
 
 <p>
   <b>Permalink:</b>
-  <%=link_to blog_post_permalink_url(@post), blog_post_permalink_url(@post) %>
+  <%=link_to url_for(@post.permalink_url), url_for(@post.permalink_url) %>
 </p>
 
 <p>

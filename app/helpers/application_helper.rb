@@ -19,19 +19,7 @@ module ApplicationHelper
   def blog_tag_name_url(blog, tag, options = {})
     url_for({:only_path => false, :controller => "posts", :action => "tagged", :blog_id => "#{blog.id}", :tag => tag.name.gsub(' ', '_')}.merge(options))
   end 
-  
-  # create path for http://host:protocol .. etc .. /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
-  def blog_post_permalink_url(post, options = {})
-    url_for({:only_path => false, 
-             :controller => "/posts", 
-             :action => "permalink",  
-             :blog_id => "#{post.blog.id}",
-             :year => "#{post.publish_date.year}", 
-             :month => "#{post.publish_date.month}", 
-             :day => "#{post.publish_date.day}",
-             :permalink => post.permalink}.merge(options))                          
-  end
-  
+    
   # append script string or js file includes in layouts
   def javascript(script = '', files = [])        
     js = ""

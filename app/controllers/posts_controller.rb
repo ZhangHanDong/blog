@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
 
+  caches_page :index, :permalink, :on, :tagged
 
   # GET /blogs/1/posts
   # GET /blogs/1/posts.atom
@@ -73,18 +74,6 @@ class PostsController < ApplicationController
           render :action => 'index'
         end
       }
-    end
-  end
-
-
-  # GET /blogs/1/posts/1
-  def show
-    @blog = Blog.published.find(params[:blog_id])
-    @post = @blog.posts.published.find(params[:id], :include => [:comments, :user, :tags])
-    @comment = Comment.new
-
-    respond_to do |format|
-      format.html
     end
   end
   

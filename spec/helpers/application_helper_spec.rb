@@ -42,25 +42,6 @@ describe ApplicationHelper do
   end
 
 
-  describe "blog_post_permalink_url generation" do
-
-    before(:each) do
-      @blog = mock_model(Blog)
-      @post = mock_model(Post, :permalink => 'all-about-mr-bo-jangles', :publish_date => Date.today, :blog => @blog)
-    end
-
-    it "should generate relative path to post via blog/id/year/month/day/permalink" do
-      blog_post_permalink_url(@post).should \
-      eql("http://test.host/blogs/#{@blog.id}/#{Date.today.year}/#{Date.today.month}/#{Date.today.day}/all-about-mr-bo-jangles")
-    end
-
-    it "should add anchor option to path" do
-      blog_post_permalink_url(@post, {:anchor => 'comments'}).should \
-      eql("http://test.host/blogs/#{@blog.id}/#{Date.today.year}/#{Date.today.month}/#{Date.today.day}/all-about-mr-bo-jangles#comments")
-    end
-  end
-
-
   describe "javascript including" do
 
     it "should accept string and/or array of files for including" do
