@@ -41,10 +41,7 @@ describe BlogsController do
 
   describe "handling unsuccessful GET for /blogs/15155199" do
     it "should be redirected with flash message" do
-      Blog.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
-      get :show, :id => "15155199", :blog_id => "1"
-      response.should redirect_to(root_url)
-      flash[:notice].should_not be_empty
+      lambda {get :show, :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
 

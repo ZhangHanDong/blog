@@ -213,10 +213,7 @@ describe CommentsController do
   describe "handling unsuccessful GET for /blogs/1/posts/1/comments/15155199" do
 
     it "should be redirected with flash message" do
-      Comment.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
-      get :show, :blog_id => "1", :post_id => "1", :id => "15155199"
-      response.should redirect_to(root_url)
-      flash[:notice].should_not be_empty
+      lambda {get :show, :blog_id => "1", :post_id => "1", :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
     end
 
   end

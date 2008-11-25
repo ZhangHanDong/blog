@@ -164,10 +164,7 @@ describe Admin::PostsController do
   describe "handling unsuccessful GET for /admin/blogs/1/posts/15155199" do
 
     it "should be redirected with flash message" do
-      Post.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
-      get :show, :id => "15155199", :blog_id => "1"
-      response.should redirect_to(root_url)
-      flash[:notice].should_not be_empty
+      lambda {get :show, :blog_id => "1", :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
     end
 
   end

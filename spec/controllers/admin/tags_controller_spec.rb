@@ -15,7 +15,6 @@ describe Admin::TagsController do
 
     Blog.stub!(:find).and_return(@blog)
     User.stub!(:find).and_return(@user)
-    Tag.stub!(:find).and_return([@tag])
   end
 
 
@@ -115,10 +114,7 @@ describe Admin::TagsController do
   describe "handling unsuccessful GET for /admin/blogs/1/tags/15155199" do
 
     it "should be redirected with flash message" do
-      Tag.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
-      get :show, :id => "15155199"
-      response.should redirect_to(root_url)
-      flash[:notice].should_not be_empty
+      lambda {get :show, :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
     end
 
   end

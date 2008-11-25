@@ -124,10 +124,7 @@ describe Admin::UsersController do
   describe "handling unsuccessful GET for /admin/users/15155199" do
    
     it "should be redirected with flash message" do
-      User.should_receive(:find).and_raise(ActiveRecord::RecordNotFound)
-      get :show, :id => "15155199"    
-      response.should redirect_to(root_url)
-      flash[:notice].should_not be_empty
+      lambda {get :show, :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
     end
     
   end
