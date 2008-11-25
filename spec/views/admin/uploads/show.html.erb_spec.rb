@@ -4,27 +4,19 @@ describe "/uploads/show.html.erb" do
   include Admin::UploadsHelper
   
   before(:each) do
-    @upload = mock_model(Upload)
-    @user = mock_model(User, :name => 'jack')
-    
-    @asset = Object.new
-    @asset.stub!(:url).and_return("something/thing.jpg")
-    @upload.stub!(:title).and_return("MyString")
-    @upload.stub!(:blog_id).and_return("1")
-    @upload.stub!(:user_id).and_return("1")
-    @upload.should_receive(:asset).at_least(1).times.and_return(@asset)
-    @upload.should_receive(:asset_file_name)
-    @upload.should_receive(:asset_content_type)
-    @upload.should_receive(:asset_file_size)
-    @upload.should_receive(:user).at_least(1).times.and_return(@user)
-    @upload.should_receive(:created_at).and_return(Time.now)
-
+    @blog = mock_model(Blog)
+    @upload = Upload.create!({
+      :asset => fixture_file_upload('50x50.png', 'image/png'),
+      :blog_id => 1,
+      :user_id => 1
+    })
+    assigns[:blog] = @blog
     assigns[:upload] = @upload
   end
 
   it "should render attributes in <p>" do
     render "/admin/uploads/show.html.erb"
-    response.should have_text(/something\/thing.jpg/)
+    response.should have_text(/original_50x50.png/)
   end
 end
 
