@@ -10,7 +10,7 @@ class TagsController < ApplicationController
       @user = User.find(params[:user_id])
       @tags = @blog.tags.by_user(@user)
     else
-      @tags = @blog.tags
+      @tags = @blog.tags.find(:all, :limit => 50)
     end
   end
 

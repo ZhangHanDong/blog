@@ -5,7 +5,7 @@
     <th>Name</th> 
   </tr>
 
-<% for tag in @blog.tags %>
+<% for tag in @tags %>
   <tr>
     <td><%= link_to(h(tag.name), admin_blog_tag_path(@blog, tag)) %> (<%= tag.blog_taggings_count(@blog) -%> times)</td>
   </tr>

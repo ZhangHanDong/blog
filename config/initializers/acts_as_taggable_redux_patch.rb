@@ -45,13 +45,7 @@ end
 module ActsAsTaggableHelper
   
   # Generate a tag cloud of the top 100 tags by usage, uses the proposed hTagcloud microformat.
-  def blog_tag_cloud(blog, options = {})
-    options.assert_valid_keys(:limit, :conditions, :sort)
-    options.reverse_merge! :limit => 100, :sort => :name
-    sort = options.delete(:sort)
-
-    tags = blog.tags.find(:all, options.merge(:order => 'taggings_count DESC')).sort_by(&sort)
-    
+  def blog_tag_cloud(blog, tags)
     # TODO: add option to specify which classes you want and overide this if you want?
     classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)
     

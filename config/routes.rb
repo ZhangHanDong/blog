@@ -14,7 +14,6 @@ ActionController::Routing::Routes.draw do |map|
    
     # paginated listings
     map.connect 'blogs/page/:page', :controller => 'blogs', :action => 'index', :requirements => { :page => /\d+/}
-    map.connect 'blogs/:blog_id/tags/page/:page', :controller => 'tags', :action => 'index', :requirements => { :page => /\d+/}
     map.connect 'blogs/:blog_id/users/page/:page', :controller => 'users', :action => 'index', :requirements => { :page => /\d+/}
     
     # paginated post listings

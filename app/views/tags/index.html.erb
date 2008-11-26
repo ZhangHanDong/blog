@@ -1,5 +1,5 @@
 <h1><%=h @blog.title %> tag cloud <%= "#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
 
-<%= blog_tag_cloud(@blog, {:limit => 50}) %>
+<%= blog_tag_cloud(@blog, @tags) %>
 
 <p>(top 50)</p>
