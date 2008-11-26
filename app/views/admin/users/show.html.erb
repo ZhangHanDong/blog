@@ -31,6 +31,7 @@
   <%= @user.comments.length == 0 ? @user.comments.length : link_to(@user.comments.length, admin_user_comments_path(@user)) %>
 </p>
 
+<% unless @user.blogs %>
 <p>
   <b><%=h @user.name %> posted in these blogs:</b>
   <ul>
@@ -51,6 +52,7 @@
   <% end -%>
   </ul>
 </p>
+<% end -%>
 
 <%= link_to 'Edit', edit_admin_user_path(@user) %> |
 <%= link_to 'Back', admin_users_path %>
