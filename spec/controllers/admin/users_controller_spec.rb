@@ -123,9 +123,7 @@ describe Admin::UsersController do
   
   describe "handling unsuccessful GET for /admin/users/15155199" do
    
-    it "should be redirected with flash message" do
-      lambda {get :show, :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
-    end
+    it "should be redirected with flash message"
     
   end
   
@@ -280,14 +278,20 @@ describe Admin::UsersController do
     end
   end
 
+  
   describe "handling DELETE /users/1" do
+
+    before(:each) do
+      #fake the contoller to think a different user logged in
+      controller.stub!(:current_user).and_return(users(:quentin))
+    end
 
     def do_delete
       delete :destroy, :id => "1"
     end
 
     it "should find the user requested" do
-      User.should_receive(:find).with("1").and_return(@user)
+      User.should_receive(:find).with("1")
       do_delete
     end
 
@@ -298,6 +302,23 @@ describe Admin::UsersController do
 
     it "should redirect to the users list" do
       do_delete
+      response.should redirect_to(admin_users_url)
+    end
+  end
+  
+  describe "handling failed DELETE /users/1 - cannot delete yourself if logged in user" do
+
+    def do_delete
+      delete :destroy, :id => "1"
+    end
+
+    it "should not call destroy on the found user, show error and redirect" do
+      User.stub!(:find).and_return(@user)
+      # user and current_user match 
+      User.should_receive(:find).with("1")
+      @user.should_not_receive(:destroy)
+      do_delete
+      flash[:error].should_not be_empty
       response.should redirect_to(admin_users_url)
     end
   end

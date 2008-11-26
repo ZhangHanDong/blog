@@ -118,13 +118,15 @@ class Admin::UsersController < ApplicationController
   # DELETE /admin/users/1.xml
   def destroy
     @user = User.find(params[:id])
-    unless @user == @current_user
+    if @user == @current_user
+      flash[:error]  = "Sorry, you cannot delete yourselh while logged in"
+      redirect_to admin_users_url
+    else
       @user.destroy
-      
       respond_to do |format|
         format.html { redirect_to admin_users_url }
         format.xml  { head :ok }
-      end                   
+      end
     end
   end  
 

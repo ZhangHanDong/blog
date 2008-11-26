@@ -45,7 +45,8 @@ describe ApplicationHelper do
   describe "javascript including" do
 
     it "should accept string and/or array of files for including" do
-      javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>").should eql("<script>TimeInWordsHelper.convertBySelector('.updated');</script>")
+      self.should_receive(:content_for).with(:javascript).exactly(3).times
+      javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>")
       javascript("", ['file_1.js', 'file_2.js'])
       javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>", ['file_1.js', 'file_2.js'])
     end

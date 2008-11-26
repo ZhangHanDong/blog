@@ -90,6 +90,13 @@ describe Admin::PostsController do
       response.body.should == "XML"
     end
   end
+  
+  
+  describe "handling unsuccessful GET for /admin/blogs/1/posts/15155199" do
+
+    it "should be redirected with flash message"
+
+  end
 
 
   describe "handling GET /admin/blogs/1/users/1/posts" do
@@ -161,15 +168,6 @@ describe Admin::PostsController do
   end
 
 
-  describe "handling unsuccessful GET for /admin/blogs/1/posts/15155199" do
-
-    it "should be redirected with flash message" do
-      lambda {get :show, :blog_id => "1", :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
-    end
-
-  end
-
-
   describe "handling GET /admin/blogs/1/posts/new" do
 
     def do_get
@@ -232,6 +230,10 @@ describe Admin::PostsController do
 
 
   describe "handling POST /admin/blogs/1/posts" do
+
+    before(:each) do
+      User.stub!(:find).and_return(users(:quentin))
+    end
 
     describe "with setting author (user) (successful save)" do
 
@@ -315,15 +317,9 @@ describe Admin::PostsController do
         do_put
         response.should render_template('edit')
       end
-
-      it "should be render template with flash message on update RecordInvalid" do
-        @post.errors.stub!(:full_messages).and_return([])
-        @post.should_receive(:update_attributes).and_raise(ActiveRecord::RecordInvalid.new(@post))
-        post :update, :id => "1"
-        flash[:notice].should_not be_empty
-        response.should render_template('edit')
-      end
-
+      
+      it "should re-render template with flash message on update RecordInvalid"
+      
     end
   end
 

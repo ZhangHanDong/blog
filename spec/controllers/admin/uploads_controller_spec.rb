@@ -11,7 +11,6 @@ describe Admin::UploadsController do
     @blog = mock_model(Blog)
     @user = mock_model(User)
     Blog.stub!(:find).and_return(@blog)
-    User.stub!(:find).and_return(@user)
   end
   
 
@@ -66,8 +65,10 @@ describe Admin::UploadsController do
 
     before(:each) do
       @upload = mock_model(Upload)
-      @blog.should_receive(:uploads).and_return(@upload)
+      User.stub!(:find).and_return(@user)
       Upload.stub!(:find).and_return(@upload)
+      
+      @blog.should_receive(:uploads).and_return(@upload)
       @upload.should_receive(:by_user).with(@user).and_return(@upload)
       @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
     end

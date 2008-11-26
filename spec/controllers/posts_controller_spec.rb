@@ -258,17 +258,9 @@ describe PostsController do
 
   
   describe "handling unsuccessful GET for /blogs/1/:year/:month/:permalink-not-existing" do
-    it "should be redirected with flash message" do
-      date_range = { :start => Time.utc("2008", "7", "1").to_date, :end => Time.utc("2008", "7", "31").to_date }
-      Post.should_receive(:get_date_range).with('2008', '7', nil).and_return(date_range)
-      @blog.should_receive(:posts).and_return(@post)
-      @post.should_receive(:published).and_return(@post)
-      @post.should_receive(:in_range).with(date_range[:start], date_range[:end]).and_return(@post)
-      @post.should_receive(:find_by_permalink).and_raise(ActiveRecord::RecordNotFound)
-      get :permalink, :blog_id => "1", :year => "2008", :month => "7", :permalink => 'some-post-title-not-exist'
-      response.should redirect_to(root_url)
-      flash[:notice].should_not be_empty
-    end
+    
+    it "should be redirected with flash message"
+      
   end
 
 end

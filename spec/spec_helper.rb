@@ -49,12 +49,10 @@ Spec::Runner.configure do |config|
   # For more information take a look at Spec::Example::Configuration and Spec::Runner
 end
 
+
 ##
 # rSpec Hash additions.
-#
-# From 
-#   * http://wincent.com/knowledge-base/Fixtures_considered_harmful%3F
-#   * Neil Rahilly
+##
 
 class Hash
 

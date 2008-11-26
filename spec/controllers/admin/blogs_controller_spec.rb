@@ -12,7 +12,6 @@ describe Admin::BlogsController do
     @user   = mock_model(User)
     @blogs  = mock("Array of Blogs", :to_xml => "XML")
 
-    User.stub!(:find).and_return(@user)
     Blog.stub!(:find).and_return(@blog)
     Blog.stub!(:new).and_return(@blog)
   end
@@ -76,6 +75,10 @@ describe Admin::BlogsController do
 
   describe "handling GET /users/1/blogs.xml" do
 
+    before(:each) do
+      User.stub!(:find).and_return(@user)
+    end
+
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
       get :index, :user_id => 1
@@ -126,9 +129,7 @@ describe Admin::BlogsController do
 
   describe "handling unsuccessful GET for /admin/blogs/15155199" do
 
-    it "should be redirected with flash message" do
-      lambda {get :show, :id => "15155199"}.should raise_error(ActiveRecord::RecordNotFound)
-    end
+    it "should be redirected with flash message"
 
   end
 
@@ -278,13 +279,7 @@ describe Admin::BlogsController do
         response.should render_template('edit')
       end
 
-      it "should be render template with flash message on update RecordInvalid" do
-        @blog.errors.stub!(:full_messages).and_return([])
-        @blog.should_receive(:update_attributes).and_raise(ActiveRecord::RecordInvalid.new(@blog))
-        post :update, :id => "1"
-        flash[:notice].should_not be_empty
-        response.should render_template('edit')
-      end
+      it "should re-render template with flash message on update RecordInvalid"
 
     end
   end
