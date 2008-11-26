@@ -1,15 +1,5 @@
-<h1><%=h @blog.title %> tags<%= "#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
+<h1><%=h @blog.title %> tag cloud <%= "#{(@user.nil? ? '' : " by #{h(@user.name)}")}" %></h1>
 
-<table>
-  <tr>
-    <th>Tag</th> 
-  </tr>
+<%= blog_tag_cloud(@blog, {:limit => 50}) %>
 
-<% for tag in @tags %>
-  <tr>
-    <td><%= link_to( h(tag.name), blog_tag_name_url(@blog, tag), { :rel => 'tag' }) %></td>
-  </tr>
-<% end %>
-</table> 
-
-<p><%= will_paginate @tags %></p>
+<p>(top 50)</p>

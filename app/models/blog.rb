@@ -10,6 +10,7 @@ class Blog < ActiveRecord::Base
   has_many   :posts, :dependent => :destroy
   has_many   :comments, :through => :posts
   has_many   :uploads, :order => "uploads.created_at DESC" 
+  
   acts_as_tagger
   
   named_scope :published, :conditions => {:in_draft => false}, :order => 'blogs.created_at DESC'

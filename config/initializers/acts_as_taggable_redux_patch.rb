@@ -42,6 +42,46 @@ module ActiveRecord
   end
 end
 
+module ActsAsTaggableHelper
+  
+  # Generate a tag cloud of the top 100 tags by usage, uses the proposed hTagcloud microformat.
+  def blog_tag_cloud(blog, options = {})
+    options.assert_valid_keys(:limit, :conditions, :sort)
+    options.reverse_merge! :limit => 100, :sort => :name
+    sort = options.delete(:sort)
+
+    tags = blog.tags.find(:all, options.merge(:order => 'taggings_count DESC')).sort_by(&sort)
+    
+    # TODO: add option to specify which classes you want and overide this if you want?
+    classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)
+    
+    max, min = 0, 0
+    
+    # get tag counts and cache in array
+    counts = []
+    tags.each do |tag|
+      counts[tag.id] = tag.blog_taggings_count(blog)
+    end
+    
+    tags.each do |tag|
+      max = counts[tag.id] if counts[tag.id] > max
+      min = counts[tag.id] if counts[tag.id] < min
+    end
+    
+    divisor = ((max - min) / classes.size) + 1
+    
+    html =    %(<div class="hTagcloud">\n)
+    html <<   %(  <ul class="popularity">\n)
+    tags.each do |tag|
+      html << %(    <li>)
+      html << link_to(tag.name, blog_tag_name_url(blog, tag), :class => classes[(counts[tag.id] - min) / divisor]) 
+      html << %(</li> \n)
+    end
+    html <<   %(  </ul>\n)
+    html <<   %(</div>\n)
+  end
+end
+
 # vendor/plugins/acts_as_taggable_redux/lib/tag.rb
 # new named scopes and association with blogs, also creating a tagging referencing a blog id
 class Tag < ActiveRecord::Base
@@ -56,6 +96,11 @@ class Tag < ActiveRecord::Base
     taggings.reset
     @tagged = nil
   end
+  
+  def blog_taggings_count(blog)
+    taggings.count(:conditions => {:blog_id => blog.id})
+  end
+  
 end
 
 # vendor/plugins/acts_as_taggable_redux/lib/tagging.rb

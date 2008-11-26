@@ -12,12 +12,6 @@ class TagsController < ApplicationController
     else
       @tags = @blog.tags
     end
-    
-    respond_to do |format|
-      format.html {
-        @tags = @tags.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10, :include => :taggings)
-      }
-    end
   end
 
 end
