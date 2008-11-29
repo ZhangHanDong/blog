@@ -218,13 +218,6 @@ describe Admin::CommentsController do
       response.body.should == "XML" 
     end
   end 
-  
-  
-  describe "handling unsuccessful GET for /admin/blogs/1/posts/1/comment/15155199" do
-    
-    it "should be redirected with flash message"
-    
-  end
     
 
   describe "handling GET /admin/blogs/1/posts/1/comments/new" do

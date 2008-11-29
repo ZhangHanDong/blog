@@ -83,6 +83,7 @@ class PostsController < ApplicationController
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], nil)
     @post = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).find_by_permalink(params[:permalink], :include => [:comments, :user, :tags])
+    raise ActiveRecord::RecordNotFound unless @post
     @comment = Comment.new
 
     respond_to do |format|

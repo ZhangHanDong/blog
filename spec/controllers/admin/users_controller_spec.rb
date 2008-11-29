@@ -120,13 +120,6 @@ describe Admin::UsersController do
     end
   end  
   
-  
-  describe "handling unsuccessful GET for /admin/users/15155199" do
-   
-    it "should be redirected with flash message"
-    
-  end
-  
 
   describe "handling GET /users/new" do
 

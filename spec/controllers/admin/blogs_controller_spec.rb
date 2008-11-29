@@ -15,6 +15,20 @@ describe Admin::BlogsController do
     Blog.stub!(:find).and_return(@blog)
     Blog.stub!(:new).and_return(@blog)
   end
+  
+  
+  describe "handling exceptions" do
+
+    before(:each) do
+      controller.use_rails_error_handling!
+    end
+
+    it "should be redirected with flash message for failed GET for /admin/blogs/15155199 " do
+      Blog.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "15155199"
+      response.should render_template "#{RAILS_ROOT}/public/404.html"
+    end
+  end
 
 
   describe "handling GET /blogs" do
@@ -53,17 +67,14 @@ describe Admin::BlogsController do
 
   describe "handling GET /users/1/blogs" do
 
-    before(:each) do
-      User.stub!(:find).and_return(@user)
-    end
-
     def do_get
       get :index, :user_id => 1
     end
 
     it "should be successful, render index template and and find all blogs created by the user" do
-      @user.should_receive(:created_blogs).and_return(@blogs)
-      @blogs.should_receive(:paginate).with({:include=>[:creator, :posts, :comments, :tags], :page=>nil, :per_page=>10}).and_return([@blog])
+      User.stub!(:find).and_return(@user)
+      @user.should_receive(:created_blogs).and_return(@blog)
+      @blog.should_receive(:paginate).with({:include=>[:creator, :posts, :comments, :tags], :page=>nil, :per_page=>10}).and_return([@blog])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -75,16 +86,13 @@ describe Admin::BlogsController do
 
   describe "handling GET /users/1/blogs.xml" do
 
-    before(:each) do
-      User.stub!(:find).and_return(@user)
-    end
-
     def do_get
       @request.env["HTTP_ACCEPT"] = "application/xml"
       get :index, :user_id => 1
     end
 
     it "should be successful, find all user blogs and render them as XML" do
+      User.stub!(:find).and_return(@user)
       @user.should_receive(:created_blogs).and_return(@blogs)
       @blogs.should_receive(:recent).and_return(@blogs)
       do_get
@@ -127,32 +135,18 @@ describe Admin::BlogsController do
   end
 
 
-  describe "handling unsuccessful GET for /admin/blogs/15155199" do
-
-    it "should be redirected with flash message"
-
-  end
-
-
   describe "handling GET /blogs/new" do
 
     def do_get
       get :new
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render new template" do
-      do_get
-      response.should render_template('new')
-    end
-
-    it "should create an new blog" do
+    it "should be successful, render new template assign for new blog for the view" do
       Blog.should_receive(:new).and_return(@blog)
       do_get
+      response.should be_success
+      response.should render_template('new')
+      assigns[:blog].should equal(@blog)
     end
 
     it "should not save the new blog" do
@@ -160,10 +154,6 @@ describe Admin::BlogsController do
       do_get
     end
 
-    it "should assign the new blog for the view" do
-      do_get
-      assigns[:blog].should equal(@blog)
-    end
   end
 
 
@@ -173,25 +163,14 @@ describe Admin::BlogsController do
       get :edit, :id => "1"
     end
 
-    it "should be successful" do
-      do_get
-      response.should be_success
-    end
-
-    it "should render edit template" do
-      do_get
-      response.should render_template('edit')
-    end
-
-    it "should find the blog requested" do
+    it "should be successful, find blog, render edit template and assign for the view" do
       Blog.should_receive(:find).and_return(@blog)
       do_get
-    end
-
-    it "should assign the found Blog for the view" do
-      do_get
+      response.should be_success
+      response.should render_template('edit')
       assigns[:blog].should equal(@blog)
     end
+
   end
 
 
@@ -244,44 +223,14 @@ describe Admin::BlogsController do
         put :update, :id => "1"
       end
 
-      it "should find the blog requested" do
+      it "should find the blog requested, update it and redirect to the blog" do
         Blog.should_receive(:find).with("1").and_return(@blog)
-        do_put
-      end
-
-      it "should update the found blog" do
-        do_put
-        assigns(:blog).should equal(@blog)
-      end
-
-      it "should assign the found blog for the view" do
-        do_put
-        assigns(:blog).should equal(@blog)
-      end
-
-      it "should redirect to the blog" do
         do_put
         response.should redirect_to(admin_blog_url(@blog))
       end
-
+      
     end
 
-
-    describe "with failed update" do
-
-      def do_put
-        @blog.should_receive(:update_attributes).and_return(false)
-        put :update, :id => "1"
-      end
-
-      it "should re-render 'edit'" do
-        do_put
-        response.should render_template('edit')
-      end
-
-      it "should re-render template with flash message on update RecordInvalid"
-
-    end
   end
 
 
@@ -291,20 +240,13 @@ describe Admin::BlogsController do
       delete :destroy, :id => "1"
     end
 
-    it "should find the blog requested" do
+    it "should find the blog requested, call destroy and redirect to the blogs list" do
       Blog.should_receive(:find).with("1").and_return(@blog)
-      do_delete
-    end
-
-    it "should call destroy on the found blog" do
       @blog.should_receive(:destroy)
-      do_delete
-    end
-
-    it "should redirect to the blogs list" do
       do_delete
       response.should redirect_to(admin_blogs_url)
     end
+
   end
 
 end

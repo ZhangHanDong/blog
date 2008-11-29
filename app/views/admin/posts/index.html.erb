@@ -1,4 +1,4 @@
-<h1><%= "#{h(@blog.title)} posts#{(@tag.nil? ? '' : " tagged with #{h(@tag.name)}")}#{(@user.nil? ? '' : " by #{h(@user.name)}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
+<h1><%= "#{h(@blog.title) if @blog} posts#{(@tag.nil? ? '' : " tagged with #{h(@tag.name)}")}#{(@user.nil? ? '' : " by #{h(@user.name)}")}#{(@date_range.nil? ? '' : "#{@date_range[:descriptor]}")}" %></h1>
 
 <table>
   <tr>

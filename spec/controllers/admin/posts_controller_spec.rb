@@ -22,6 +22,20 @@ describe Admin::PostsController do
   end
 
 
+  describe "handling exceptions" do
+
+    before(:each) do
+      controller.use_rails_error_handling!
+    end
+
+    it "should be redirected with flash message for failed GET for /admin/blogs/1/posts/15155199 " do
+      Post.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "15155199", :blog_id => '1'
+      response.should render_template "#{RAILS_ROOT}/public/404.html"
+    end
+  end
+  
+
   describe "handling GET /admin/users/1/posts" do
 
     def do_get
@@ -89,13 +103,6 @@ describe Admin::PostsController do
       response.should be_success
       response.body.should == "XML"
     end
-  end
-  
-  
-  describe "handling unsuccessful GET for /admin/blogs/1/posts/15155199" do
-
-    it "should be redirected with flash message"
-
   end
 
 
@@ -317,8 +324,6 @@ describe Admin::PostsController do
         do_put
         response.should render_template('edit')
       end
-      
-      it "should re-render template with flash message on update RecordInvalid"
       
     end
   end

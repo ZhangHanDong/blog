@@ -256,11 +256,4 @@ describe PostsController do
 
   end
 
-  
-  describe "handling unsuccessful GET for /blogs/1/:year/:month/:permalink-not-existing" do
-    
-    it "should be redirected with flash message"
-      
-  end
-
 end

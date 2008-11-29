@@ -14,6 +14,10 @@ class ApplicationController < ActionController::Base
   # filter_parameter_logging :password
   
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
+  rescue_from ActionController::RoutingError, :with => :record_not_found
+  rescue_from ActionController::UnknownController, :with => :record_not_found
+  rescue_from ActionController::UnknownAction, :with => :record_not_found
+    
   rescue_from ActiveRecord::RecordInvalid do |exception|
     flash[:notice] = "Sorry, there was a problem #{(exception.record.new_record? ? 'creating' : 'updating')} that"
     render :action => (exception.record.new_record? ? :new : :edit)
@@ -21,7 +25,7 @@ class ApplicationController < ActionController::Base
   
   protected  
   def record_not_found                             
-    flash[:notice] = 'Sorry, we were unable to find that'
-    redirect_to(root_url)
+    headers["Status"] = "404 Not Found"
+    render :file => "#{RAILS_ROOT}/public/404.html"
   end
 end

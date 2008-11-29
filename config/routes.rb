@@ -56,6 +56,27 @@ ActionController::Routing::Routes.draw do |map|
   # admin resources
   map.namespace :admin do |admin|
 
+    # paginated listings
+    map.connect 'admin/blogs/page/:page', :controller => 'admin/blogs', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/users/:user_id/blogs/page/:page', :controller => 'admin/blogs', :action => 'index', :requirements => { :page => /\d+/}
+    
+    # paginated post listings
+    map.connect 'admin/blogs/:blog_id/posts/page/:page', :controller => 'admin/posts', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/users/:user_id/posts/page/:page', :controller => 'admin/posts', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/blogs/:blog_id/users/:user_id/posts/page/:page', :controller => 'admin/posts', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/blogs/:blog_id/tags/:tag_id/posts/page/:page', :controller => 'admin/posts', :action => 'index', :requirements => { :page => /\d+/}
+    
+    # paginated comment listings
+    map.connect 'admin/blogs/:blog_id/comments/page/:page', :controller => 'admin/comments', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/blogs/:blog_id/posts/:post_id/comments/page/:page', :controller => 'admin/comments', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/users/:user_id/comments/page/:page', :controller => 'admin/comments', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/blogs/:blog_id/users/:user_id/comments/page/:page', :controller => 'admin/comments', :action => 'index', :requirements => { :page => /\d+/}
+    
+    # paginated tag listings
+    map.connect 'admin/blogs/:blog_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/}
+    map.connect 'admin/blogs/:blog_id/users/:user_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/}
+    
+
     admin.resources :blogs do |blog|
       blog.resources :posts, :has_many => :comments
       blog.resources :comments
@@ -69,7 +90,7 @@ ActionController::Routing::Routes.draw do |map|
 
 
   # defaults
-  map.root   :blogs
+  map.root    :blogs
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
 end

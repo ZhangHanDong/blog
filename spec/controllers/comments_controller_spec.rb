@@ -209,11 +209,4 @@ describe CommentsController do
 
   end
 
-
-  describe "handling unsuccessful GET for /blogs/1/posts/1/comments/15155199" do
-
-    it "should be redirected with flash message"
-
-  end
-
 end

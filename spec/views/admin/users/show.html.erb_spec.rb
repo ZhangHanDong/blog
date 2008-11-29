@@ -12,7 +12,7 @@ describe "/admin/users/show.html.erb" do
     @user.should_receive(:created_blogs).twice.and_return([]) 
     @user.should_receive(:posts).twice.and_return([])
     @user.should_receive(:comments).twice.and_return([]) 
-    @user.should_receive(:blogs).and_return([]) 
+    @user.should_receive(:blogs).twice.and_return([]) 
     assigns[:user] = @user
   end
 
