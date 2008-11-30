@@ -22,7 +22,7 @@ ActionController::Routing::Routes.draw do |map|
     end
     
     blog.resources :comments
-    blog.resources :tags
+    blog.resources :tags, :collection => { :suggested => :get }
                                                                                                                               
     map.connect 'blogs/:blog_id/:year/:month/:day/:permalink',
                   :controller => 'posts',

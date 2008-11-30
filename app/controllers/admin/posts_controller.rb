@@ -79,7 +79,7 @@ class Admin::PostsController < ApplicationController
     @post = Post.new(params[:post])
     @post.user = @current_user      
     @blog.posts << @post
-       
+    @blog_id = @blog.id   
     respond_to do |format|
       if @post.save
         flash[:notice] = 'Post was successfully created.'
@@ -97,7 +97,7 @@ class Admin::PostsController < ApplicationController
   # PUT /admin/blogs/1/posts/1.xml
   def update
     @post = Post.find(params[:id], :include => :blog)
-    
+    @blog_id = @post.blog.id
     respond_to do |format|
       if @post.update_attributes(params[:post])
         flash[:notice] = 'Post was successfully updated.'
@@ -108,8 +108,8 @@ class Admin::PostsController < ApplicationController
         format.xml  { render :xml => @post.errors, :status => :unprocessable_entity }
       end
     end
-  end               
-  
+  end 
+
 
   # DELETE /admin/blogs/1/posts/1
   # DELETE /admin/blogs/1/posts/1.xml

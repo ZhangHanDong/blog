@@ -20,6 +20,10 @@ h2 {
 font-size: 1.4em;
 }
 
+/* 
+* uploads
+*/
+
 ul#files {
 list-style:none;
 padding:0;
@@ -50,6 +54,10 @@ background: transparent url(/images/admin/trash.gif) no-repeat 0 50%;
 padding-left:15px;
 }
 
+/* 
+* pagination
+*/
+
 .pagination {
 background: #F1F1F1;
 border: 1px solid #E5E5E5;
@@ -72,3 +80,26 @@ color: black; }
 
 .pagination a:hover, .pagination a:focus {
 text-decoration: underline; }       
+
+/* 
+* auto-complete
+*/
+
+.auto_complete ul {
+margin:0;
+padding:0.25em 0em; 
+list-style-type:none;
+background:#FFF;
+width:50%;
+border:1px solid #666;
+} 
+
+.auto_complete ul li {
+padding:0.25em; 
+cursor:pointer;
+cursor:hand;
+} 
+
+.auto_complete ul li.selected { 
+font-weight:bold;
+}

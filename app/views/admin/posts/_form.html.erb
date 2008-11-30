@@ -16,11 +16,25 @@
   <%= f.label :body %><br />
   <%= f.text_area :body %>
 </p> 
-<p>Tags (space separate tags &amp; use quotes "" to group tag phrases)<br />
-  <%= f.text_field :tag_list -%>
-  <%= f.hidden_field :user_id, :value => @current_user.id unless @current_user.nil? -%>
-  <%= f.hidden_field :blog_id, :value => @blog -%>
+
+<p>
+  Tags (space separate tags &amp; use quotes "" to group tag phrases)<br />
+  
+  <%= text_field_with_auto_complete :post, 
+                                    :tag_list, { :size => 50 },
+                                    { :url => { :controller => 'admin/tags', :action => 'suggested', :blog_id => blog.id },
+                                      :indicator => "indicator",
+                                      :tokens => ' ', 
+                                      :frequency => 0.5, 
+                                      :min_chars => 1, 
+                                      :skip_style => true, 
+                                      :method => :get } %>
+ <div id="indicator" style="display:none;">loading ...</div>
 </p>
+
+<%= f.hidden_field :user_id, :value => @current_user.id unless @current_user.nil? -%>
+<%= f.hidden_field :blog_id, :value => blog.id -%>
+
 <p>
   <%= f.label :in_draft %><br />
   <%= f.check_box :in_draft %>

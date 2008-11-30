@@ -1,7 +1,7 @@
 <h1>New post in <%= h @blog.title %></h1>
 
 <% form_for [:admin, @blog, @post] do |f| %>
-  <%= render :partial => 'form', :locals => { :f => f, :label => 'Create' } -%>
+  <%= render :partial => 'form', :locals => { :f => f, :label => 'Create', :blog => @blog } -%>
 <% end %>
 
 <%= link_to 'Back', admin_blog_posts_path(@blog) %>
