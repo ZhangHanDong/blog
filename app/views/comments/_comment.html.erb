@@ -10,7 +10,7 @@
   <li>website: <%= link_to h(comment.website), comment.website %></li>
   <li>body: <%= h comment.body %></li>                                                                 
   <% unless @post -%>
-  <li>made on post: <%= link_to h(comment.post.title), blog_post_url(comment.post.blog, comment.post, :anchor => "comment-#{comment.id}") -%></li>
+  <li>made on post: <%= link_to h(comment.post.title), url_for(comment.post.permalink_url(:anchor => "comment-#{comment.id}")) -%></li>
   <% end -%>
 </ul>
 <hr/>

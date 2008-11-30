@@ -40,6 +40,7 @@ class Post < ActiveRecord::Base
   
   # url_for hash options for /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
   def permalink_url(options = {})
+    return unless permalink
     {:only_path => false, 
      :controller => "/posts", 
      :action => "permalink",  
