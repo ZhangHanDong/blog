@@ -26,7 +26,7 @@ describe Admin::BlogsController do
     it "should be redirected with flash message for failed GET for /admin/blogs/15155199 " do
       Blog.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199"
-      response.should render_template "#{RAILS_ROOT}/public/404.html"
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
     end
   end
 

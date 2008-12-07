@@ -10,7 +10,25 @@ ActionController::Routing::Routes.draw do |map|
   # public resources
   map.resource  :session, :only => [:new, :create, :destroy]
   map.resources :blogs, :only => [:index, :show] do |blog|
-   
+ 
+    # paginated listings
+    map.connect 'blogs/page/:page', :controller => 'blogs', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/users/page/:page', :controller => 'users', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+                  
+    # paginated post listings
+    map.connect 'blogs/:blog_id/posts/page/:page', :controller => 'posts', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/users/:user_id/posts/page/:page', :controller => 'posts', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/tags/:tag_id/posts/page/:page', :controller => 'posts', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:year/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:year/:month/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :page => /\d+/}, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:year/:month/:day/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/, :page => /\d+/}, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:tag/posts/:page', :controller => 'posts', :action => 'tagged', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    
+    # paginated comment listings
+    map.connect 'blogs/:blog_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/posts/:post_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/users/:user_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }          
+       
     blog.resources :posts, :only => [:index], 
                            :collection => { :on => :get, :tagged => :get },
                            :member => { :permalink => :get } do |post|
@@ -39,46 +57,11 @@ ActionController::Routing::Routes.draw do |map|
                   
     map.connect 'blogs/:blog_id/:tag',         :controller => 'posts', :action => 'tagged', :conditions => { :method => :get }
     map.connect 'blogs/:blog_id/:tag.:format', :controller => 'posts', :action => 'tagged', :conditions => { :method => :get }
-  
-    
-    # paginated listings
-    map.connect 'blogs/page/:page', :controller => 'blogs', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/users/page/:page', :controller => 'users', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-                  
-    # paginated post listings
-    map.connect 'blogs/:blog_id/posts/page/:page', :controller => 'posts', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/users/:user_id/posts/page/:page', :controller => 'posts', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/tags/:tag_id/posts/page/:page', :controller => 'posts', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/:year/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/:year/:month/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :page => /\d+/}, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/:year/:month/:day/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/, :page => /\d+/}, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/:tag/posts/:page', :controller => 'posts', :action => 'tagged', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    
-    # paginated comment listings
-    map.connect 'blogs/:blog_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/posts/:post_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/users/:user_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }          
   end
 
 
   # admin resources
   map.namespace :admin do |admin|
-
-    admin.resources :blogs do |blog|
-      blog.resources :posts, :has_many => :comments
-      blog.resources :comments, :only => [:index]
-      blog.resources :tags, :only => [:index, :show] do |tag|
-        tag.resources :posts, :only => [:index]
-      end
-      blog.resources :users, :has_many => [:posts, :comments, :tags, :uploads], :only => [:index]
-      blog.resources :uploads
-    end
-
-    admin.resources :users do |user|
-      user.resources :blogs, :only => [:index]
-      user.resources :posts, :only => [:index]
-      user.resources :comments, :only => [:index]
-    end
 
     # paginated listings
     map.connect 'admin/blogs/page/:page', :controller => 'admin/blogs', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
@@ -100,6 +83,21 @@ ActionController::Routing::Routes.draw do |map|
     map.connect 'admin/blogs/:blog_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
     map.connect 'admin/blogs/:blog_id/users/:user_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
     
+    admin.resources :blogs do |blog|
+      blog.resources :posts, :has_many => :comments
+      blog.resources :comments, :only => [:index]
+      blog.resources :tags, :only => [:index, :show] do |tag|
+        tag.resources :posts, :only => [:index]
+      end
+      blog.resources :users, :has_many => [:posts, :comments, :tags, :uploads], :only => [:index]
+      blog.resources :uploads
+    end
+
+    admin.resources :users do |user|
+      user.resources :blogs, :only => [:index]
+      user.resources :posts, :only => [:index]
+      user.resources :comments, :only => [:index]
+    end
   end
   
   # defaults
