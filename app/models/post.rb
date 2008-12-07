@@ -8,8 +8,8 @@ class Post < ActiveRecord::Base
   has_many   :comments, :dependent => :destroy
   acts_as_taggable
 
-  before_save :format_body
-  before_save :format_permalink
+  before_save   :format_body
+  before_create :format_permalink
 
   named_scope :published, :conditions => {:in_draft => false}, :order => "posts.publish_date DESC"
   named_scope :recent, :limit => 20, :order => "posts.publish_date DESC"

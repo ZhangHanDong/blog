@@ -23,7 +23,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 1, :include => [:comments, :user, :tags])
       }
       format.atom {
         @posts = @posts.recent
@@ -49,7 +49,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html { 
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 1, :include => [:comments, :user, :tags])
       }
       format.atom {
         @posts = @posts.recent
@@ -63,7 +63,7 @@ class PostsController < ApplicationController
   def on
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
-    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 1, :include => [:comments, :user, :tags])
 
     respond_to do |format|
       format.html {
@@ -78,10 +78,10 @@ class PostsController < ApplicationController
   end
   
   
-  # GET /blogs/1/:year/:month/:permalink
+  # GET /blogs/1/:year/:month/:day/:permalink
   def permalink
     @blog = Blog.published.find(params[:blog_id])
-    @date_range = Post.get_date_range(params[:year], params[:month], nil)
+    @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
     @post = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).find_by_permalink(params[:permalink], :include => [:comments, :user, :tags])
     raise ActiveRecord::RecordNotFound unless @post
     @comment = Comment.new

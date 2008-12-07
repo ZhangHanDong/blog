@@ -22,7 +22,7 @@ ActionController::Routing::Routes.draw do |map|
     map.connect 'blogs/:blog_id/:year/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :page => /\d+/ }, :conditions => { :method => :get }
     map.connect 'blogs/:blog_id/:year/:month/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :page => /\d+/}, :conditions => { :method => :get }
     map.connect 'blogs/:blog_id/:year/:month/:day/page/:page', :controller => 'posts', :action => 'on', :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/, :page => /\d+/}, :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/:tag/posts/:page', :controller => 'posts', :action => 'tagged', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:tag/page/:page', :controller => 'posts', :action => 'tagged', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
     
     # paginated comment listings
     map.connect 'blogs/:blog_id/comments/page/:page', :controller => 'comments', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
@@ -40,7 +40,9 @@ ActionController::Routing::Routes.draw do |map|
     end
     
     blog.resources :comments
-    blog.resources :tags, :collection => { :suggested => :get }
+    blog.resources :tags, :collection => { :suggested => :get } do |tag|
+      tag.resources :posts, :only => [:index]
+    end
                                                                                                                               
     map.connect 'blogs/:blog_id/:year/:month/:day/:permalink',
                   :controller => 'posts',
@@ -55,8 +57,8 @@ ActionController::Routing::Routes.draw do |map|
                   :requirements => { :year => /\d{4}/, :month => /\d{1,2}/, :day => /\d{1,2}/ },
                   :conditions => { :method => :get }
                   
-    map.connect 'blogs/:blog_id/:tag',         :controller => 'posts', :action => 'tagged', :conditions => { :method => :get }
-    map.connect 'blogs/:blog_id/:tag.:format', :controller => 'posts', :action => 'tagged', :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:tag',             :controller => 'posts', :action => 'tagged', :conditions => { :method => :get }
+    map.connect 'blogs/:blog_id/:tag.:format',     :controller => 'posts', :action => 'tagged', :conditions => { :method => :get }
   end
 
 
