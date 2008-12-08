@@ -1,7 +1,6 @@
 class Admin::PostsController < ApplicationController
     
   cache_sweeper :post_sweeper, :only => [:create, :update, :destroy]
-  cache_sweeper :tag_sweeper,  :only => [:create, :update, :destroy]
    
   layout 'admin'
   before_filter :login_required

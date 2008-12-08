@@ -3,6 +3,7 @@ class Admin::TagsController < ApplicationController
   layout 'admin'
   before_filter :login_required
   
+  
   # GET /admin/blogs/3/tags
   # GET /admin/blogs/3/tags.xml
   # GET /admin/blogs/3/users/1/tags
