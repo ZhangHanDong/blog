@@ -23,7 +23,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 1, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
       }
       format.atom {
         @posts = @posts.recent
@@ -39,7 +39,7 @@ class PostsController < ApplicationController
     @posts = Array.new
     
     if params[:tag]                    
-      @tag = Tag.find_by_name(params[:tag].humanize.downcase, :limit => 1)
+      @tag = Tag.find_by_name(params[:tag].humanize.downcase, :limit => 10)
       @posts = @blog.posts.published.with_tag(@tag) if @tag
       if @posts.empty?
         flash[:notice] = "No posts found tagged with \"#{(params[:tag].humanize.downcase)}\""
@@ -49,7 +49,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html { 
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 1, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
       }
       format.atom {
         @posts = @posts.recent
@@ -63,7 +63,7 @@ class PostsController < ApplicationController
   def on
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
-    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 1, :include => [:comments, :user, :tags])
+    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
 
     respond_to do |format|
       format.html {

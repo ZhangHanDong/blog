@@ -6,6 +6,13 @@ module ActiveRecord
   module Acts #:nodoc:
     module Taggable #:nodoc:
       module InstanceMethods
+        
+        def tag_list=(new_tag_list)
+          unless tag_list == new_tag_list
+            @new_tag_list = new_tag_list
+            self.cached_tag_list = new_tag_list if self.methods.include?('cached_tag_list')
+          end
+        end
 
         def blog_id=(new_blog_id)
           @new_blog_id = new_blog_id
