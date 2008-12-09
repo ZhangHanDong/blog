@@ -11,13 +11,13 @@ class PostSweeper < ActionController::Caching::Sweeper
   end
   
   def after_destroy(post)
-    expire_all(post)
+    expire_all(post, true)
   end
   
   
   private
   
-  def expire_all(post)
+  def expire_all(post, destroying = false)
     # permalink
     expire_page(:controller => '/posts', :action => 'permalink', :year => post.publish_date.year, 
                                                                  :month => post.publish_date.month, 
@@ -27,41 +27,30 @@ class PostSweeper < ActionController::Caching::Sweeper
     expire_date_pages(post, post.publish_date)
         
     # blog post comments + pages
-    expire_page(:controller => '/comments', :action => 'index', :post_id => post.id)
-    expire_page(:controller => '/comments', :action => 'index', :post_id => post.id, :format => :atom)
-    SweepingHelper::sweep_path("blogs/#{post.blog.id}/posts/#{post.id}/comments/page")
+    if post.title_changed? || destroying
+      expire_page(:controller => '/comments', :action => 'index', :post_id => post.id)
+      expire_page(:controller => '/comments', :action => 'index', :post_id => post.id, :format => :atom)
+      SweepingHelper::sweep_path("blogs/#{post.blog_id}/posts/#{post.id}/comments/page")
+    end
     
     # blog posts + pages
-    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog.id)
-    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog.id, :format => :atom)
-    SweepingHelper::sweep_path("blogs/#{post.blog.id}/posts/page")
+    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id)
+    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id, :format => :atom)
+    SweepingHelper::sweep_path("blogs/#{post.blog_id}/posts/page")
     
     # blog user posts + pages
-    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog.id, :user_id => post.user.id)
-    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog.id, :user_id => post.user.id, :format => :atom)
-    SweepingHelper::sweep_path("blogs/#{post.blog.id}/users/#{post.user.id}/posts/page")
-    
+    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id, :user_id => post.user_id)
+    expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id, :user_id => post.user_id, :format => :atom)
+    SweepingHelper::sweep_path("blogs/#{post.blog_id}/users/#{post.user_id}/posts/page")
+     
     # if tags changed, clear old and new tag urls using cached_tag_list
-    if post.changes['cached_tag_list'] && post.changes['cached_tag_list'].first
+    if post.changes['cached_tag_list']
       expire_tags = Tag.parse(post.changes['cached_tag_list'].first) || []
       new_tags = Tag.parse(post.changes['cached_tag_list'].last) || []
-      uniq_tags = new_tags.concat(expire_tags).uniq!
-      
-      if uniq_tags
-        uniq_tags.each do |tag_name|
-          tag = Tag.find_by_name(tag_name)
-          if tag
-            # only need to clear cache if tag name already exists
-            expire_page(:controller => '/posts', :action => 'tagged', :blog_id => post.blog.id, :tag => tag_name)
-            expire_page(:controller => '/posts', :action => 'tagged', :blog_id => post.blog.id, :tag => tag_name, :format => :atom)
-            SweepingHelper::sweep_path("blogs/#{post.blog.id}/#{tag_name}/page")
-            
-            expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog.id, :tag_id => tag.id)
-            expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog.id, :tag_id => tag.id, :format => :atom)
-            SweepingHelper::sweep_path("blogs/#{post.blog.id}/tags/#{tag.id}/posts/page")
-          end
-        end  
-      end
+      expire_tag_pages(post, new_tags.concat(expire_tags)) 
+    elsif post.tags && destroying
+      current_tags = Tag.parse(post.cached_tag_list) || []
+      expire_tag_pages(post, current_tags)
     end
     
     # if date changed, clear older date pages
@@ -70,18 +59,33 @@ class PostSweeper < ActionController::Caching::Sweeper
     end  
   end
   
+  def expire_tag_pages(post, tag_names)
+    tag_names.uniq.each do |tag_name|
+      tag = Tag.find_by_name(tag_name)
+      if tag
+        expire_page(:controller => '/posts', :action => 'tagged', :blog_id => post.blog_id, :tag => tag.name)
+        expire_page(:controller => '/posts', :action => 'tagged', :blog_id => post.blog_id, :tag => tag.name, :format => :atom)
+        SweepingHelper::sweep_path("blogs/#{post.blog_id}/#{tag.name}/page")
+
+        expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id, :tag_id => tag.id)
+        expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id, :tag_id => tag.id, :format => :atom)
+        SweepingHelper::sweep_path("blogs/#{post.blog_id}/tags/#{tag.id}/posts/page")
+      end
+    end
+  end
+  
   def expire_date_pages(post, expire_date)
     # day + pages 
     expire_page(:controller => '/posts', :action => 'on', :year => expire_date.year, :month => expire_date.month, :day => expire_date.day)           
-    SweepingHelper::sweep_path("blogs/#{post.blog.id}/#{expire_date.year}/#{expire_date.month}/#{expire_date.day}")                                                       
+    SweepingHelper::sweep_path("blogs/#{post.blog_id}/#{expire_date.year}/#{expire_date.month}/#{expire_date.day}")                                                       
     
     # month + pages
     expire_page(:controller => '/posts', :action => 'on', :year => expire_date.year, :month => expire_date.month)
-    SweepingHelper::sweep_path("blogs/#{post.blog.id}/#{expire_date.year}/#{expire_date.month}")                                                          
+    SweepingHelper::sweep_path("blogs/#{post.blog_id}/#{expire_date.year}/#{expire_date.month}")                                                          
     
     # year + pages
     expire_page(:controller => '/posts', :action => 'on', :year => expire_date.year)
-    SweepingHelper::sweep_path("blogs/#{post.blog.id}/#{expire_date.year}")
+    SweepingHelper::sweep_path("blogs/#{post.blog_id}/#{expire_date.year}")
   end
   
 end

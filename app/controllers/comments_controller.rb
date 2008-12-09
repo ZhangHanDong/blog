@@ -1,5 +1,7 @@
 class CommentsController < ApplicationController
               
+  cache_sweeper :comment_sweeper, :only => [:create]
+  
   caches_page :index
 
   # GET blogs/1/comments

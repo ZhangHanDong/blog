@@ -5,7 +5,7 @@ class UserSweeper < ActionController::Caching::Sweeper
   observe User
 
   def after_create(user)
-    expire_all(user)
+    # not user activity yet - nothing to expire
   end
   
   def after_update(user)
@@ -20,9 +20,16 @@ class UserSweeper < ActionController::Caching::Sweeper
   private  
   
   def expire_all(user)
-    # expire user posts
-    # expire user comments
-    # expire blog user listings
+    # user commments
+    
+    # user posts
+    
+    # user listings
+    user.blogs.each do |blog|
+      expire_page(:controller => '/users', :action => 'show', :blog_id => blog.id, :user_id => user.id)
+      expire_page(:controller => '/users', :action => 'index', :blog_id => blog.id)
+      SweepingHelper::sweep_path("blogs/#{blog.id}/users/page")
+    end
   end
   
 end
