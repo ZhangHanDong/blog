@@ -5,11 +5,13 @@ class BlogSweeper < ActionController::Caching::Sweeper
   observe Blog
 
   def after_create(blog)
-    expire_all(blog)
+    expire_all(blog, true)
   end
   
   def after_update(blog)
-    expire_all(blog) if blog.changed?
+    if blog.changed? && (blog.in_draft_changed? || !blog.in_draft)
+      expire_all(blog) 
+    end
   end
   
   def after_destroy(blog)
@@ -19,11 +21,13 @@ class BlogSweeper < ActionController::Caching::Sweeper
 
   private  
   
-  def expire_all(blog)
-    SweepingHelper::sweep_path("blogs/#{blog.id}")
-    SweepingHelper::sweep_path("blogs/page")
+  def expire_all(blog, creating = false)
+    # entire blog
+    SweepingHelper::sweep_path("blogs/#{blog.id}") unless creating
+    # index + pages
     expire_page(:controller => '/blogs', :action => 'index')
     expire_page(:controller => '/', :action => 'index')
+    SweepingHelper::sweep_path("blogs/page")
   end
     
 end

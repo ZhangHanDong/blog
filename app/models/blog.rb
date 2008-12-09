@@ -15,6 +15,6 @@ class Blog < ActiveRecord::Base
   
   named_scope :published, :conditions => {:in_draft => false}, :order => 'blogs.created_at DESC'
   named_scope :recent, :limit => 20, :order => "blogs.created_at DESC" 
-  
+  named_scope :with_comments_by, lambda { |*user| {:conditions => ['comments.user_id = ? ', user], :include => {:posts => :comments}}}
   
 end

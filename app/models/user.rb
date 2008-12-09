@@ -41,7 +41,6 @@ class User < ActiveRecord::Base
   
   named_scope :recent, :limit => 20, :order => "users.created_at DESC"
 
-
   # authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
      # need to get the salt

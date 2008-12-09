@@ -3,35 +3,44 @@ class PostSweeper < ActionController::Caching::Sweeper
   observe Post
 
   def after_create(post)
-    expire_all(post)
+    expire_all(post, true)
   end
   
   def after_update(post)
-    expire_all(post) if post.changed?
+    if post.changed? && (post.in_draft_changed? || !post.in_draft)
+      expire_all(post)
+    end
   end
   
   def after_destroy(post)
-    expire_all(post, true)
+    expire_all(post, false, true)
   end
   
   
   private
   
-  def expire_all(post, destroying = false)
-    # permalink
-    expire_page(:controller => '/posts', :action => 'permalink', :year => post.publish_date.year, 
-                                                                 :month => post.publish_date.month, 
-                                                                 :day => post.publish_date.day, 
-                                                                 :permalink => post.permalink)    
-    
-    expire_date_pages(post, post.publish_date)
-        
-    # blog post comments + pages
-    if post.title_changed? || destroying
-      expire_page(:controller => '/comments', :action => 'index', :post_id => post.id)
-      expire_page(:controller => '/comments', :action => 'index', :post_id => post.id, :format => :atom)
-      SweepingHelper::sweep_path("blogs/#{post.blog_id}/posts/#{post.id}/comments/page")
+  def expire_all(post, creating = false, destroying = false)
+    unless creating
+      # permalink
+      expire_page(:controller => '/posts', :action => 'permalink', :year => post.publish_date.year, 
+                                                                   :month => post.publish_date.month, 
+                                                                   :day => post.publish_date.day, 
+                                                                   :permalink => post.permalink)    
+      # blog post comments + pages
+      if post.title_changed? || destroying
+        expire_page(:controller => '/comments', :action => 'index', :post_id => post.id)
+        expire_page(:controller => '/comments', :action => 'index', :post_id => post.id, :format => :atom)
+        SweepingHelper::sweep_path("blogs/#{post.blog_id}/posts/#{post.id}/comments/page")
+      end
+      
+      # if date changed, clear older date pages
+      if post.changes['publish_date'] && post.changes['publish_date'].first
+        expire_date_pages(post, post.changes['publish_date'].first)
+      end
     end
+    
+    # date listing + pages
+    expire_date_pages(post, post.publish_date)        
     
     # blog posts + pages
     expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id)
@@ -52,11 +61,7 @@ class PostSweeper < ActionController::Caching::Sweeper
       current_tags = Tag.parse(post.cached_tag_list) || []
       expire_tag_pages(post, current_tags)
     end
-    
-    # if date changed, clear older date pages
-    if post.changes['publish_date'] && post.changes['publish_date'].first
-      expire_date_pages(post, post.changes['publish_date'].first)
-    end  
+      
   end
   
   def expire_tag_pages(post, tag_names)
