@@ -15,7 +15,7 @@ describe "/comments/index" do
     @post_1.should_receive(:blog).at_least(1).times.and_return(@blog_1)  
     @post_1.stub!(:permalink_url).and_return({})  
     
-    @comment_1.should_receive(:user).and_return(nil)
+    @comment_1.should_receive(:user).at_least(1).times.and_return(nil)
     
     assigns[:comments] = [@comment_1]
     assigns[:comments].stub!(:total_pages).and_return(0)

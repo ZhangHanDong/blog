@@ -286,7 +286,7 @@ describe Admin::PostsController do
     describe "with successful update" do
 
       def do_put
-        @post.should_receive(:blog).and_return(@blog)
+        @post.should_receive(:blog).twice.and_return(@blog)
         @post.should_receive(:update_attributes).and_return(true)
         put :update, :id => "1", :blog_id => "1"
       end
@@ -316,6 +316,7 @@ describe Admin::PostsController do
     describe "with failed update" do
 
       def do_put
+        @post.should_receive(:blog).and_return(@blog)
         @post.should_receive(:update_attributes).and_return(false)
         put :update, :id => "1", :blog_id => "1"
       end

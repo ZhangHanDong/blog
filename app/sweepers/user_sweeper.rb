@@ -5,7 +5,7 @@ class UserSweeper < ActionController::Caching::Sweeper
   observe User
 
   def after_update(user)
-    expire_all(user) if user.changed?
+    expire_all(user) if user.name_changed? || user.email_changed?
   end
   
   def after_destroy(user)
@@ -16,8 +16,10 @@ class UserSweeper < ActionController::Caching::Sweeper
   private  
   
   def expire_all(user)
-    # find all blogs user has posted comments in or posted in
-    expire_blogs = user.blogs.concat(Blog.with_comments_by(user)).uniq
+    # find all blogs user has posted comments in or blog posted in
+    commented_blogs = Blog.with_comments_by(user) || []
+    expire_blogs = commented_blogs.concat(user.blogs).uniq
+     
     # expire all in each blog
     expire_blogs.each do |blog|
       SweepingHelper::sweep_path("blogs/#{blog.id}")

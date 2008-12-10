@@ -3,7 +3,7 @@ class PostSweeper < ActionController::Caching::Sweeper
   observe Post
 
   def after_create(post)
-    expire_all(post, true)
+    expire_all(post, true) if !post.in_draft
   end
   
   def after_update(post)
@@ -21,11 +21,20 @@ class PostSweeper < ActionController::Caching::Sweeper
   
   def expire_all(post, creating = false, destroying = false)
     unless creating
-      # permalink
-      expire_page(:controller => '/posts', :action => 'permalink', :year => post.publish_date.year, 
-                                                                   :month => post.publish_date.month, 
-                                                                   :day => post.publish_date.day, 
-                                                                   :permalink => post.permalink)    
+      # if title changed, clear older permalink
+      if post.title_changed? && post.permalink_was
+        publish_date_was = post.changes['publish_date'] ? post.publish_date_was : post.publish_date  
+        expire_page(:controller => '/posts', :action => 'permalink', :year => publish_date_was.year, 
+                                                                     :month => publish_date_was.month, 
+                                                                     :day => publish_date_was.day, 
+                                                                     :permalink => post.permalink_was)
+      else
+        expire_page(:controller => '/posts', :action => 'permalink', :year => post.publish_date.year, 
+                                                                     :month => post.publish_date.month, 
+                                                                     :day => post.publish_date.day, 
+                                                                     :permalink => post.permalink)    
+      end
+      
       # blog post comments + pages
       if post.title_changed? || destroying
         expire_page(:controller => '/comments', :action => 'index', :post_id => post.id)
@@ -34,9 +43,7 @@ class PostSweeper < ActionController::Caching::Sweeper
       end
       
       # if date changed, clear older date pages
-      if post.changes['publish_date'] && post.changes['publish_date'].first
-        expire_date_pages(post, post.changes['publish_date'].first)
-      end
+      expire_date_pages(post, post.publish_date_was) if post.changes['publish_date'] && post.publish_date_was
     end
     
     # date listing + pages
@@ -52,10 +59,10 @@ class PostSweeper < ActionController::Caching::Sweeper
     expire_page(:controller => '/posts', :action => 'index', :blog_id => post.blog_id, :user_id => post.user_id, :format => :atom)
     SweepingHelper::sweep_path("blogs/#{post.blog_id}/users/#{post.user_id}/posts/page")
      
-    # if tags changed, clear old and new tag urls using cached_tag_list
+    # if tags changed, clear old and new tag urls using cached_tag_list    
     if post.changes['cached_tag_list']
-      expire_tags = Tag.parse(post.changes['cached_tag_list'].first) || []
-      new_tags = Tag.parse(post.changes['cached_tag_list'].last) || []
+      expire_tags = Tag.parse(post.cached_tag_list_was) || []
+      new_tags = Tag.parse(post.cached_tag_list) || []
       expire_tag_pages(post, new_tags.concat(expire_tags)) 
     elsif post.tags && destroying
       current_tags = Tag.parse(post.cached_tag_list) || []

@@ -20,6 +20,8 @@ describe Comment do
 
   before(:each) do
     @comment = Comment.new
+    @post = Post.create!(:title => 'Post Title', :publish_date => Date.today, :body => 'test', :user_id => 1, :blog_id => 1)
+    @comment.post = @post
   end          
   
   
@@ -75,9 +77,7 @@ describe Comment do
     end
     
     it "should have a post" do
-      @post = Post.create!(:title => 'Post Title', :publish_date => Date.today, :body => 'test', :user_id => 1)
-      @comment.attributes = valid_comment_attributes         
-      @post.comments << @comment
+      @comment.attributes = valid_comment_attributes
       @comment.save!                                                                    
       @comment.post.should eql(@post)
     end
@@ -112,18 +112,18 @@ describe Comment do
       @comment.should be_valid
     end
 
-    it "should have an error on title" do
+    it "should have an error on name" do
       @comment.attributes = valid_comment_attributes.except(:name)
       @comment.should have(1).error_on(:name)
     end
 
-    it "should have an error on publish date" do
+    it "should have an error on body" do
       @comment.attributes = valid_comment_attributes.except(:body)
       @comment.should have(1).error_on(:body)
     end
 
-    it "should have an error on body" do
-      @comment.attributes = valid_comment_attributes.except(:post_id)
+    it "should have an error on no post" do
+      @comment.post = nil
       @comment.should have(1).error_on(:post_id)
     end
     

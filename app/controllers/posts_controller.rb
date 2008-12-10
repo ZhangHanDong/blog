@@ -39,7 +39,7 @@ class PostsController < ApplicationController
     @posts = Array.new
     
     if params[:tag]                    
-      @tag = Tag.find_by_name(params[:tag].humanize.downcase, :limit => 10)
+      @tag = Tag.find_by_name(params[:tag].humanize.downcase)
       @posts = @blog.posts.published.with_tag(@tag) if @tag
       if @posts.empty?
         flash[:notice] = "No posts found tagged with \"#{(params[:tag].humanize.downcase)}\""

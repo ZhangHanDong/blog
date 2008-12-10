@@ -6,14 +6,7 @@ module ActiveRecord
   module Acts #:nodoc:
     module Taggable #:nodoc:
       module InstanceMethods
-        
-        def tag_list=(new_tag_list)
-          unless tag_list == new_tag_list
-            @new_tag_list = new_tag_list
-            self.cached_tag_list = new_tag_list if self.methods.include?('cached_tag_list')
-          end
-        end
-
+                
         def blog_id=(new_blog_id)
           @new_blog_id = new_blog_id
           super(new_blog_id)
@@ -29,7 +22,8 @@ module ActiveRecord
                   tagging.destroy
                 end
               end
-
+              
+              
               Tag.parse(@new_tag_list).each do |name|
                 if self.blog
                   Tag.find_or_create_by_name(name).tag(self, @new_user_id, self.blog_id)
@@ -41,6 +35,9 @@ module ActiveRecord
               tags.reset
               taggings.reset
               @new_tag_list = nil
+              if self.methods.include?('cached_tag_list') && self.tags
+                self.update_attribute(:cached_tag_list, tags.collect { |tag| tag.name.include?(" ") ? %("#{tag.name}") : tag.name }.join(" "))
+              end
             end
           end
         end

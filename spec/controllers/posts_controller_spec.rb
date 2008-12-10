@@ -178,7 +178,7 @@ describe PostsController do
     end
 
     it "should be successful, render index template and assign posts for the view" do
-      Tag.should_receive(:find_by_name).with('some tag', :limit => 1).and_return(@tag)
+      Tag.should_receive(:find_by_name).with('some tag').and_return(@tag)
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return(@post)
@@ -193,7 +193,7 @@ describe PostsController do
     
     
     it "should be redirect to blog posts url when no posts found" do
-      Tag.should_receive(:find_by_name).with('some tag', :limit => 1).and_return(@tag)
+      Tag.should_receive(:find_by_name).with('some tag').and_return(@tag)
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return([])
@@ -213,7 +213,7 @@ describe PostsController do
     end
 
     it "should be successful, render recent limited posts as XML" do
-      Tag.should_receive(:find_by_name).with('some tag', :limit => 1).and_return(@tag)
+      Tag.should_receive(:find_by_name).with('some tag').and_return(@tag)
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return(@post)

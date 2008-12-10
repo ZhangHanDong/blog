@@ -5,7 +5,7 @@ class BlogSweeper < ActionController::Caching::Sweeper
   observe Blog
 
   def after_create(blog)
-    expire_all(blog, true)
+    expire_all(blog, true) if !blog.in_draft
   end
   
   def after_update(blog)
