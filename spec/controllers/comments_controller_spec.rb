@@ -26,7 +26,9 @@ describe CommentsController do
     it "should be successful, render index template and assign comments for the view" do
       @blog.should_receive(:comments).and_return(@comment)
       @comment.should_receive(:published).and_return(@comment)
-      @comment.should_receive(:paginate).with(:all, {:include=>:post, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comment.should_receive(:paginate).with({:include=>:post,
+                                               :per_page=>10,
+                                               :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -64,7 +66,9 @@ describe CommentsController do
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:find).and_return(@post)
       @post.should_receive(:comments).and_return(@comment)
-      @comment.should_receive(:paginate).with(:all, {:include=>:post, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comment.should_receive(:paginate).with({:include=>:post, 
+                                               :per_page=>10,
+                                               :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -105,7 +109,9 @@ describe CommentsController do
       @blog.should_receive(:comments).and_return(@comment)
       @comment.should_receive(:published).and_return(@comment)
       @comment.should_receive(:by_user).with(@user).and_return(@comment)
-      @comment.should_receive(:paginate).with(:all, {:include=>:post, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comment.should_receive(:paginate).with({:include=>:post,
+                                               :per_page=>10,
+                                               :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')

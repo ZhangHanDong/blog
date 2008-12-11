@@ -23,7 +23,7 @@ class Admin::CommentsController < ApplicationController
       elsif params[:post_id]
         @post = @blog.posts.find(params[:post_id])
         @comments = @post.comments
-      else  
+      elsif @blog  
         @comments = @blog.comments
       end  
     elsif params[:user_id] 
@@ -33,9 +33,10 @@ class Admin::CommentsController < ApplicationController
     
     respond_to do |format|
       format.html {
-        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 10, :include => { :post => :blog })
+        @comments = @comments.paginate(:page => params[:page], :per_page => 10, 
+                                       :include => { :post => :blog })
       }
-      format.xml  { render :xml => @comments.recent }
+      format.xml { render :xml => @comments.recent }
     end
   end  
   
@@ -47,7 +48,7 @@ class Admin::CommentsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @comment }
+      format.xml { render :xml => @comment }
     end
   end      
   
@@ -60,7 +61,7 @@ class Admin::CommentsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @comment }
+      format.xml { render :xml => @comment }
     end
   end        
   
@@ -100,7 +101,8 @@ class Admin::CommentsController < ApplicationController
     respond_to do |format|
       if @comment.update_attributes(params[:comment])
         flash[:notice] = 'Comment was successfully updated.'
-        format.html { redirect_to(admin_blog_post_comment_url(@comment.post.blog, @comment.post, @comment)) }
+        format.html { redirect_to(admin_blog_post_comment_url(@comment.post.blog, 
+                                                              @comment.post, @comment)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -121,5 +123,6 @@ class Admin::CommentsController < ApplicationController
       format.xml  { head :ok }
     end
   end             
+
 
 end

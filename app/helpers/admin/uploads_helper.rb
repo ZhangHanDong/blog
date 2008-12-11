@@ -1,5 +1,6 @@
 module Admin::UploadsHelper
   
+  
   # shorten a string to a set number of characters to but still maintain file extension
   def truncate_filename(filename, count = 6, mid_str='...')  
     trunc = filename
@@ -9,5 +10,6 @@ module Admin::UploadsHelper
     end    
     trunc
   end
+  
   
 end

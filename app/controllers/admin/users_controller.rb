@@ -15,12 +15,13 @@ class Admin::UsersController < ApplicationController
       @blog = Blog.find(params[:blog_id])
       @users = @blog.users
     else
-      @users = User
+      @users = User.find(:all)
     end
     
     respond_to do |format|
       format.html {
-        @users = @users.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10)
+        @users = @users.paginate(:page => params[:page], :order => 'created_at DESC', 
+                                 :per_page => 10)
       }
       format.xml { render :xml => @users.recent }
     end
@@ -34,7 +35,7 @@ class Admin::UsersController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @user }
+      format.xml { render :xml => @user }
     end
   end
          
@@ -90,7 +91,8 @@ class Admin::UsersController < ApplicationController
       flash[:notice] = "Thanks for signing up! You're logged in and ready to go"
       redirect_to(admin_url)
     else
-      flash[:error]  = "We couldn't set up that account, sorry.  Please try again, or contact an admin (link is above)."
+      flash[:error]  = "We couldn't set up that account, sorry.  \ 
+                        Please try again, or contact an admin (link is above)."
       render :action => 'signup', :layout => "application"
     end
   end
@@ -129,5 +131,6 @@ class Admin::UsersController < ApplicationController
       end
     end
   end  
+
 
 end

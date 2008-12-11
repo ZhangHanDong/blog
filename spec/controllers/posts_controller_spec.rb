@@ -24,7 +24,8 @@ describe PostsController do
     it "should be successful, render index template and assign posts for the view" do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags],
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -62,7 +63,8 @@ describe PostsController do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:by_user).with(@user).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags], 
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -104,7 +106,8 @@ describe PostsController do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags],
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       do_get
       response.should be_success
       assigns[:tag].should equal(@tag)
@@ -144,25 +147,29 @@ describe PostsController do
     end
 
     it "should be successful on year search" do
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags], 
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       get :on, :year => "2008", :blog_id => "1"
       response.should be_success
     end
 
     it "should be successful on year, month search" do
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags], 
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       get :on, :year => "2008", :month => '7', :blog_id => "1"
       response.should be_success
     end
 
     it "should be successful on year, month and day search" do
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags], 
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       get :on, :year => "2008", :month => '7', :day => '23', :blog_id => "1"
       response.should be_success
     end
 
     it "should show no posts found and redirect (with message) when none in date range" do
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags],
+                                            :per_page=>10, :page=>nil}).and_return([])
       get :on, :year => "2007", :blog_id => "1"
       flash[:notice].should_not be_empty
       response.should redirect_to(blog_posts_url(@blog))
@@ -183,7 +190,8 @@ describe PostsController do
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return(@post)
       @post.should_receive(:empty?).and_return(false)
-      @post.should_receive(:paginate).with(:all, {:include=>[:comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:comments, :user, :tags],
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -233,18 +241,21 @@ describe PostsController do
   describe "handling GET /blogs/1/:year/:month/:permalink" do
 
     before(:each) do
-      date_range = { :start => Time.utc("2008", "7", "1").to_date, :end => Time.utc("2008", "7", "31").to_date }
+      date_range = { :start => Time.utc("2008", "7", "1").to_date, 
+                     :end => Time.utc("2008", "7", "31").to_date }
       Post.should_receive(:get_date_range).with('2008', '7', nil).and_return(date_range)
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:in_range).with(date_range[:start], date_range[:end]).and_return(@post)
-      @post.should_receive(:find_by_permalink).with('some-post-title', {:include=>[:comments, :user, :tags]}).and_return(@post)
+      @post.should_receive(:find_by_permalink).with('some-post-title',
+                                                    {:include=>[:comments, :user, :tags]}).and_return(@post)
       
       Comment.should_receive(:new).and_return(mock_model(Comment))
     end
 
     def do_get
-      get :permalink, :blog_id => "1", :year => "2008", :month => "7", :permalink => 'some-post-title'
+      get :permalink, :blog_id => "1", 
+          :year => "2008", :month => "7", :permalink => 'some-post-title'
     end
 
     it "should be successful, render show template and asssign the post for the view" do

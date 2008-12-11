@@ -14,13 +14,14 @@ class Admin::TagsController < ApplicationController
     if params[:user_id]
       @user = User.find(params[:user_id])
       @tags = @blog.tags.by_user(@user)
-    else
+    elsif @blog
       @tags = @blog.tags
     end
     
     respond_to do |format|
       format.html {
-        @tags = @tags.paginate(:all, :page => params[:page], :order => 'name ASC', :per_page => 10, :include => :taggings)
+        @tags = @tags.paginate(:page => params[:page], :order => 'name ASC', 
+                               :per_page => 10, :include => :taggings)
       }
       format.xml { render :xml => @tags.recent }
     end
@@ -41,10 +42,13 @@ class Admin::TagsController < ApplicationController
   end 
   
   
+  # GET /admin/tags/suggested?blog_id=1&tag_list=sackb
   def suggested
     @blog = Blog.find(params[:blog_id])
-    @tags = @blog.tags.find(:all, :conditions => ["name LIKE ?","%#{params[:post][:tag_list]}%"], :limit => 10 )    
+    @tags = @blog.tags.find(:all, :conditions => ["name LIKE ?","%#{params[:post][:tag_list]}%"],
+                            :limit => 10 )    
     render :inline => "<%= auto_complete_result(@tags, 'name') %>"
   end
+   
    
 end

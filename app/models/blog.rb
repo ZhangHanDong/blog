@@ -1,7 +1,8 @@
 class Blog < ActiveRecord::Base    
   
   validates_presence_of   :title, :short_name, :created_by_id 
-  validates_format_of     :short_name, :with => RE_LOGIN_OK, :message => MSG_LOGIN_BAD, :allow_blank => true
+  validates_format_of     :short_name, :with => RE_LOGIN_OK, :message => MSG_LOGIN_BAD, 
+                          :allow_blank => true
   validates_length_of     :short_name, :maximum => 100, :allow_blank => true
   validates_uniqueness_of :short_name
   
@@ -15,6 +16,7 @@ class Blog < ActiveRecord::Base
   
   named_scope :published, :conditions => {:in_draft => false}, :order => 'blogs.created_at DESC'
   named_scope :recent, :limit => 20, :order => "blogs.created_at DESC" 
-  named_scope :with_comments_by, lambda { |*user| {:conditions => ['comments.user_id = ? ', user], :include => {:posts => :comments}}}
+  named_scope :with_comments_by, lambda { |*user| {:conditions => ['comments.user_id = ? ', user],
+                                                   :include => {:posts => :comments}}}
   
 end

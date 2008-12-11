@@ -22,7 +22,9 @@ describe UsersController do
 
     it "should be successful, render index template and assign users for the view" do
       @blog.should_receive(:users).and_return(@user)
-      @user.should_receive(:paginate).with(:all, {:per_page=>10, :page=>nil, :order=>"created_at DESC"}).and_return([@user])
+      @user.should_receive(:paginate).with({:per_page=>10, 
+                                            :page=>nil,
+                                            :order=>"created_at DESC"}).and_return([@user])
       do_get
       response.should be_success
       response.should render_template('index')

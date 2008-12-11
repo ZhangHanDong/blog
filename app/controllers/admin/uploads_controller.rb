@@ -15,13 +15,14 @@ class Admin::UploadsController < ApplicationController
     if params[:user_id] 
       @user = User.find(params[:user_id])
       @uploads = @blog.uploads.by_user(@user)
-    else
+    elsif @blog
       @uploads = @blog.uploads
     end
     
     respond_to do |format|
       format.html {
-        @uploads = @uploads.paginate(:page => params[:page], :per_page => 12, :include => [:blog, :user])
+        @uploads = @uploads.paginate(:page => params[:page], :per_page => 12,
+                                     :include => [:blog, :user])
       }
       format.xml { render :xml => @uploads.recent }
     end
@@ -36,8 +37,8 @@ class Admin::UploadsController < ApplicationController
     @upload = @blog.uploads.find(params[:id], :include => [:blog, :user])
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @upload }
+      format.html
+      format.xml { render :xml => @upload }
     end
   end
 
@@ -57,10 +58,11 @@ class Admin::UploadsController < ApplicationController
         format.xml  { render :xml => @upload, :status => :created, :location => @upload }
       else
         format.html { 
-          @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12, :include => [:blog, :user])
+          @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12, 
+                                            :include => [:blog, :user])
           render :action => "index" 
         }
-        format.xml  { render :xml => @upload.errors, :status => :unprocessable_entity }
+        format.xml { render :xml => @upload.errors, :status => :unprocessable_entity }
       end
     end
   end

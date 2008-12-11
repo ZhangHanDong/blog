@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
   
   caches_page :index
 
+
   # GET blogs/1/comments
   # GET blogs/1/comments.atom
   # GET blogs/1/posts/1/comments
@@ -19,17 +20,15 @@ class CommentsController < ApplicationController
     elsif params[:user_id]
       @user = User.find(params[:user_id])
       @comments = @blog.comments.published.by_user(@user)
-    elsif params[:blog_id]
+    elsif @blog
       @comments = @blog.comments.published
     end
 
     respond_to do |format|
       format.html {
-        @comments = @comments.paginate(:all, :page => params[:page], :per_page => 10, :include => :post)
+        @comments = @comments.paginate(:page => params[:page], :per_page => 10, :include => :post)
       }
-      format.atom {
-        @comments = @comments.recent
-      }
+      format.atom { @comments = @comments.recent }
     end
   end
 
@@ -57,5 +56,6 @@ class CommentsController < ApplicationController
       end
     end
   end
+
 
 end

@@ -2,6 +2,7 @@ class PostsController < ApplicationController
 
   caches_page :index, :tagged, :on, :permalink
 
+
   # GET /blogs/1/posts
   # GET /blogs/1/posts.atom
   # GET /blogs/1/users/1/posts
@@ -17,17 +18,16 @@ class PostsController < ApplicationController
     elsif params[:tag_id]
       @tag = Tag.find(params[:tag_id])
       @posts = @blog.posts.published.with_tag(@tag)
-    else
+    elsif @blog
       @posts = @blog.posts.published
     end
 
     respond_to do |format|
       format.html {
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:page => params[:page], :per_page => 10, 
+                                 :include => [:comments, :user, :tags])
       }
-      format.atom {
-        @posts = @posts.recent
-      }
+      format.atom { @posts = @posts.recent }
     end
   end
 
@@ -36,25 +36,25 @@ class PostsController < ApplicationController
   # GET /blogs/1/:tag_name.atom
   def tagged
     @blog = Blog.published.find(params[:blog_id])
-    @posts = Array.new
     
-    if params[:tag]                    
-      @tag = Tag.find_by_name(params[:tag].humanize.downcase)
+    if params[:tag]                
+      tag_name = params[:tag].humanize.downcase    
+      @tag = Tag.find_by_name(tag_name)
       @posts = @blog.posts.published.with_tag(@tag) if @tag
-      if @posts.empty?
-        flash[:notice] = "No posts found tagged with \"#{(params[:tag].humanize.downcase)}\""
+      if @posts.blank?
+        flash[:notice] = "No posts found tagged with \"#{tag_name}\""
         redirect_to(blog_posts_url(@blog)) and return
       end
     end
 
     respond_to do |format|
       format.html { 
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+        @posts = @posts.paginate(:page => params[:page], :per_page => 10, 
+                                 :include => [:comments, :user, :tags])
       }
-      format.atom {
-        @posts = @posts.recent
-      }
-    end                       
+      format.atom { @posts = @posts.recent }
+    end
+                         
     render :action => :index
   end
 
@@ -63,7 +63,9 @@ class PostsController < ApplicationController
   def on
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
-    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).paginate(:all, :page => params[:page], :per_page => 10, :include => [:comments, :user, :tags])
+    @posts = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).\
+                                   paginate(:page => params[:page], :per_page => 10,
+                                            :include => [:comments, :user, :tags])
 
     respond_to do |format|
       format.html {
@@ -82,7 +84,9 @@ class PostsController < ApplicationController
   def permalink
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
-    @post = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]).find_by_permalink(params[:permalink], :include => [:comments, :user, :tags])
+    @post = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]). \
+                        find_by_permalink(params[:permalink], :include => [:comments, :user, :tags])
+                                          
     raise ActiveRecord::RecordNotFound unless @post
     @comment = Comment.new
 
@@ -90,5 +94,6 @@ class PostsController < ApplicationController
       format.html { render :action => 'show' }
     end
   end
+
 
 end

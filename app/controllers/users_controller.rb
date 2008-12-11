@@ -2,13 +2,15 @@ class UsersController < ApplicationController
        
   caches_page :index, :show       
   
+  
   # GET /blogs/1/users
   def index
     @blog = Blog.published.find(params[:blog_id])
     
     respond_to do |format|
       format.html {
-        @users = @blog.users.paginate(:all, :page => params[:page], :order => 'created_at DESC', :per_page => 10)
+        @users = @blog.users.paginate(:page => params[:page], 
+                                      :order => 'created_at DESC', :per_page => 10)
       }
     end
   end
@@ -21,5 +23,6 @@ class UsersController < ApplicationController
     @posts = @blog.posts.published.by_user(@user)
     @comments = @blog.comments.published.by_user(@user)
   end
+
 
 end

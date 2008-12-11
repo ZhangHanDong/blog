@@ -23,7 +23,7 @@ class Admin::PostsController < ApplicationController
       elsif params[:tag_id]
         @tag = Tag.find(params[:tag_id])
         @posts = @blog.posts.with_tag(@tag)
-      else  
+      elsif @blog
         @posts = @blog.posts
       end  
     elsif params[:user_id] 
@@ -33,7 +33,8 @@ class Admin::PostsController < ApplicationController
         
     respond_to do |format|
       format.html {
-        @posts = @posts.paginate(:all, :page => params[:page], :per_page => 10, :include => [:blog, :comments, :user, :tags])
+        @posts = @posts.paginate(:page => params[:page], :per_page => 10, 
+                                 :include => [:blog, :comments, :user, :tags])
       }
       format.xml { render :xml => @posts.recent }
     end
@@ -47,7 +48,7 @@ class Admin::PostsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @post }
+      format.xml { render :xml => @post }
     end
   end
            
@@ -60,7 +61,7 @@ class Admin::PostsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.xml  { render :xml => @post }
+      format.xml { render :xml => @post }
     end
   end
            
@@ -79,6 +80,7 @@ class Admin::PostsController < ApplicationController
     @post.user = @current_user      
     @blog.posts << @post
     @blog_id = @blog.id   
+    
     respond_to do |format|
       if @post.save
         flash[:notice] = 'Post was successfully created.'
@@ -97,6 +99,7 @@ class Admin::PostsController < ApplicationController
   def update
     @post = Post.find(params[:id], :include => :blog)
     @blog_id = @post.blog.id
+    
     respond_to do |format|
       if @post.update_attributes(params[:post])
         flash[:notice] = 'Post was successfully updated.'
@@ -121,5 +124,6 @@ class Admin::PostsController < ApplicationController
       format.xml  { head :ok }
     end
   end           
+      
                       
 end

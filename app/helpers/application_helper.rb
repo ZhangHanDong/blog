@@ -15,10 +15,13 @@ module ApplicationHelper
     trunc
   end
   
+  
   # create path for blogs/:blog_id/:tag_name (mapped in routes)
   def blog_tag_name_url(blog, tag, options = {})
-    url_for({:only_path => false, :controller => "posts", :action => "tagged", :blog_id => "#{blog.id}", :tag => tag.name.gsub(' ', '_')}.merge(options))
+    url_for({:only_path => false, :controller => "posts", :action => "tagged", 
+             :blog_id => "#{blog.id}", :tag => tag.name.gsub(' ', '_')}.merge(options))
   end 
+  
     
   # append script string or js file includes in layouts
   def javascript(script = '', files = [])        
@@ -26,5 +29,6 @@ module ApplicationHelper
     files.each { |file| js += "<script src=\"#{file}\" type=\"text/javascript\"></script>\n    " }
     content_for(:javascript) { js + script }
   end
+  
   
 end

@@ -15,7 +15,7 @@ describe BlogsController do
 
     it "should be successful, find blogs, render index and assign blogs for the view" do
       Blog.should_receive(:published).and_return(@blog)
-      @blog.should_receive(:paginate).with(:all, :per_page=>10, :page=>nil).and_return([@blog])
+      @blog.should_receive(:paginate).with(:per_page=>10, :page=>nil).and_return([@blog])
       do_get
       response.should be_success
       response.should render_template('index')

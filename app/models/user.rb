@@ -10,7 +10,8 @@ class User < ActiveRecord::Base
   validates_uniqueness_of   :login,    :case_sensitive => false
   validates_format_of       :login,    :with => RE_LOGIN_OK, :message => MSG_LOGIN_BAD
 
-  validates_format_of       :name,     :with => RE_NAME_OK,  :message => MSG_NAME_BAD, :allow_nil => true
+  validates_format_of       :name,     :with => RE_NAME_OK,  
+                                       :message => MSG_NAME_BAD, :allow_nil => true
   validates_length_of       :name,     :maximum => 100
 
   validates_presence_of     :email
@@ -31,15 +32,17 @@ class User < ActiveRecord::Base
 
 
   has_attached_file :photo, :styles => { :tiny => ["32x32#", :gif], :thumb => ["64x64#", :gif] },
-                            :path => ":rails_root/public/images/u/:class/:id/:style_:basename.:extension",
-                            :url => "/images/u/:class/:id/:style_:basename.:extension",
-                            :default_url   => "/images/missing_:class.gif"
+                    :path => ":rails_root/public/images/u/:class/:id/:style_:basename.:extension",
+                    :url => "/images/u/:class/:id/:style_:basename.:extension",
+                    :default_url   => "/images/missing_:class.gif"
 
-  validates_attachment_content_type :photo, :content_type => ["image/png", "image/jpeg", "image/jpg", "image/gif"],
-                                            :message => "Only png, jpg, and gif images are allowed for your photo"
+  validates_attachment_content_type :photo, 
+                                    :content_type => ["image/png", "image/jpeg", "image/jpg", "image/gif"],
+                                    :message => "Only png, jpg, and gif images are allowed for your photo"
 
   
   named_scope :recent, :limit => 20, :order => "users.created_at DESC"
+
 
   # authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
@@ -51,5 +54,6 @@ class User < ActiveRecord::Base
     end
     u && u.authenticated?(password) ? u : nil
   end
+
 
 end

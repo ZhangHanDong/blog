@@ -12,9 +12,14 @@ class Post < ActiveRecord::Base
 
   named_scope :published, :conditions => {:in_draft => false}, :order => "posts.publish_date DESC"
   named_scope :recent, :limit => 20, :order => "posts.publish_date DESC"
-  named_scope :in_range, lambda { |*dates| {:conditions =>  ["posts.publish_date >= ? AND posts.publish_date <= ?", dates[0].to_s(:db), dates[1].to_s(:db)]}}
-  named_scope :by_user,  lambda { |*user| {:conditions =>  ["posts.user_id = ?", user]}}
-  named_scope :with_tag, lambda { |*tag| {:include => :taggings, :conditions =>  ["taggings.tag_id = ?", tag]}}
+  named_scope :in_range, lambda { |*dates| { :conditions => ["posts.publish_date >= ? AND posts.publish_date <= ?",
+                                                             dates[0].to_s(:db),
+                                                             dates[1].to_s(:db)] } }
+
+  named_scope :by_user,  lambda { |*user| { :conditions => ["posts.user_id = ?", user] } }
+  named_scope :with_tag, lambda { |*tag| { :include => :taggings,
+                                           :conditions => ["taggings.tag_id = ?", tag] } }
+
 
   def create_permalink
     # convert chars and shorten
@@ -24,11 +29,14 @@ class Post < ActiveRecord::Base
 
     # check existing posts in blog, for same day and same starting permalink
     if self.publish_date && self.blog
-      date_range = Post.get_date_range(self.publish_date.year, self.publish_date.month, self.publish_date.day)
-      posts = self.blog.posts.in_range(date_range[:start], date_range[:end]).find(:all,
-                                                                                  :conditions => ["permalink LIKE ? AND id != ?", "#{permalink}%", "#{self.id}"],
-                                                                                  :order => 'permalink DESC')
-      unless posts.empty?                             
+      date_range = Post.get_date_range(self.publish_date.year, 
+                                       self.publish_date.month, 
+                                       self.publish_date.day)
+                                       
+      posts = self.blog.posts.in_range(date_range[:start], date_range[:end]).find(:all, :conditions => ["permalink LIKE ? AND id != ?",
+                                                                                                        "#{permalink}%", "#{self.id}"],
+                                                                                                        :order => 'permalink DESC')
+      unless posts.empty?
         postfix = (posts.first.permalink.split('-').last.to_i)+1
         permalink = "#{permalink}-#{postfix}"
       end
@@ -36,18 +44,19 @@ class Post < ActiveRecord::Base
 
     permalink
   end
-  
+
+
   # url_for hash options for /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
   def permalink_url(options = {})
     return unless permalink
-    {:only_path => false, 
-     :controller => "/posts", 
-     :action => "permalink",  
+    {:only_path => false,
+     :controller => "/posts",
+     :action => "permalink",
      :blog_id => "#{self.blog.id}",
-     :year => "#{self.publish_date.year}", 
-     :month => "#{self.publish_date.month}", 
+     :year => "#{self.publish_date.year}",
+     :month => "#{self.publish_date.month}",
      :day => "#{self.publish_date.day}",
-     :permalink => self.permalink}.merge(options)                          
+     :permalink => self.permalink}.merge(options)
   end
 
 
@@ -71,9 +80,11 @@ class Post < ActiveRecord::Base
   def format_permalink
     self.permalink = self.create_permalink
   end
-  
+
+
   def format_body
     self.body_formatted = RedCloth.new(self.body).to_html
   end
+
 
 end
