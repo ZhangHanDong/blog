@@ -34,7 +34,8 @@ describe Admin::CommentsController do
 
     it "should be successful, render template and assign comments for view" do
       @user.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comments.should_receive(:paginate).with({:include=>{:post=>:blog}, 
+                                                :per_page=>10, :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')     
@@ -73,7 +74,8 @@ describe Admin::CommentsController do
 
     it "should be successful, render template and assign comments for view" do
       @blog.should_receive(:comments).and_return(@comments)
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comments.should_receive(:paginate).with({:include=>{:post=>:blog}, 
+                                                :per_page=>10, :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -110,7 +112,8 @@ describe Admin::CommentsController do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:find).and_return(@post)  
       @post.should_receive(:comments).and_return(@comments) 
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comments.should_receive(:paginate).with({:include=>{:post=>:blog}, 
+                                                :per_page=>10, :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')     
@@ -153,7 +156,8 @@ describe Admin::CommentsController do
     it "should be successful, render template and assign comments for view" do
       @blog.should_receive(:comments).and_return(@comments)
       @comments.should_receive(:by_user).with(@user).and_return(@comments) 
-      @comments.should_receive(:paginate).with(:all, {:include=>{:post=>:blog}, :per_page=>10, :page=>nil}).and_return([@comment])
+      @comments.should_receive(:paginate).with({:include=>{:post=>:blog}, 
+                                                :per_page=>10, :page=>nil}).and_return([@comment])
       do_get
       response.should be_success
       response.should render_template('index')   

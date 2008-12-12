@@ -6,7 +6,8 @@ describe Admin::UploadsHelper do
 
 
   describe "truncate filename method" do  
-    it "should shorten a long filename to show start, end and extension (with default seperator between)" do
+    it "should shorten a long filename to show start, end and extension \ 
+        (with default seperator between)" do
       truncate_filename('iamalongfilenamewithanextension.jpg').should eql('iamalo...on.jpg')
     end
     

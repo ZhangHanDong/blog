@@ -26,7 +26,8 @@ describe Admin::TagsController do
 
     it "should be successful, render index template, find all tags and assign them for the view" do
       @blog.should_receive(:tags).and_return(@tag)
-      @tag.should_receive(:paginate).with(:all, {:include=>:taggings, :page=>nil, :order=>"name ASC", :per_page=>10}).and_return([@tag])
+      @tag.should_receive(:paginate).with({:include=>:taggings, :page=>nil, 
+                                           :order=>"name ASC", :per_page=>10}).and_return([@tag])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -61,10 +62,12 @@ describe Admin::TagsController do
       get :index, :blog_id => "1", :user_id => "1"
     end
 
-    it "should be successful, render index template, find all tags for the user and assign them for the view" do
+    it "should be successful, render index template, find all tags for the user \ 
+        and assign them for the view" do
       @blog.should_receive(:tags).and_return(@tags)
       @tags.should_receive(:by_user).with(@user).and_return(@tags)
-      @tags.should_receive(:paginate).with(:all, {:include=>:taggings, :page=>nil, :order=>"name ASC", :per_page=>10}).and_return([@tag])
+      @tags.should_receive(:paginate).with({:include=>:taggings, :page=>nil, 
+                                            :order=>"name ASC", :per_page=>10}).and_return([@tag])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -101,8 +104,11 @@ describe Admin::TagsController do
       get :show, :id => "1", :blog_id => "1"
     end
 
-    it "should be successful, render show template, find the tag requested and assign for the view" do        
-      Tag.should_receive(:find).with("1", {:include=>:taggings, :conditions=>["taggings.blog_id = ?", @blog.id]}).and_return(@tag)  
+    it "should be successful, render show template, find the tag requested \ 
+        and assign for the view" do        
+      Tag.should_receive(:find).with("1", {:include=>:taggings, 
+                                           :conditions=>["taggings.blog_id = ?",
+                                                         @blog.id]}).and_return(@tag)
       do_get
       response.should be_success  
       response.should render_template('show')  
@@ -128,7 +134,9 @@ describe Admin::TagsController do
     end
 
     it "should be successful, find the tag and return it as XML" do
-      Tag.should_receive(:find).with("1", {:include=>:taggings, :conditions=>["taggings.blog_id = ?", @blog.id]}).and_return(@tag)
+      Tag.should_receive(:find).with("1", {:include=>:taggings, 
+                                           :conditions=>["taggings.blog_id = ?", 
+                                                         @blog.id]}).and_return(@tag)
       @tag.should_receive(:to_xml).and_return("XML")
       do_get
       response.should be_success

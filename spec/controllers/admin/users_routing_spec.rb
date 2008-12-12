@@ -12,8 +12,10 @@ describe Admin::UsersController do
       route_for(:controller => "admin/users", :action => "index").should == "/admin/users"
     end
     
-    it "should map { :controller => 'admin/users', :action => 'index', :blog_id => '1' } to /admin/blogs/1/users" do
-      route_for(:controller => "admin/users", :action => "index", :blog_id => "1").should == "/admin/blogs/1/users"
+    it "should map { :controller => 'admin/users', :action => 'index', :blog_id => '1' } \ 
+        to /admin/blogs/1/users" do
+      route_for(:controller => "admin/users", :action => "index",
+                :blog_id => "1").should == "/admin/blogs/1/users"
     end
 
     it "should map { :controller => 'admin/users', :action => 'index' } to /admin/users" do
@@ -24,60 +26,84 @@ describe Admin::UsersController do
       route_for(:controller => "admin/users", :action => "new").should == "/admin/users/new"
     end
 
-    it "should map { :controller => 'admin/users', :action => 'show', :id => '1' } to /admin/users/1" do
-      route_for(:controller => "admin/users", :action => "show", :id => "1").should == "/admin/users/1"
+    it "should map { :controller => 'admin/users', :action => 'show', :id => '1' } \ 
+        to /admin/users/1" do
+      route_for(:controller => "admin/users", :action => "show", 
+                :id => "1").should == "/admin/users/1"
     end
 
-    it "should map { :controller => 'admin/users', :action => 'edit', :id => '1' } to /admin/users/1/edit" do
-      route_for(:controller => "admin/users", :action => "edit", :id => "1").should == "/admin/users/1/edit"
+    it "should map { :controller => 'admin/users', :action => 'edit', :id => '1' } \ 
+        to /admin/users/1/edit" do
+      route_for(:controller => "admin/users", :action => "edit", 
+                :id => "1").should == "/admin/users/1/edit"
     end
 
-    it "should map { :controller => 'admin/users', :action => 'update', :id => '1'} to /admin/users/1" do
-      route_for(:controller => "admin/users", :action => "update", :id => "1").should == "/admin/users/1"
+    it "should map { :controller => 'admin/users', :action => 'update', :id => '1'} \ 
+        to /admin/users/1" do
+      route_for(:controller => "admin/users", :action => "update", 
+                :id => "1").should == "/admin/users/1"
     end
 
-    it "should map { :controller => 'admin/users', :action => 'destroy', :id => '1'} to /admin/users/1" do
-      route_for(:controller => "admin/users", :action => "destroy", :id => "1").should == "/admin/users/1"
+    it "should map { :controller => 'admin/users', :action => 'destroy', :id => '1'} \ 
+        to /admin/users/1" do
+      route_for(:controller => "admin/users", :action => "destroy", 
+                :id => "1").should == "/admin/users/1"
     end
   end
   
 
   describe "route recognition" do
     
-    it "should generate params { :controller => 'admin/users', action => 'signup' } from GET /signup" do
+    it "should generate params { :controller => 'admin/users', action => 'signup' } \ 
+        from GET /signup" do
       params_from(:get, "/signup").should == {:controller => "admin/users", :action => "signup"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'index' } from GET /admin/users" do
+    it "should generate params { :controller => 'admin/users', action => 'index' } \ 
+        from GET /admin/users" do
       params_from(:get, "/admin/users").should == {:controller => "admin/users", :action => "index"}
     end 
     
-    it "should generate params { :controller => 'admin/users', action => 'index', :blog_id => '1' } from GET /admin/blogs/1/users" do
-      params_from(:get, "/admin/blogs/1/users").should == {:controller => "admin/users", :action => "index", :blog_id => "1"}
+    it "should generate params { :controller => 'admin/users', action => 'index', :blog_id => '1' } \ 
+        from GET /admin/blogs/1/users" do
+      params_from(:get, "/admin/blogs/1/users").should == {:controller => "admin/users", 
+                                                           :action => "index", :blog_id => "1"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'new' } from GET /admin/users/new" do
-      params_from(:get, "/admin/users/new").should == {:controller => "admin/users", :action => "new"}
+    it "should generate params { :controller => 'admin/users', action => 'new' } \ 
+        from GET /admin/users/new" do
+      params_from(:get, "/admin/users/new").should == {:controller => "admin/users", 
+                                                       :action => "new"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'create' } from POST /admin/users" do
-      params_from(:post, "/admin/users").should == {:controller => "admin/users", :action => "create"}
+    it "should generate params { :controller => 'admin/users', action => 'create' } \ 
+        from POST /admin/users" do
+      params_from(:post, "/admin/users").should == {:controller => "admin/users", 
+                                                    :action => "create"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'show', id => '1' } from GET /admin/users/1" do
-      params_from(:get, "/admin/users/1").should == {:controller => "admin/users", :action => "show", :id => "1"}
+    it "should generate params { :controller => 'admin/users', action => 'show', id => '1' } \ 
+        from GET /admin/users/1" do
+      params_from(:get, "/admin/users/1").should == {:controller => "admin/users", 
+                                                     :action => "show", :id => "1"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'edit', id => '1' } from GET /admin/users/1;edit" do
-      params_from(:get, "/admin/users/1/edit").should == {:controller => "admin/users", :action => "edit", :id => "1"}
+    it "should generate params { :controller => 'admin/users', action => 'edit', id => '1' } \ 
+        from GET /admin/users/1;edit" do
+      params_from(:get, "/admin/users/1/edit").should == {:controller => "admin/users", 
+                                                          :action => "edit", :id => "1"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'update', id => '1' } from PUT /admin/users/1" do
-      params_from(:put, "/admin/users/1").should == {:controller => "admin/users", :action => "update", :id => "1"}
+    it "should generate params { :controller => 'admin/users', action => 'update', id => '1' } \ 
+        from PUT /admin/users/1" do
+      params_from(:put, "/admin/users/1").should == {:controller => "admin/users", 
+                                                     :action => "update", :id => "1"}
     end
 
-    it "should generate params { :controller => 'admin/users', action => 'destroy', id => '1' } from DELETE /admin/users/1" do
-      params_from(:delete, "/admin/users/1").should == {:controller => "admin/users", :action => "destroy", :id => "1"}
+    it "should generate params { :controller => 'admin/users', action => 'destroy', id => '1' } \ 
+        from DELETE /admin/users/1" do
+      params_from(:delete, "/admin/users/1").should == {:controller => "admin/users", 
+                                                        :action => "destroy", :id => "1"}
     end
   end
 end
@@ -107,34 +133,44 @@ describe Admin::UsersController do
     end
 
     it "should route users's 'show' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'show', :id => '1').should == "/admin/users/1"
+      route_for(:controller => 'admin/users', :action => 'show', 
+                :id => '1').should == "/admin/users/1"
     end
 
     it "should route users's 'edit' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'edit', :id => '1').should == "/admin/users/1/edit"
+      route_for(:controller => 'admin/users', :action => 'edit', 
+                :id => '1').should == "/admin/users/1/edit"
     end
 
     it "should route users's 'update' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'update', :id => '1').should == "/admin/users/1"
+      route_for(:controller => 'admin/users', :action => 'update', 
+                :id => '1').should == "/admin/users/1"
     end
 
     it "should route users's 'destroy' action correctly" do
-      route_for(:controller => 'admin/users', :action => 'destroy', :id => '1').should == "/admin/users/1"
+      route_for(:controller => 'admin/users', :action => 'destroy', 
+                :id => '1').should == "/admin/users/1"
     end
   end
        
 
   describe "route recognition" do
     it "should generate params for users's index action from GET /users" do
-      params_from(:get, '/admin/users').should == {:controller => 'admin/users', :action => 'index'}
-      params_from(:get, '/admin/users.xml').should == {:controller => 'admin/users', :action => 'index', :format => 'xml'}
-      params_from(:get, '/admin/users.json').should == {:controller => 'admin/users', :action => 'index', :format => 'json'}
+      params_from(:get, '/admin/users').should == {:controller => 'admin/users', 
+                                                   :action => 'index'}
+      params_from(:get, '/admin/users.xml').should == {:controller => 'admin/users', 
+                                                       :action => 'index', :format => 'xml'}
+      params_from(:get, '/admin/users.json').should == {:controller => 'admin/users', 
+                                                        :action => 'index', :format => 'json'}
     end
 
     it "should generate params for users's new action from GET /users" do
-      params_from(:get, '/admin/users/new').should == {:controller => 'admin/users', :action => 'new'}
-      params_from(:get, '/admin/users/new.xml').should == {:controller => 'admin/users', :action => 'new', :format => 'xml'}
-      params_from(:get, '/admin/users/new.json').should == {:controller => 'admin/users', :action => 'new', :format => 'json'}
+      params_from(:get, '/admin/users/new').should == {:controller => 'admin/users', 
+                                                       :action => 'new'}
+      params_from(:get, '/admin/users/new.xml').should == {:controller => 'admin/users', 
+                                                           :action => 'new', :format => 'xml'}
+      params_from(:get, '/admin/users/new.json').should == {:controller => 'admin/users', 
+                                                            :action => 'new', :format => 'json'}
     end
     
     it "should generate params for users's new action from GET /users" do
@@ -142,35 +178,57 @@ describe Admin::UsersController do
     end
 
     it "should generate params for users's create action from POST /users" do
-      params_from(:post, '/admin/users').should == {:controller => 'admin/users', :action => 'create'}
-      params_from(:post, '/admin/users.xml').should == {:controller => 'admin/users', :action => 'create', :format => 'xml'}
-      params_from(:post, '/admin/users.json').should == {:controller => 'admin/users', :action => 'create', :format => 'json'}
+      params_from(:post, '/admin/users').should == {:controller => 'admin/users', 
+                                                    :action => 'create'}
+      params_from(:post, '/admin/users.xml').should == {:controller => 'admin/users', 
+                                                        :action => 'create', :format => 'xml'}
+      params_from(:post, '/admin/users.json').should == {:controller => 'admin/users',  
+                                                         :action => 'create', :format => 'json'}
     end
     
     it "should generate params for users's create action from POST /users" do
-      params_from(:post, '/admin/users/register').should == {:controller => 'admin/users', :action => 'register'}
+      params_from(:post, '/admin/users/register').should == {:controller => 'admin/users', 
+                                                             :action => 'register'}
     end
 
     it "should generate params for users's show action from GET /users/1" do
-      params_from(:get , '/admin/users/1').should == {:controller => 'admin/users', :action => 'show', :id => '1'}
-      params_from(:get , '/admin/users/1.xml').should == {:controller => 'admin/users', :action => 'show', :id => '1', :format => 'xml'}
-      params_from(:get , '/admin/users/1.json').should == {:controller => 'admin/users', :action => 'show', :id => '1', :format => 'json'}
+      params_from(:get , '/admin/users/1').should == {:controller => 'admin/users', 
+                                                      :action => 'show', :id => '1'}
+      params_from(:get , '/admin/users/1.xml').should == {:controller => 'admin/users', 
+                                                          :action => 'show',:id => '1', 
+                                                          :format => 'xml'}
+      params_from(:get , '/admin/users/1.json').should == {:controller => 'admin/users', 
+                                                           :action => 'show', :id => '1',
+                                                           :format => 'json'}
     end
 
     it "should generate params for users's edit action from GET /users/1/edit" do
-      params_from(:get , '/admin/users/1/edit').should == {:controller => 'admin/users', :action => 'edit', :id => '1'}
+      params_from(:get , '/admin/users/1/edit').should == {:controller => 'admin/users',
+                                                           :action => 'edit',
+                                                           :id => '1'}
     end
 
-    it "should generate params {:controller => 'admin/users', :action => update', :id => '1'} from PUT /users/1" do
-      params_from(:put , '/admin/users/1').should == {:controller => 'admin/users', :action => 'update', :id => '1'}
-      params_from(:put , '/admin/users/1.xml').should == {:controller => 'admin/users', :action => 'update', :id => '1', :format => 'xml'}
-      params_from(:put , '/admin/users/1.json').should == {:controller => 'admin/users', :action => 'update', :id => '1', :format => 'json'}
+    it "should generate params {:controller => 'admin/users', :action => update', :id => '1'} \ 
+        from PUT /users/1" do
+      params_from(:put , '/admin/users/1').should == {:controller => 'admin/users',
+                                                      :action => 'update', :id => '1'}
+      params_from(:put , '/admin/users/1.xml').should == {:controller => 'admin/users', 
+                                                          :action => 'update', :id => '1',
+                                                          :format => 'xml'}
+      params_from(:put , '/admin/users/1.json').should == {:controller => 'admin/users', 
+                                                           :action => 'update', :id => '1',
+                                                           :format => 'json'}
     end
 
     it "should generate params for users's destroy action from DELETE /users/1" do
-      params_from(:delete, '/admin/users/1').should == {:controller => 'admin/users', :action => 'destroy', :id => '1'}
-      params_from(:delete, '/admin/users/1.xml').should == {:controller => 'admin/users', :action => 'destroy', :id => '1', :format => 'xml'}
-      params_from(:delete, '/admin/users/1.json').should == {:controller => 'admin/users', :action => 'destroy', :id => '1', :format => 'json'}
+      params_from(:delete, '/admin/users/1').should == {:controller => 'admin/users', 
+                                                        :action => 'destroy', :id => '1'}
+      params_from(:delete, '/admin/users/1.xml').should == {:controller => 'admin/users', 
+                                                            :action => 'destroy', :id => '1', 
+                                                            :format => 'xml'}
+      params_from(:delete, '/admin/users/1.json').should == {:controller => 'admin/users', 
+                                                             :action => 'destroy', :id => '1',
+                                                             :format => 'json'}
     end
   end
       

@@ -27,7 +27,8 @@ describe Blog do
   describe 'named scopes' do
 
     it "should have a published scope that returns blogs with in_draft flag set to false" do
-      Blog.should have_named_scope(:published, {:order=>"blogs.created_at DESC", :conditions=>{:in_draft=>false}})
+      Blog.should have_named_scope(:published, {:order=>"blogs.created_at DESC",
+                                                :conditions=>{:in_draft=>false}})
     end
        
     it "should have a recent scope that returns recent blogs ordered with limit" do
@@ -47,22 +48,26 @@ describe Blog do
     
     it "should have users" do
       @blog.attributes = valid_blog_attributes
-      @blog.posts << Post.new(:title => 'test', :body => 'test body', :publish_date => Date.today, :user => users(:quentin))
+      @blog.posts << Post.new(:title => 'test', :body => 'test body', :publish_date => Date.today, 
+                              :user => users(:quentin))
       @blog.save!
       @blog.users.length.should eql(1)
     end
     
     it "should have posts" do
       @blog.attributes = valid_blog_attributes
-      @blog.posts << Post.new(:title => 'test', :body => 'test body', :publish_date => Date.today, :user => users(:quentin))
+      @blog.posts << Post.new(:title => 'test', :body => 'test body', :publish_date => Date.today, 
+                              :user => users(:quentin))
       @blog.save!
       @blog.posts.length.should eql(1)
     end
     
     it "should have comments" do
       @blog.attributes = valid_blog_attributes
-      @post = Post.create!(:title => 'test', :body => 'test body', :publish_date => Date.today, :user => users(:quentin))
-      Comment.create!(:name => 'test', :body => 'test body', :post => @post, :spam_question_id => 1, :spam_answer => 'cold') 
+      @post = Post.create!(:title => 'test', :body => 'test body', :publish_date => Date.today, 
+                           :user => users(:quentin))
+      Comment.create!(:name => 'test', :body => 'test body', :post => @post, 
+                      :spam_question_id => 1, :spam_answer => 'cold') 
       @blog.posts << @post
       @blog.save!
       @blog.comments.length.should eql(1)
@@ -71,7 +76,8 @@ describe Blog do
     it "should have tags" do
       @blog.attributes = valid_blog_attributes                                                                                                                     
       @blog.save!
-      @post = Post.create!(:title => 'test', :body => 'test body', :publish_date => Date.today, :user => users(:quentin), :tag_list => 'one two', :blog => @blog)
+      @post = Post.create!(:title => 'test', :body => 'test body', :publish_date => Date.today, 
+                           :user => users(:quentin), :tag_list => 'one two', :blog => @blog)
       @post.tags.length.should eql(2)      
       @blog.tags.length.should eql(2)      
     end

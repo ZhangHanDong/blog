@@ -28,7 +28,8 @@ describe Admin::PostsController do
       controller.use_rails_error_handling!
     end
 
-    it "should be redirected with flash message for failed GET for /admin/blogs/1/posts/15155199 " do
+    it "should be redirected with flash message for failed GET for \ 
+        /admin/blogs/1/posts/15155199 " do
       Post.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
       get :show, :id => "15155199", :blog_id => '1'
       response.should render_template("#{RAILS_ROOT}/public/404.html")
@@ -44,7 +45,8 @@ describe Admin::PostsController do
 
     it "should be successful, render index template, find all posts and assign for the view" do
       @user.should_receive(:posts).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:blog, :comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:blog, :comments, :user, :tags], 
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -79,7 +81,8 @@ describe Admin::PostsController do
 
     it "should be successful, render index template, find all posts and assign for the view" do
       @blog.should_receive(:posts).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:blog, :comments, :user, :tags], :per_page=>10, :page=>nil}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:blog, :comments, :user, :tags], 
+                                            :per_page=>10, :page=>nil}).and_return([@post])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -112,10 +115,12 @@ describe Admin::PostsController do
       get :index, :blog_id => "1", :user_id => "1"
     end
 
-    it "should be successful, find the posts for the user and assign the user and posts for the view" do
+    it "should be successful, find the posts for the user and assign the user \ 
+        and posts for the view" do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:by_user).with(@user).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:blog, :comments, :user, :tags], :page=>nil, :per_page=>10}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:blog, :comments, :user, :tags], 
+                                            :page=>nil, :per_page=>10}).and_return([@post])
       do_get
       response.should be_success
       assigns[:blog].should equal(@blog)
@@ -130,10 +135,12 @@ describe Admin::PostsController do
       get :index, :blog_id => "1", :tag_id => "1"
     end
 
-    it "should be successful, find the posts for the user and assign the user and posts for the view" do
+    it "should be successful, find the posts for the user and assign the user \ 
+        and posts for the view" do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:with_tag).with(@tag).and_return(@post)
-      @post.should_receive(:paginate).with(:all, {:include=>[:blog, :comments, :user, :tags], :page=>nil, :per_page=>10}).and_return([@post])
+      @post.should_receive(:paginate).with({:include=>[:blog, :comments, :user, :tags],
+                                            :page=>nil, :per_page=>10}).and_return([@post])
       do_get
       response.should be_success
       assigns[:blog].should equal(@blog)
@@ -148,8 +155,10 @@ describe Admin::PostsController do
       get :show, :id => "1", :blog_id => "1"
     end
 
-    it "should be successful, render show template, find the post and assign for the view" do
-      Post.should_receive(:find).with("1", {:include=>[:blog, :comments, :user, :tags]}).and_return(@post)
+    it "should be successful, render show template, find the post \ 
+        and assign for the view" do
+      Post.should_receive(:find).with("1", {:include=>[:blog, 
+                                                      :comments, :user, :tags]}).and_return(@post)
       do_get
       response.should be_success
       response.should render_template('show')
@@ -166,7 +175,8 @@ describe Admin::PostsController do
     end
 
     it "should be successful, find the post, and render it as XML" do
-      Post.should_receive(:find).with("1", {:include=>[:blog, :comments, :user, :tags]}).and_return(@post)
+      Post.should_receive(:find).with("1", {:include=>[:blog, 
+                                                       :comments, :user, :tags]}).and_return(@post)
       @post.should_receive(:to_xml).and_return("XML")
       do_get
       response.should be_success

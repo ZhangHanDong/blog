@@ -6,7 +6,7 @@ describe "/uploads/show.html.erb" do
   before(:each) do
     @blog = mock_model(Blog)
     @upload = Upload.create!({
-      :asset => fixture_file_upload('50x50.png', 'image/png'),
+      :asset => fixture_file_upload('files/50x50.png', 'image/png'),
       :blog_id => 1,
       :user_id => 1
     })

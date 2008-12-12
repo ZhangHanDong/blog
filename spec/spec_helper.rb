@@ -94,11 +94,13 @@ class HaveNamedScope  #:nodoc:
   end
 
   def failure_message
-    "expected #{@klass} to define named scope '#{@scope_name}' with options #{@options.inspect}, but it didn't"
+    "expected #{@klass} to define named scope '#{@scope_name}' \ 
+     with options #{@options.inspect}, but it didn't"
   end
 
   def negative_failure_message
-    "expected #{@klass} to not define named scope '#{@scope_name}' with options #{@options.inspect}, but it did"
+    "expected #{@klass} to not define named scope '#{@scope_name}' \ 
+     with options #{@options.inspect}, but it did"
   end
 end
 

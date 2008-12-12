@@ -8,7 +8,8 @@ describe Admin::BlogsController do
     login_as :quentin
     stub!(:reset_session)
 
-    @blog   = mock_model(Blog, :title => 'blog 1', :in_draft => true, :shortname => 'blog1', :destroy => true)
+    @blog   = mock_model(Blog, :title => 'blog 1', :in_draft => true, 
+                               :shortname => 'blog1', :destroy => true)
     @user   = mock_model(User)
     @blogs  = mock("Array of Blogs", :to_xml => "XML")
 
@@ -37,8 +38,11 @@ describe Admin::BlogsController do
       get :index
     end
 
-    it "should be successful, render index template and find all blogs, assigning them for the view" do
-      @blog.should_receive(:paginate).with({:page=>nil, :include=>[:creator, :posts, :comments, :tags], :per_page=>10}).and_return([@blog])
+    it "should be successful, render index template and find all blogs, \ 
+        assigning them for the view" do
+      @blog.should_receive(:paginate).with({:page=>nil, 
+                                            :include=>[:creator, :posts, :comments, :tags],
+                                            :per_page=>10}).and_return([@blog])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -74,7 +78,8 @@ describe Admin::BlogsController do
     it "should be successful, render index template and and find all blogs created by the user" do
       User.stub!(:find).and_return(@user)
       @user.should_receive(:created_blogs).and_return(@blog)
-      @blog.should_receive(:paginate).with({:include=>[:creator, :posts, :comments, :tags], :page=>nil, :per_page=>10}).and_return([@blog])
+      @blog.should_receive(:paginate).with({:include=>[:creator, :posts, :comments, :tags], 
+                                            :page=>nil, :per_page=>10}).and_return([@blog])
       do_get
       response.should be_success
       response.should render_template('index')
@@ -108,7 +113,8 @@ describe Admin::BlogsController do
       get :show, :id => "1"
     end
 
-    it "should be successful, render show template, find the blog requested, assign the found blog for the view" do
+    it "should be successful, render show template, find the blog requested, \ 
+        assign the found blog for the view" do
       Blog.should_receive(:find).with("1", {:include=>:creator}).and_return(@blog)
       do_get
       response.should be_success

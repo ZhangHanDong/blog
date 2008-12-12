@@ -67,7 +67,8 @@ describe Post do
       
     it "should not change permalink with multiple saves" do
       blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', :publish_date => Date.today, :blog => blog))
+      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
+                                                       :publish_date => Date.today, :blog => blog))
       post_1.permalink.should eql('another-title')
       blog.save!
       post_1.save!
@@ -78,40 +79,49 @@ describe Post do
 
     it "should give different permalinks for posts with the same title on same day" do
       blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', :publish_date => Date.today, :blog => blog))
+      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
+                                                       :publish_date => Date.today, :blog => blog))
       post_1.permalink.should eql('another-title')
       blog.save!
       blog.posts.reload
-      post_2 = Post.new(valid_post_attributes.with(:title => 'another title', :blog => blog, :publish_date => Date.today))
+      post_2 = Post.new(valid_post_attributes.with(:title => 'another title', 
+                                                   :blog => blog, :publish_date => Date.today))
       post_2.save!
       post_2.permalink.should eql('another-title-1')
       blog.posts.reload
-      post_3 = Post.new(valid_post_attributes.with(:title => 'another title', :blog => blog, :publish_date => Date.today))
+      post_3 = Post.new(valid_post_attributes.with(:title => 'another title', 
+                                                   :blog => blog, :publish_date => Date.today))
       post_3.save!
       post_3.permalink.should eql('another-title-2')
     end
     
     it "should allow two posts to have same permalink on different days" do
       blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', :publish_date => Date.today, :blog => blog))
+      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
+                                                       :publish_date => Date.today, :blog => blog))
       post_1.permalink.should eql('another-title')
       blog.save!
       blog.posts.reload
-      post_2 = Post.new(valid_post_attributes.with(:title => 'another title', :blog => blog, :publish_date => Date.today+1))
+      post_2 = Post.new(valid_post_attributes.with(:title => 'another title', 
+                                                   :blog => blog, :publish_date => Date.today+1))
       post_2.save!
       post_2.permalink.should eql('another-title')
     end
 
-    it "should give different permalinks for posts with the same title on same day (on update and taking permalink name from last permalink added)" do
+    it "should give different permalinks for posts with the same title on same day \ 
+        (on update and taking permalink name from last permalink added)" do
       blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', :publish_date => Date.today, :blog => blog))
+      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
+                                                       :publish_date => Date.today, :blog => blog))
       blog.save!
       blog.posts.reload
-      post_2 = Post.new(valid_post_attributes.with(:title => 'something else', :blog => blog, :publish_date => Date.today))
+      post_2 = Post.new(valid_post_attributes.with(:title => 'something else', 
+                                                   :blog => blog, :publish_date => Date.today))
       post_2.save!
       post_2.permalink.should eql('something-else')
       blog.posts.reload
-      post_3 = Post.new(valid_post_attributes.with(:title => 'another title', :blog => blog, :publish_date => Date.today))
+      post_3 = Post.new(valid_post_attributes.with(:title => 'another title', 
+                                                   :blog => blog, :publish_date => Date.today))
       post_3.save!
       blog.posts.reload
       post_2.update_attribute(:title, 'another title')
@@ -139,7 +149,8 @@ describe Post do
 
     it "should have a recent scope, and find recent posts (limited and ordered)" do
       create_posts_over_days(22, Time.mktime(2007,3,1))
-      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent', :publish_date => Time.now+1.day))
+      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent', 
+                                                                  :publish_date => Time.now+1.day))
       Post.recent.length.should eql(20)
       Post.recent.first.title.should eql(@most_recent_post.title)
     end
@@ -168,12 +179,15 @@ describe Post do
       Post.should have_named_scope(:by_user, {:conditions=>["posts.user_id = ?", []]})
     end
 
-    it "should have a published scope that returns posts with in_draft set to false and ordered by publish_date DESC" do
-      Post.should have_named_scope(:published, {:conditions=>{:in_draft=>false}, :order=>"posts.publish_date DESC"})
+    it "should have a published scope that returns posts with in_draft set to false \ 
+        and ordered by publish_date DESC" do
+      Post.should have_named_scope(:published, {:conditions=>{:in_draft=>false}, 
+                                   :order=>"posts.publish_date DESC"})
     end
 
     it "should have a with_tag scope that returns posts tagged with a matching tag" do
-      Post.should have_named_scope(:with_tag, {:include=>:taggings, :conditions=>["taggings.tag_id = ?", []]})
+      Post.should have_named_scope(:with_tag, {:include=>:taggings, 
+                                   :conditions=>["taggings.tag_id = ?", []]})
     end
 
   end

@@ -30,7 +30,8 @@ describe Admin::UsersController do
     end
 
     it "should be successful, render index and find all users, assigning for the view" do
-      User.should_receive(:paginate).with(:all, {:order=>"created_at DESC", :per_page=>10, :page=>nil}).and_return([@user])
+      @user.should_receive(:paginate).with({:order=>"created_at DESC",  
+                                            :per_page=>10, :page=>nil}).and_return([@user])
       do_get
       response.should be_success   
       response.should render_template('index')
@@ -48,6 +49,7 @@ describe Admin::UsersController do
 
     it "should be successful, find all users and render as XML" do
       User.should_receive(:find).with(:all).and_return(@users)      
+      @users.should_receive(:recent).and_return(@users)
       do_get
       response.body.should == "XML"
       response.should be_success
@@ -63,7 +65,8 @@ describe Admin::UsersController do
 
     it "should be successful, render index and find all users, assigning for the view" do
       @blog.should_receive(:users).and_return(@user)
-      @user.should_receive(:paginate).with(:all, {:order=>"created_at DESC", :per_page=>10, :page=>nil}).and_return([@user])
+      @user.should_receive(:paginate).with({:order=>"created_at DESC", 
+                                            :per_page=>10, :page=>nil}).and_return([@user])
       do_get
       response.should be_success   
       response.should render_template('index')

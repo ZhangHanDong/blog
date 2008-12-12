@@ -4,7 +4,7 @@ module UploadSpecHelper
 
   def valid_upload_attributes
     {
-      :asset => fixture_file_upload('50x50.png', 'image/png'),
+      :asset => fixture_file_upload('files/50x50.png', 'image/png'),
       :blog_id => 1,
       :user_id => 1
     }
@@ -66,7 +66,7 @@ describe Upload do
     end
     
     it "should have an error on not allowed file type" do 
-      @upload.attributes = valid_upload_attributes.with(:asset => fixture_file_upload('50x50.png', 'image/x-png'))
+      @upload.attributes = valid_upload_attributes.with(:asset => fixture_file_upload('files/50x50.png', 'image/x-png'))
       @upload.should have(1).error_on(:asset)
     end
     

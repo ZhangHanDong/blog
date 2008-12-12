@@ -20,7 +20,8 @@ describe Admin::UploadsController do
       @upload = mock_model(Upload)
       @blog.should_receive(:uploads).and_return(@upload)
       Upload.stub!(:find).and_return([@upload])
-      @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
+      @upload.should_receive(:paginate).with({:include=>[:blog, :user], 
+                                              :per_page=>12, :page=>nil}).and_return([@upload])
     end
 
     def do_get
@@ -70,7 +71,8 @@ describe Admin::UploadsController do
       
       @blog.should_receive(:uploads).and_return(@upload)
       @upload.should_receive(:by_user).with(@user).and_return(@upload)
-      @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
+      @upload.should_receive(:paginate).with({:include=>[:blog, :user], 
+                                              :per_page=>12, :page=>nil}).and_return([@upload])
     end
 
     def do_get
@@ -147,7 +149,8 @@ describe Admin::UploadsController do
       def do_post
         @blog.should_receive(:uploads).and_return(@upload)
         @upload.should_receive(:save).and_return(true)
-        post :create, :upload => fixture_file_upload('50x50.png', 'image/png'), :blog_id => "1"
+        post :create, :upload => fixture_file_upload('files/50x50.png', 'image/png'),
+             :blog_id => "1"
       end
       
       it "should upload file successfully and redirect to blog uploads" do
@@ -163,8 +166,10 @@ describe Admin::UploadsController do
       def do_post
         @blog.should_receive(:uploads).twice.and_return(@upload)
         @upload.should_receive(:save).and_return(false)
-        @upload.should_receive(:paginate).with({:include=>[:blog, :user], :per_page=>12, :page=>nil}).and_return([@upload])
-        post :create, :upload => fixture_file_upload('50x50.png', 'image/png'), :blog_id => "1"
+        @upload.should_receive(:paginate).with({:include=>[:blog, :user],
+                                                :per_page=>12, :page=>nil}).and_return([@upload])
+        post :create, :upload => fixture_file_upload('files/50x50.png', 'image/png'),
+             :blog_id => "1"
       end
 
       it "should re-render 'new'" do

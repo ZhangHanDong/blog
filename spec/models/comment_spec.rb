@@ -20,7 +20,8 @@ describe Comment do
 
   before(:each) do
     @comment = Comment.new
-    @post = Post.create!(:title => 'Post Title', :publish_date => Date.today, :body => 'test', :user_id => 1, :blog_id => 1)
+    @post = Post.create!(:title => 'Post Title', :publish_date => Date.today, 
+                         :body => 'test', :user_id => 1, :blog_id => 1)
     @comment.post = @post
   end          
   
@@ -28,7 +29,9 @@ describe Comment do
   describe "helper methods" do
     
     it "should return a random spam question from those defined in application config" do
-      APP_CONFIG['spam_questions'].select { |q| q == Comment.random_spam_question }.should_not be_nil
+      APP_CONFIG['spam_questions'].select { |q|
+        q == Comment.random_spam_question
+      }.should_not be_nil
     end
     
   end
@@ -37,15 +40,18 @@ describe Comment do
   describe 'named scopes' do  
     
     it "should have a recent scope that returns up to 20 comments ordered by created at DESC" do
-      Comment.should have_named_scope(:recent, {:limit => 20, :order => "comments.created_at DESC"})
+      Comment.should have_named_scope(:recent, {:limit => 20, 
+                                                :order => "comments.created_at DESC"})
     end
     
     it "should have a by_user scope that returns comments created by a user" do
       Comment.should have_named_scope(:by_user, {:conditions=>["comments.user_id = ?", []]})
     end
     
-    it "should have a published scope that returns comments only on posts that have in_draft set to false" do
-      Comment.should have_named_scope(:published, {:include => :post, :conditions => ["posts.in_draft = ?", false]})
+    it "should have a published scope that returns comments \ 
+        only on posts that have in_draft set to false" do
+      Comment.should have_named_scope(:published, {:include => :post, 
+                                                   :conditions => ["posts.in_draft = ?", false]})
     end          
          
   end     
@@ -88,17 +94,20 @@ describe Comment do
   describe "spam protection" do
     
     it "should error on an invalid answer to the spam question during validate" do
-      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, :spam_answer => 'bananas')
+      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, 
+                                                          :spam_answer => 'bananas')
       @comment.should have(1).error_on(:base)
     end
     
     it "should be valid with a correct answer to the spam question" do
-      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, :spam_answer => 'cold')
+      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1,
+                                                          :spam_answer => 'cold')
       @comment.should be_valid
     end
     
     it "should be valid with a case-insensitive string answer to the spam question" do
-      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1, :spam_answer => '  it is cOlD! ewfw  ')
+      @comment.attributes = valid_comment_attributes.with(:spam_question_id => 1,
+                                                          :spam_answer => '  it is cOlD! ewfw  ')
       @comment.should be_valid
     end
         
