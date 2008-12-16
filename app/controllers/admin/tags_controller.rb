@@ -46,7 +46,8 @@ class Admin::TagsController < ApplicationController
   def suggested
     @blog = Blog.find(params[:blog_id])
     @tags = @blog.tags.find(:all, :conditions => ["name LIKE ?","%#{params[:post][:tag_list]}%"],
-                            :limit => 10 )    
+                            :limit => 10 )   
+ 
     render :inline => "<%= auto_complete_result(@tags, 'name') %>"
   end
    

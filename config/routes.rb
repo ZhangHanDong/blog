@@ -4,7 +4,7 @@ ActionController::Routing::Routes.draw do |map|
   map.admin  '/admin',  :controller => 'admin/blogs', :conditions => { :method => :get }
   map.signup '/signup', :controller => 'admin/users', :action => 'signup', :conditions => { :method => :get }
   map.login  '/login',  :controller => 'sessions',   :action => 'new', :conditions => { :method => :get }
-  map.logout '/logout', :controller => 'sessions',   :action => 'destroy'
+  map.logout '/logout', :controller => 'sessions',   :action => 'destroy', :conditions => { :method => :delete }
   
   
   # public resources
@@ -84,11 +84,11 @@ ActionController::Routing::Routes.draw do |map|
     # paginated tag listings
     map.connect 'admin/blogs/:blog_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
     map.connect 'admin/blogs/:blog_id/users/:user_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
-    
+ 
     admin.resources :blogs do |blog|
       blog.resources :posts, :has_many => :comments
       blog.resources :comments, :only => [:index]
-      blog.resources :tags, :only => [:index, :show] do |tag|
+      blog.resources :tags, :collection => { :suggested => :get }, :only => [:index, :show] do |tag|
         tag.resources :posts, :only => [:index]
       end
       blog.resources :users, :has_many => [:posts, :comments, :tags, :uploads], :only => [:index]

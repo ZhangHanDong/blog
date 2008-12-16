@@ -261,7 +261,7 @@ describe PostsController do
     it "should be successful, render show template and asssign the post for the view" do
       do_get
       response.should be_success
-      response.should render_template('show')
+      response.should render_template('permalink')
       assigns[:post].should equal(@post)
     end
 

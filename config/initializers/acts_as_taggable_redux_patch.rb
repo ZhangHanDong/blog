@@ -72,7 +72,7 @@ module ActsAsTaggableHelper
     html <<   %(  <ul class="popularity">\n)
     tags.each do |tag|
       html << %(    <li>)
-      html << link_to(tag.name, blog_tag_name_url(blog, tag), :class => classes[(counts[tag.id] - min) / divisor]) 
+      html << link_to(tag.name, blog_tag_name_url(blog, tag), :rel => "tag", :class => classes[(counts[tag.id] - min) / divisor]) 
       html << %(</li> \n)
     end
     html <<   %(  </ul>\n)

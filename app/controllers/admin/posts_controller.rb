@@ -79,7 +79,6 @@ class Admin::PostsController < ApplicationController
     @post = Post.new(params[:post])
     @post.user = @current_user      
     @blog.posts << @post
-    @blog_id = @blog.id   
     
     respond_to do |format|
       if @post.save
@@ -98,7 +97,6 @@ class Admin::PostsController < ApplicationController
   # PUT /admin/blogs/1/posts/1.xml
   def update
     @post = Post.find(params[:id], :include => :blog)
-    @blog_id = @post.blog.id
     
     respond_to do |format|
       if @post.update_attributes(params[:post])

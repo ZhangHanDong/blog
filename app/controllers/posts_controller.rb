@@ -89,10 +89,6 @@ class PostsController < ApplicationController
                                           
     raise ActiveRecord::RecordNotFound unless @post
     @comment = Comment.new
-
-    respond_to do |format|
-      format.html { render :action => 'show' }
-    end
   end
 
 

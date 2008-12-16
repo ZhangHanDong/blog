@@ -121,10 +121,11 @@ class Admin::UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     if @user == @current_user
-      flash[:error]  = "Sorry, you cannot delete yourselh while logged in"
+      flash[:error]  = "Sorry, you cannot delete yourself while logged in"
       redirect_to admin_users_url
     else
       @user.destroy
+      
       respond_to do |format|
         format.html { redirect_to admin_users_url }
         format.xml  { head :ok }

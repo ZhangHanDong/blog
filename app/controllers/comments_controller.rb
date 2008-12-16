@@ -1,7 +1,6 @@
 class CommentsController < ApplicationController
               
-  cache_sweeper :comment_sweeper, :only => [:create]
-  
+  cache_sweeper :comment_sweeper, :only => [:create]  
   caches_page :index
 
 
@@ -9,8 +8,8 @@ class CommentsController < ApplicationController
   # GET blogs/1/comments.atom
   # GET blogs/1/posts/1/comments
   # GET blogs/1/posts/1/comments.atom
-  # GET blogs/1/users/2/comments
-  # GET blogs/1/users/2/comments.atom
+  # GET blogs/1/users/1/comments
+  # GET blogs/1/users/1/comments.atom
   def index
     @blog = Blog.published.find(params[:blog_id])
 

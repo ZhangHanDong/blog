@@ -1,0 +1,42 @@
+<div class="hentry">
+  <h1 class="entry-title"><%=link_to h(@post.title), url_for(@post.permalink_url), { :rel => 'bookmark' } %></h1>
+  <p>
+    added <abbr class="updated" title="<%= @post.publish_date.iso8601 %>"><%= @post.publish_date.to_s(:long) %></abbr> 
+    by <span class="vcard author"><%= link_to h(@post.user.name), blog_user_path(@blog, @post.user), { :class => 'url fn' } %></span>
+  </p>
+  <% unless @post.summary.blank? -%><p class="entry-summary"><%=h @post.summary %></p><% end -%>   
+  <div class="entry-content">
+    <%= @post.body_formatted %>         
+  </div>
+  <p>
+    <%= link_to(pluralize(@post.comments.length, 'comment'), '#comments') unless @post.comments.length == 0 %>
+  </p>  
+  <% unless @post.tags.empty? -%>
+  <ul>
+    <% @post.tags.each do |tag| -%>
+      <li><%= link_to h(tag.name), blog_tag_name_url(@blog, tag), { :rel => 'tag' } %></li>
+    <% end -%>
+  </ul>       
+  <% end -%>                             
+</div>
+
+<a name="comments"></a>
+<% unless @post.comments.empty? %>  
+  <hr/>
+  <h3><%= pluralize(@post.comments.length, 'Comment') %> </h3>
+  <%= render :partial => 'comments/comment', :collection => @post.comments -%>
+<% end %>
+
+
+
+<a name="new-comment"></a>
+<h3>Add your comment</h3>
+
+<% form_for [@blog, @post, @comment] do |f| %>
+  <%= render :partial => 'comments/form', :locals => { :f => f } -%>
+<% end %>
+
+<%= link_to 'return to all posts', blog_posts_path(@blog) %>
+
+
+<% javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>") -%>

@@ -20,10 +20,11 @@
   </ul>
   <hr/>
   <p style="color: green"><%= flash[:notice] %></p>
+  <p style="color: red"><%= flash[:error] %></p>
 
   <%= yield  %>   
 
   <hr/>
-  <p><small>you are logged in as <strong><%= link_to h(@current_user.name), admin_user_path(@current_user) %></strong> - <%= link_to @current_user.email, "mailto:#{@current_user.email}" %> (<a href="/logout">logout</a>) | <a href="/">public site</a></small></p>
+  <p><small>you are logged in as <strong><%= link_to h(@current_user.name), admin_user_path(@current_user) %></strong> - <%= link_to @current_user.email, "mailto:#{@current_user.email}" %> ( <%= link_to 'logout', logout_path, :method => :delete %> | <a href="/">public site</a></small></p>
   </body>
 </html>
