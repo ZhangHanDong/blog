@@ -6,19 +6,20 @@ class Post < ActiveRecord::Base
   belongs_to :blog
   belongs_to :user
   has_many   :comments, :dependent => :destroy
+  
   acts_as_taggable
 
-  before_save :format_permalink, :format_body
+  before_save :format_attributes
 
-  named_scope :published, :conditions => {:in_draft => false}, :order => "posts.publish_date DESC"
+  named_scope :published, :conditions => { :in_draft => false }, :order => "posts.publish_date DESC"
   named_scope :recent, :limit => 20, :order => "posts.publish_date DESC"
   named_scope :in_range, lambda { |*dates| { :conditions => ["posts.publish_date >= ? AND posts.publish_date <= ?",
                                                              dates[0].to_s(:db),
-                                                             dates[1].to_s(:db)] } }
+                                                             dates[1].to_s(:db)] }}
 
-  named_scope :by_user,  lambda { |*user| { :conditions => ["posts.user_id = ?", user] } }
-  named_scope :with_tag, lambda { |*tag| { :include => :taggings,
-                                           :conditions => ["taggings.tag_id = ?", tag] } }
+  named_scope :by_user,  lambda { |*user| { :conditions => ["posts.user_id = ?", user] }}
+  named_scope :with_tag, lambda { |*tag|  { :include => :taggings,
+                                            :conditions => ["taggings.tag_id = ?", tag] }}
 
 
   def create_permalink
@@ -46,17 +47,17 @@ class Post < ActiveRecord::Base
   end
 
 
-  # url_for hash options for /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
+  # hash options in url_for /blogs/:blog_id/:year/:month/:day/:permalink (mapped in routes)
   def permalink_url(options = {})
     return unless permalink
-    {:only_path => false,
-     :controller => "/posts",
-     :action => "permalink",
-     :blog_id => "#{self.blog.id}",
-     :year => "#{self.publish_date.year}",
-     :month => "#{self.publish_date.month}",
-     :day => "#{self.publish_date.day}",
-     :permalink => self.permalink}.merge(options)
+    { :only_path => false,
+      :controller => "/posts",
+      :action => "permalink",
+      :blog_id => "#{self.blog.id}",
+      :year => "#{self.publish_date.year}",
+      :month => "#{self.publish_date.month}",
+      :day => "#{self.publish_date.day}",
+      :permalink => self.permalink }.merge(options)
   end
 
 
@@ -77,14 +78,9 @@ class Post < ActiveRecord::Base
 
 
   private
-  def format_permalink
+  def format_attributes
     self.permalink = self.create_permalink
-  end
-
-
-  def format_body
     self.body_formatted = RedCloth.new(self.body).to_html
   end
-
 
 end

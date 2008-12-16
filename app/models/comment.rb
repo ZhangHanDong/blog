@@ -6,17 +6,16 @@ class Comment < ActiveRecord::Base
   validates_length_of   :email, :within => 6..100, :allow_blank => true #r@a.wk
   
   belongs_to :post
-  belongs_to :user   
+  belongs_to :user
   
   before_save :format_website
   
   named_scope :recent, :limit => 20, :order => "comments.created_at DESC"
-  named_scope :by_user, lambda { |*user| {:conditions =>  ["comments.user_id = ?", user]}}
+  named_scope :by_user, lambda { |*user| { :conditions =>  ["comments.user_id = ?", user] }}
   named_scope :published, :include => :post, :conditions => ["posts.in_draft = ?", false]
   
   attr_accessor :spam_answer, :spam_question_id
-  
-  
+    
   def validate
     errors.add_to_base "You're answer is incorrect, try again" unless check_spam_answer
   end
@@ -36,11 +35,10 @@ class Comment < ActiveRecord::Base
   def check_spam_answer
     question = APP_CONFIG['spam_questions'].select{ |q| q['id'] == self.spam_question_id.to_i }.first
     if question
-      return self.spam_answer.strip.downcase =~ /#{question['answer']}/ 
+      return self.spam_answer.strip.downcase =~ /#{question['answer'].downcase}/ 
     else
-      return false
+      false
     end
   end
-
 
 end

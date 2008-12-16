@@ -48,7 +48,7 @@ end
 
 module ActsAsTaggableHelper
   
-  # Generate a tag cloud of the top 100 tags by usage, uses the proposed hTagcloud microformat.
+  # Generate a tag cloud of the top 100 tags by usage, uses the proposed hTagcloud microformat (http://microformatique.com/?page_id=34)
   def blog_tag_cloud(blog, tags)
     # TODO: add option to specify which classes you want and overide this if you want?
     classes = %w(popular v-popular vv-popular vvv-popular vvvv-popular)

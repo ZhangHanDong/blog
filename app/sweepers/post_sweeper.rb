@@ -1,24 +1,28 @@
 class PostSweeper < ActionController::Caching::Sweeper
   
+  include SweepingHelper
+  
   observe Post
+
 
   def after_create(post)
     expire_all(post, true) if !post.in_draft
   end
+
   
   def after_update(post)
     if post.changed? && (post.in_draft_changed? || !post.in_draft)
       expire_all(post)
     end
   end
+
   
   def after_destroy(post)
     expire_all(post, false, true)
   end
   
   
-  private
-  
+  private  
   def expire_all(post, creating = false, destroying = false)
     unless creating
       # if title changed, clear older permalink
@@ -67,9 +71,9 @@ class PostSweeper < ActionController::Caching::Sweeper
     elsif post.tags && destroying
       current_tags = Tag.parse(post.cached_tag_list) || []
       expire_tag_pages(post, current_tags)
-    end
-      
+    end    
   end
+  
   
   def expire_tag_pages(post, tag_names)
     tag_names.uniq.each do |tag_name|
@@ -85,6 +89,7 @@ class PostSweeper < ActionController::Caching::Sweeper
       end
     end
   end
+  
   
   def expire_date_pages(post, expire_date)
     # day + pages 

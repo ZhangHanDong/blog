@@ -4,21 +4,23 @@ class CommentSweeper < ActionController::Caching::Sweeper
   
   observe Comment
 
+
   def after_create(comment)
     expire_all(comment)
   end
+  
   
   def after_update(comment)
     expire_all(comment) if comment.changed?
   end
   
+  
   def after_destroy(comment)
     expire_all(comment)
   end
-  
    
+    
   private  
-  
   def expire_all(comment)
     # expire blog post comments
     expire_page(:controller => '/comments', :action => 'index', :blog_id => comment.post.blog_id, :post_id => comment.post.id)
@@ -36,7 +38,6 @@ class CommentSweeper < ActionController::Caching::Sweeper
       expire_page(:controller => '/comments', :action => 'index', :blog_id => comment.post.blog_id, :user_id => comment.user.id, :format => :atom)
       SweepingHelper::sweep_path("blogs/#{comment.post.blog_id}/users/#{comment.user.id}/comments/page")
     end
-    
   end
   
 end

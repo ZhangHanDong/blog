@@ -1,5 +1,6 @@
 module SweepingHelper
   
+  # sweep (delete) the contents of a directory in the public cache
   def self.sweep_path(path)
     cache_dir = ActionController::Base.page_cache_directory
     unless cache_dir == RAILS_ROOT+"/public"
