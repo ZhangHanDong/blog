@@ -14,6 +14,7 @@ module CommentSpecHelper
 
 end
 
+
 describe Comment do
 
   include CommentSpecHelper

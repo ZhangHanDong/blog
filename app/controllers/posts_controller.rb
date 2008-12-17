@@ -2,7 +2,6 @@ class PostsController < ApplicationController
 
   caches_page :index, :tagged, :on, :permalink
 
-
   # GET /blogs/1/posts
   # GET /blogs/1/posts.atom
   # GET /blogs/1/users/1/posts
@@ -31,7 +30,6 @@ class PostsController < ApplicationController
     end
   end
 
-
   # GET /blogs/1/:tag_name
   # GET /blogs/1/:tag_name.atom
   def tagged
@@ -58,7 +56,6 @@ class PostsController < ApplicationController
     render :action => :index
   end
 
-
   # GET /blogs/1/:year/:month/:day
   def on
     @blog = Blog.published.find(params[:blog_id])
@@ -78,7 +75,6 @@ class PostsController < ApplicationController
       }
     end
   end
-
 
   # GET /blogs/1/:year/:month/:day/:permalink
   def permalink

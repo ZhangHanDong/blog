@@ -22,6 +22,7 @@ module PostSpecHelper
 
 end
 
+
 describe Post do
 
   fixtures  :users, :posts
@@ -160,14 +161,11 @@ describe Post do
     end
 
     it "should return permalink path options for use in url_for" do
-      @post_1.permalink_url.should eql({ :day        => "#{Date.today.day}",
-                                        :month      => "#{Date.today.month}",
-                                        :year       => "#{Date.today.year}",
-                                        :permalink  => "another-title",
-                                        :controller => "/posts",
-                                        :action     => "permalink",
-                                        :blog_id    => "#{@blog.id}",
-                                        :only_path  => false })
+      @post_1.permalink_url[:permalink].should eql("another-title")
+      @post_1.permalink_url[:year].should eql("#{Date.today.year}")
+      @post_1.permalink_url[:month].should eql("#{Date.today.month}")
+      @post_1.permalink_url[:day].should eql("#{Date.today.day}")
+      @post_1.permalink_url[:blog_id].should eql("#{@blog.id}")
     end
 
     it "should not change permalink with multiple saves" do

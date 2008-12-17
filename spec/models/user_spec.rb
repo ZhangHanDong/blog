@@ -6,6 +6,7 @@ describe User do
   fixtures :users, :blogs, :posts, :taggings, :tags, :comments
 
   describe 'being created' do
+    
     before do
       @user = nil
       @creating_user = lambda do
@@ -74,9 +75,6 @@ describe User do
   end
 
 
-  #
-  # Validations
-  #
   describe 'being validated' do
 
     it 'requires login' do
@@ -219,29 +217,27 @@ describe User do
     User.authenticate('quentin', 'monkey2').should be_nil
   end
 
- if REST_AUTH_SITE_KEY.blank?
-   # old-school passwords
-   it "authenticates a user against a hard-coded old-style password" do
-     User.authenticate('old_password_holder', 'test').should == users(:old_password_holder)
-   end
- else
-   it "doesn't authenticate a user against a hard-coded old-style password" do
-     User.authenticate('old_password_holder', 'test').should be_nil
-   end
+  if REST_AUTH_SITE_KEY.blank?
+    # old-school passwords
+    it "authenticates a user against a hard-coded old-style password" do
+      User.authenticate('old_password_holder', 'test').should == users(:old_password_holder)
+    end
+  else
+    it "doesn't authenticate a user against a hard-coded old-style password" do
+      User.authenticate('old_password_holder', 'test').should be_nil
+    end
 
-   # New installs should bump this up and set REST_AUTH_DIGEST_STRETCHES to give a 10ms encrypt time or so
-   desired_encryption_expensiveness_ms = 0.1
-   it "takes longer than #{desired_encryption_expensiveness_ms}ms to encrypt a password" do
-     test_reps = 100
-     start_time = Time.now; test_reps.times{ User.authenticate('quentin', 'monkey'+rand.to_s) }; end_time   = Time.now
-     auth_time_ms = 1000 * (end_time - start_time)/test_reps
-     auth_time_ms.should > desired_encryption_expensiveness_ms
-   end
- end
+    # New installs should bump this up and set REST_AUTH_DIGEST_STRETCHES to give a 10ms encrypt time or so
+    desired_encryption_expensiveness_ms = 0.1
+    it "takes longer than #{desired_encryption_expensiveness_ms}ms to encrypt a password" do
+      test_reps = 100
+      start_time = Time.now; test_reps.times{ User.authenticate('quentin', 'monkey'+rand.to_s) }; end_time   = Time.now
+      auth_time_ms = 1000 * (end_time - start_time)/test_reps
+      auth_time_ms.should > desired_encryption_expensiveness_ms
+    end
+  end
 
-  #
-  # Authentication
-  #
+
   describe "being authenticated" do
 
     it 'sets remember token' do

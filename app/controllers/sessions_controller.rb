@@ -4,11 +4,11 @@ class SessionsController < ApplicationController
   def new
   end
 
-
   # POST /sessions
   def create
     logout_keeping_session!
     user = User.authenticate(params[:login], params[:password])
+    
     if user
       # Protects against session fixation attacks, causes request forgery
       # protection if user resubmits an earlier form using back
@@ -27,14 +27,12 @@ class SessionsController < ApplicationController
     end
   end
 
-
   # DELETE /sessions/1
   def destroy
     logout_killing_session!
     flash[:notice] = "You have been logged out."
     redirect_back_or_default('/')
   end
-
 
   protected
   # track failed login attempts

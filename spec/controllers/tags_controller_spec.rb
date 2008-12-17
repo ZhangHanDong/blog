@@ -9,7 +9,6 @@ describe TagsController do
 
     Blog.stub!(:find).and_return(@blog)
     User.stub!(:find).and_return(@user)
-    Tag.stub!(:find).and_return(@tag)
   end
 
 
@@ -19,7 +18,7 @@ describe TagsController do
       get :index, :blog_id => "1"
     end
 
-    it "should be successful, render index template and assign tags for the view" do
+    it "should be successful, render index template and assign tags and blog for the view" do
       @blog.should_receive(:tags).and_return(@tag)
       @tag.should_receive(:find).with(:all, :limit => 50).and_return(@tag)
       do_get
@@ -37,7 +36,7 @@ describe TagsController do
       get :index, :blog_id => "1", :user_id => "1"
     end
   
-    it "should be successful, render index template and assign tags and user for the view" do
+    it "should be successful, render index template and assign tags, blog and user for the view" do
       @blog.should_receive(:tags).and_return(@tag)
       @tag.should_receive(:by_user).with(@user).and_return(@tag)
       do_get

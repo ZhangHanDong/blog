@@ -17,7 +17,6 @@ module Admin::UsersHelper
     end
   end
 
-
   #
   # Link to user's page ('users/1')
   #
@@ -53,7 +52,6 @@ module Admin::UsersHelper
     link_to h(content_text), admin_user_path(user), options
   end
 
-
   #
   # Link to login page using remote ip address as link content
   #
@@ -76,7 +74,6 @@ module Admin::UsersHelper
       link_to h(content_text), login_path, options
     end
   end
-
 
   #
   # Link to the current user's page (using link_to_user) or to the login page

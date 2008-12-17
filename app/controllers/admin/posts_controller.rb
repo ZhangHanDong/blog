@@ -5,7 +5,6 @@ class Admin::PostsController < ApplicationController
   layout 'admin'
   before_filter :login_required
 
-
   # GET /admin/users/1/posts
   # GET /admin/users/1/posts.xml
   # GET /admin/blogs/1/posts
@@ -40,7 +39,6 @@ class Admin::PostsController < ApplicationController
     end
   end
 
-
   # GET /admin/blogs/1/posts/1
   # GET /admin/blogs/1/posts/1.xml
   def show
@@ -51,7 +49,6 @@ class Admin::PostsController < ApplicationController
       format.xml { render :xml => @post }
     end
   end
-
 
   # GET /admin/blogs/1/posts/new
   # GET /admin/blogs/1posts/new.xml
@@ -64,7 +61,6 @@ class Admin::PostsController < ApplicationController
       format.xml { render :xml => @post }
     end
   end
-
 
   # GET /admin/blogs/1/posts/1/edit
   def edit
@@ -92,7 +88,6 @@ class Admin::PostsController < ApplicationController
     end
   end
 
-
   # PUT /admin/blogs/1/posts/1
   # PUT /admin/blogs/1/posts/1.xml
   def update
@@ -109,7 +104,6 @@ class Admin::PostsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /admin/blogs/1/posts/1
   # DELETE /admin/blogs/1/posts/1.xml

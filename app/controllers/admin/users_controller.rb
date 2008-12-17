@@ -5,7 +5,6 @@ class Admin::UsersController < ApplicationController
   layout 'admin', :except => [ :register, :signup ]
   before_filter   :login_required, :except => [ :register, :signup ]
 
-
   # GET /admin/users
   # GET /admin/users.xml
   # GET /admin/blogs/1/users
@@ -27,7 +26,6 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-
   # GET /admin/users/1
   # GET /admin/users/1.xml
   def show
@@ -39,12 +37,10 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-
   # GET /admin/users/new
   def new
     @user = User.new
   end
-
 
   # GET /users/new
   def signup
@@ -52,12 +48,10 @@ class Admin::UsersController < ApplicationController
     render :action => "signup", :layout => "application"
   end
 
-
   # GET /admin/users/1;edit
   def edit
     @user = User.find(params[:id])
   end
-
 
   # POST /admin/users
   # POST /admin/users.xml
@@ -75,7 +69,6 @@ class Admin::UsersController < ApplicationController
       end
     end
   end
-
 
   # POST /users/register
   def register
@@ -97,7 +90,6 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-
   # PUT /admin/users/1
   # PUT /admin/users/1.xml
   def update
@@ -114,7 +106,6 @@ class Admin::UsersController < ApplicationController
       end
     end
   end
-
 
   # DELETE /admin/users/1
   # DELETE /admin/users/1.xml

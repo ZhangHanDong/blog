@@ -9,8 +9,7 @@ describe UsersController do
     @comment = mock_model(Comment)
     @tag = mock_model(Tag)
     
-    Blog.stub!(:find).and_return(@blog)
-    User.stub!(:find).and_return(@user)   
+    Blog.stub!(:find).and_return(@blog)   
   end
 
 
@@ -20,17 +19,18 @@ describe UsersController do
       get :index, :blog_id => "1"
     end
 
-    it "should be successful, render index template and assign users for the view" do
+    it "should be successful, render index template and assign users and blog for the view" do
       @blog.should_receive(:users).and_return(@user)
-      @user.should_receive(:paginate).with({:per_page=>10, 
-                                            :page=>nil,
-                                            :order=>"created_at DESC"}).and_return([@user])
+      @user.should_receive(:paginate).with({ :per_page => 10, 
+                                             :page => nil,
+                                             :order => "created_at DESC" }).and_return([@user])
       do_get
       response.should be_success
       response.should render_template('index')
       assigns[:blog].should == @blog
       assigns[:users].should == [@user]
     end
+    
   end
   
   
@@ -59,7 +59,7 @@ describe UsersController do
       assigns[:comments].should == @comment
       assigns[:user].should == @user
     end
+    
   end
-  
   
 end

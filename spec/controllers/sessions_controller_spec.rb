@@ -2,14 +2,17 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe SessionsController do
   fixtures        :users
+  
   before do 
     @user  = mock_user
     @login_params = { :login => 'quentin', :password => 'test' }
     User.stub!(:authenticate).with(@login_params[:login], @login_params[:password]).and_return(@user)
   end
+  
   def do_create
     post :create, @login_params
   end
+  
   describe "on successful login," do
     [ [:nil,       nil,            nil],
       [:expired,   'valid_token',  15.minutes.ago],
@@ -65,71 +68,100 @@ describe SessionsController do
       end
     end
   end
-  
+
+
   describe "on failed login" do
+    
     before do
       User.should_receive(:authenticate).with(anything(), anything()).and_return(nil)
       login_as :quentin
     end
+    
     it 'logs out keeping session'   do controller.should_receive(:logout_keeping_session!); do_create end
+    
     it 'flashes an error'           do do_create; flash[:error].should =~ /Couldn't log you in as 'quentin'/ end
+    
     it 'renders the log in page'    do do_create; response.should render_template('new')  end
+    
     it "doesn't log me in"          do do_create; controller.logged_in?().should == false end
+    
     it "doesn't send password back" do 
       @login_params[:password] = 'FROBNOZZ'
       do_create
       response.should_not have_text(/FROBNOZZ/i)
     end
   end
+  
 
   describe "on signout" do
+    
     def do_destroy
       get :destroy
     end
+    
     before do 
       login_as :quentin
     end
+    
     it 'logs me out'                   do controller.should_receive(:logout_killing_session!); do_destroy end
+    
     it 'redirects me to the home page' do do_destroy; response.should be_redirect     end
+    
   end
   
 end
 
 describe SessionsController do
+  
+  
   describe "route generation" do
+    
     it "should route the new sessions action correctly" do
       route_for(:controller => 'sessions', :action => 'new').should == "/login"
     end
+    
     it "should route the create sessions correctly" do
       route_for(:controller => 'sessions', :action => 'create').should == "/session"
     end
+    
     it "should route the destroy sessions action correctly" do
       route_for(:controller => 'sessions', :action => 'destroy').should == "/logout"
     end
+    
   end
   
+  
   describe "route recognition" do
+    
     it "should generate params from GET /login correctly" do
       params_from(:get, '/login').should == {:controller => 'sessions', :action => 'new'}
     end
+    
     it "should generate params from POST /session correctly" do
       params_from(:post, '/session').should == {:controller => 'sessions', :action => 'create'}
     end
+    
     it "should generate params from DELETE /session correctly" do
       params_from(:delete, '/logout').should == {:controller => 'sessions', :action => 'destroy'}
     end
+    
   end
   
+  
   describe "named routing" do
+    
     before(:each) do
       get :new
     end
+    
     it "should route session_path() correctly" do
       session_path().should == "/session"
     end
+    
     it "should route new_session_path() correctly" do
       new_session_path().should == "/session/new"
     end
+    
   end
   
 end

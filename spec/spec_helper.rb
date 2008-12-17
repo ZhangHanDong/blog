@@ -82,6 +82,7 @@ end
 # custom matchers
 
 class HaveNamedScope  #:nodoc:
+  
   def initialize(scope_name, options)
     @scope_name = scope_name.to_s
     @options    = options
@@ -103,6 +104,7 @@ class HaveNamedScope  #:nodoc:
      with options #{@options.inspect}, but it did"
   end
 end
+
 
 def have_named_scope(scope_name, options)
   HaveNamedScope.new(scope_name, options)

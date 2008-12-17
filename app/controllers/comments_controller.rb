@@ -3,7 +3,6 @@ class CommentsController < ApplicationController
   cache_sweeper :comment_sweeper, :only => [:create]
   caches_page :index
 
-
   # GET blogs/1/comments
   # GET blogs/1/comments.atom
   # GET blogs/1/posts/1/comments
@@ -31,13 +30,11 @@ class CommentsController < ApplicationController
     end
   end
 
-
   # GET  blogs/1/posts/1/comments/1
   def show
     @comment = Comment.published.find(params[:id], :include => {:post => :blog})
     redirect_to url_for(@comment.post.permalink_url({:anchor => "comment-#{@comment.id}"}))
   end
-
 
   # POST blogs/1/posts/1/comments
   def create

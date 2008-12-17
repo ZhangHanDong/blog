@@ -14,7 +14,6 @@ module ApplicationHelper
     trunc
   end
 
-
   # close any <> tags that may be open in the string
   def close_tags(text)
     open_tags = []
@@ -24,13 +23,11 @@ module ApplicationHelper
     text
   end
 
-
   # create path for blogs/:blog_id/:tag_name (mapped in routes)
   def blog_tag_name_url(blog, tag, options = {})
     url_for({:only_path => false, :controller => "posts", :action => "tagged",
              :blog_id => "#{blog.id}", :tag => tag.name.gsub(' ', '_')}.merge(options))
   end
-
 
   # append script string or js file includes in layouts
   def javascript(script = '', files = [])

@@ -1,14 +1,11 @@
 class UserSweeper < ActionController::Caching::Sweeper
 
   include SweepingHelper
-
   observe User
-
 
   def after_update(user)
     expire_all(user) if user.name_changed? || user.email_changed?
   end
-
 
   def after_destroy(user)
     expire_all(user)

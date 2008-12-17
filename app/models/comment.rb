@@ -16,6 +16,7 @@ class Comment < ActiveRecord::Base
 
   attr_accessor :spam_answer, :spam_question_id
 
+
   def validate
     errors.add_to_base "You're answer is incorrect, try again" unless check_spam_answer
   end

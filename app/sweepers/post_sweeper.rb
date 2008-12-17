@@ -1,21 +1,17 @@
 class PostSweeper < ActionController::Caching::Sweeper
 
   include SweepingHelper
-
   observe Post
-
 
   def after_create(post)
     expire_all(post, true) if !post.in_draft
   end
-
 
   def after_update(post)
     if post.changed? && (post.in_draft_changed? || !post.in_draft)
       expire_all(post)
     end
   end
-
 
   def after_destroy(post)
     expire_all(post, false, true)
@@ -74,7 +70,6 @@ class PostSweeper < ActionController::Caching::Sweeper
     end
   end
 
-
   def expire_tag_pages(post, tag_names)
     tag_names.uniq.each do |tag_name|
       tag = Tag.find_by_name(tag_name)
@@ -89,7 +84,6 @@ class PostSweeper < ActionController::Caching::Sweeper
       end
     end
   end
-
 
   def expire_date_pages(post, expire_date)
     # day + pages

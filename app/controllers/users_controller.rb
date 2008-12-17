@@ -2,7 +2,6 @@ class UsersController < ApplicationController
 
   caches_page :index, :show
 
-
   # GET /blogs/1/users
   def index
     @blog = Blog.published.find(params[:blog_id])
@@ -14,7 +13,6 @@ class UsersController < ApplicationController
       }
     end
   end
-
 
   # GET /blogs/1/users/1
   def show

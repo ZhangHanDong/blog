@@ -3,7 +3,6 @@ class Admin::TagsController < ApplicationController
   layout 'admin'
   before_filter :login_required
 
-
   # GET /admin/blogs/3/tags
   # GET /admin/blogs/3/tags.xml
   # GET /admin/blogs/3/users/1/tags
@@ -27,7 +26,6 @@ class Admin::TagsController < ApplicationController
     end
   end
 
-
   # GET /admin/blogs/3/tag/1
   # GET /admin/blogs/3/tag/1.xml
   def show
@@ -40,7 +38,6 @@ class Admin::TagsController < ApplicationController
       format.xml { render :xml => @tag }
     end
   end
-
 
   # GET /admin/tags/suggested?blog_id=1&tag_list=sackb
   def suggested

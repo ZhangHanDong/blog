@@ -3,9 +3,15 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe UsersController do
 
   describe "route generation" do
+    
     it "should map { :controller => 'users', :action => 'index', :blog_id => '1' } \ 
         to /blogs/1/users" do
       route_for(:controller => "users", :action => "index", :blog_id => "1").should == "/blogs/1/users"
+    end
+    
+    it "should map { :controller => 'users', :action => 'index', :blog_id => '1', :page => '10' } \ 
+        to /blogs/1/users/page/10" do
+      route_for(:controller => "users", :action => "index", :blog_id => "1", :page => "10").should == "/blogs/1/users/page/10"
     end
 
     it "should map { :controller => 'users', :action => 'show', :blog_id => '1', :user_id => '1' } \ 
@@ -18,10 +24,17 @@ describe UsersController do
                               
 
   describe "route recognition" do
+    
     it "should generate params { :controller => 'users', action => 'index', :blog_id => '1' } \ 
         from GET /blogs/1/users" do
       params_from(:get, "/blogs/1/users").should == {:controller => "users", 
                                                      :action => "index", :blog_id => "1"}
+    end
+    
+    it "should generate params { :controller => 'users', action => 'index', :blog_id => '1', :page => '10' } \ 
+        from GET /blogs/1/users/page/10" do
+      params_from(:get, "/blogs/1/users/page/10").should == {:controller => "users", 
+                                                             :action => "index", :blog_id => "1", :page => '10'}
     end
 
     it "should generate params { :controller => 'users', action => 'show', :blog_id => '1', :user_id => '1' } \ 
