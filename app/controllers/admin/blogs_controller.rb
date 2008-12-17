@@ -27,7 +27,6 @@ class Admin::BlogsController < ApplicationController
     end
   end
 
-
   # GET /admin/blogs/1
   # GET /admin/blogs/1.xml
   def show
@@ -38,7 +37,6 @@ class Admin::BlogsController < ApplicationController
       format.xml { render :xml => @blog }
     end
   end
-
 
   # GET /admin/blogs/new
   # GET /admin/blogs/new.xml
@@ -51,12 +49,10 @@ class Admin::BlogsController < ApplicationController
     end
   end
 
-
   # GET /admin/blogs/1/edit
   def edit
     @blog = Blog.find(params[:id], :include => :creator)
   end
-
 
   # POST /admin/blogs
   # POST /admin/blogs.xml
@@ -76,7 +72,6 @@ class Admin::BlogsController < ApplicationController
     end
   end
 
-
   # PUT /admin/blogs/1
   # PUT /admin/blogs/1.xml
   def update
@@ -93,7 +88,6 @@ class Admin::BlogsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /admin/blogs/1
   # DELETE /admin/blogs/1.xml

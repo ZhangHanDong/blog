@@ -84,6 +84,11 @@ ActionController::Routing::Routes.draw do |map|
     # paginated tag listings
     map.connect 'admin/blogs/:blog_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
     map.connect 'admin/blogs/:blog_id/users/:user_id/tags/page/:page', :controller => 'admin/tags', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    
+    # paginated upload listings    
+    map.connect 'admin/blogs/:blog_id/uploads/page/:page', :controller => 'admin/uploads', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    map.connect 'admin/blogs/:blog_id/users/:user_id/uploads/page/:page', :controller => 'admin/uploads', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
+    
  
     admin.resources :blogs do |blog|
       blog.resources :posts, :has_many => :comments

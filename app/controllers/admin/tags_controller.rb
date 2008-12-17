@@ -42,11 +42,11 @@ class Admin::TagsController < ApplicationController
   end
 
 
-  # GET /admin/tags/suggested?blog_id=1&tag_list=sackb
+  # GET /admin/tags/suggested?blog_id=1&tag_list=keyword
   def suggested
     @blog = Blog.find(params[:blog_id])
     @tags = @blog.tags.find(:all, :conditions => ["name LIKE ?","%#{params[:post][:tag_list]}%"],
-                            :limit => 10 )
+                            :limit => 10)
 
     render :inline => "<%= auto_complete_result(@tags, 'name') %>"
   end

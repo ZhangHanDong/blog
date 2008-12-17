@@ -3,7 +3,6 @@ class Admin::UploadsController < ApplicationController
   layout 'admin'
   before_filter :login_required
 
-
   # GET /admin/blogs/1/uploads
   # GET /admin/blogs/1/uploads.xml
   # GET /admin/blogs/1/users/1/uploads
@@ -29,7 +28,6 @@ class Admin::UploadsController < ApplicationController
 
   end
 
-
   # GET /admin/blogs/1/uploads/1
   # GET /admin/blogs/1/uploads/1.xml
   def show
@@ -41,7 +39,6 @@ class Admin::UploadsController < ApplicationController
       format.xml { render :xml => @upload }
     end
   end
-
 
   # POST /admin/blogs/1/uploads
   # POST /admin/blogs/1/uploads.xml
@@ -66,7 +63,6 @@ class Admin::UploadsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /admin/blogs/1/uploads/1
   # DELETE /admin/blogs/1/uploads/1.xml

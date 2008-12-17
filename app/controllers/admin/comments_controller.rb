@@ -4,7 +4,7 @@ class Admin::CommentsController < ApplicationController
 
   layout 'admin'
   before_filter :login_required
-
+  
 
   # GET /admin/users/1/comments
   # GET /admin/users/1/comments.xml
@@ -40,7 +40,6 @@ class Admin::CommentsController < ApplicationController
     end
   end
 
-
   # GET /admin/blogs/1/posts/1/comment/1
   # GET /admin/blogs/1/posts/1/comment/1.xml
   def show
@@ -51,7 +50,6 @@ class Admin::CommentsController < ApplicationController
       format.xml { render :xml => @comment }
     end
   end
-
 
   # GET /admin/blogs/1/posts/1/comments/new
   # GET /admin/blogs/1/posts/1/comments/new.xml
@@ -65,12 +63,10 @@ class Admin::CommentsController < ApplicationController
     end
   end
 
-
   # GET /admin/blogs/1/posts/1/comment/1/edit
   def edit
     @comment = Comment.find(params[:id], :include => [:post, :user])
   end
-
 
   # POST /admin/blogs/1/posts/1/comments
   # POST /admin/blogs/1/posts/1/comments.xml
@@ -92,7 +88,6 @@ class Admin::CommentsController < ApplicationController
     end
   end
 
-
   # PUT /admin/blogs/1/posts/1/comment/1
   # PUT /admin/blogs/1/posts/1/comment/1.xml
   def update
@@ -110,7 +105,6 @@ class Admin::CommentsController < ApplicationController
       end
     end
   end
-
 
   # DELETE /admin/blogs/1/posts/1/comment/1
   # DELETE /admin/blogs/1/posts/1/comment/1.xml
