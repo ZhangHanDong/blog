@@ -1,10 +1,10 @@
 class SessionsController < ApplicationController
 
-  # GET /sessions/new     
+  # GET /sessions/new
   def new
   end
-   
-         
+
+
   # POST /sessions
   def create
     logout_keeping_session!
@@ -26,21 +26,21 @@ class SessionsController < ApplicationController
       render :action => 'new'
     end
   end
-  
-   
+
+
   # DELETE /sessions/1
   def destroy
     logout_killing_session!
     flash[:notice] = "You have been logged out."
     redirect_back_or_default('/')
-  end           
-  
+  end
 
-protected
+
+  protected
   # track failed login attempts
   def note_failed_signin
     flash[:error] = "Couldn't log you in as '#{params[:login]}'"
     logger.warn "Failed login for '#{params[:login]}' from #{request.remote_ip} at #{Time.now.utc}"
   end
-  
+
 end

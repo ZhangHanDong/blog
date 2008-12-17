@@ -1,5 +1,5 @@
 module Admin::UsersHelper
-  
+
   #
   # Use this to wrap view elements that the user can't access.
   # !! Note: this is an *interface*, not *security* feature !!
@@ -8,7 +8,7 @@ module Admin::UsersHelper
   # Example:
   # <%= if_authorized?(:index,   User)  do link_to('List all users', admin_users_path) end %> |
   # <%= if_authorized?(:edit,    @user) do link_to('Edit this user', edit_admin_user_path) end %> |
-  # <%= if_authorized?(:destroy, @user) do link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete end %> 
+  # <%= if_authorized?(:destroy, @user) do link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete end %>
   #
   #
   def if_authorized?(action, resource, &block)
@@ -16,7 +16,7 @@ module Admin::UsersHelper
       yield action, resource
     end
   end
-          
+
 
   #
   # Link to user's page ('users/1')
@@ -52,12 +52,12 @@ module Admin::UsersHelper
     options[:title] ||= user.send(options.delete(:title_method))
     link_to h(content_text), admin_user_path(user), options
   end
-          
+
 
   #
   # Link to login page using remote ip address as link content
   #
-  # The :title (and thus, tooltip) is set to the IP address 
+  # The :title (and thus, tooltip) is set to the IP address
   #
   # Examples:
   #   link_to_login_with_IP
@@ -76,7 +76,7 @@ module Admin::UsersHelper
       link_to h(content_text), login_path, options
     end
   end
-     
+
 
   #
   # Link to the current user's page (using link_to_user) or to the login page
@@ -88,7 +88,7 @@ module Admin::UsersHelper
     else
       content_text = options.delete(:content_text) || 'not signed in'
       # kill ignored options from link_to_user
-      [:content_method, :title_method].each{|opt| options.delete(opt)} 
+      [:content_method, :title_method].each{|opt| options.delete(opt)}
       link_to_login_with_IP content_text, options
     end
   end

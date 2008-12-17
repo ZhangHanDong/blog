@@ -20,7 +20,7 @@ class Admin::BlogsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @blogs = @blogs.paginate(:page => params[:page], :per_page => 10, 
+        @blogs = @blogs.paginate(:page => params[:page], :per_page => 10,
                                  :include => [:creator, :posts, :comments, :tags])
       }
       format.xml { render :xml => @blogs.recent }
@@ -32,7 +32,7 @@ class Admin::BlogsController < ApplicationController
   # GET /admin/blogs/1.xml
   def show
     @blog = Blog.find(params[:id], :include => :creator)
-    
+
     respond_to do |format|
       format.html
       format.xml { render :xml => @blog }
@@ -106,6 +106,5 @@ class Admin::BlogsController < ApplicationController
       format.xml  { head :ok }
     end
   end
-
 
 end

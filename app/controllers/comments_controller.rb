@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
-              
-  cache_sweeper :comment_sweeper, :only => [:create]  
+
+  cache_sweeper :comment_sweeper, :only => [:create]
   caches_page :index
 
 
@@ -55,6 +55,5 @@ class CommentsController < ApplicationController
       end
     end
   end
-
 
 end

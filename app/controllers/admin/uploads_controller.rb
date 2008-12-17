@@ -1,5 +1,5 @@
 class Admin::UploadsController < ApplicationController
-  
+
   layout 'admin'
   before_filter :login_required
 
@@ -10,15 +10,15 @@ class Admin::UploadsController < ApplicationController
   # GET /admin/blogs/1/users/1/uploads.xml
   def index
     @upload = Upload.new
-    
+
     @blog = Blog.find(params[:blog_id])
-    if params[:user_id] 
+    if params[:user_id]
       @user = User.find(params[:user_id])
       @uploads = @blog.uploads.by_user(@user)
     elsif @blog
       @uploads = @blog.uploads
     end
-    
+
     respond_to do |format|
       format.html {
         @uploads = @uploads.paginate(:page => params[:page], :per_page => 12,
@@ -26,7 +26,7 @@ class Admin::UploadsController < ApplicationController
       }
       format.xml { render :xml => @uploads.recent }
     end
-    
+
   end
 
 
@@ -48,19 +48,19 @@ class Admin::UploadsController < ApplicationController
   def create
     @blog = Blog.find(params[:blog_id])
     @upload = Upload.new(params[:upload])
-    @upload.user = @current_user      
+    @upload.user = @current_user
     @blog.uploads << @upload
-    
+
     respond_to do |format|
       if @upload.save
         flash[:notice] = 'Upload was successfully created.'
         format.html { redirect_to(admin_blog_uploads_url(@blog)) }
         format.xml  { render :xml => @upload, :status => :created, :location => @upload }
       else
-        format.html { 
-          @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12, 
+        format.html {
+          @uploads = @blog.uploads.paginate(:page => params[:page], :per_page => 12,
                                             :include => [:blog, :user])
-          render :action => "index" 
+          render :action => "index"
         }
         format.xml { render :xml => @upload.errors, :status => :unprocessable_entity }
       end
@@ -79,6 +79,5 @@ class Admin::UploadsController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
-  
+
 end

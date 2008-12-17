@@ -3,7 +3,7 @@ unless defined? CONSTANTS_DEFINED
   RE_ALPHANUM_OK     = /\A\w[\w\.\-_]+\z/                     # ASCII, strict
   # RE_ALPHANUM_OK   = /\A[[:alnum:]][[:alnum:]\.\-_@]+\z/     # Unicode, strict
   # RE_ALPHANUM_OK   = /\A[^[:cntrl:]\\<>\/&]*\z/              # Unicode, permissive
-  MSG_ALPHA_BAD      = "use only letters, numbers, and .-_ please."
+  MSG_ALPHANUM_BAD   = "use only letters, numbers, and .-_ please."
 
   RE_NAME_OK      = /\A[^[:cntrl:]\\<>\/&]*\z/              # Unicode, permissive
   MSG_NAME_BAD    = "avoid non-printing characters and \\&gt;&lt;&amp;/ please."

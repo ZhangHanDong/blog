@@ -1,69 +1,69 @@
 class Admin::UsersController < ApplicationController
-  
+
   cache_sweeper :user_sweeper, :only => [:update, :destroy]
-  
+
   layout 'admin', :except => [ :register, :signup ]
   before_filter   :login_required, :except => [ :register, :signup ]
-              
-      
+
+
   # GET /admin/users
-  # GET /admin/users.xml 
+  # GET /admin/users.xml
   # GET /admin/blogs/1/users
   # GET /admin/blogs/1/users.xml
-  def index      
-    if params[:blog_id]             
+  def index
+    if params[:blog_id]
       @blog = Blog.find(params[:blog_id])
       @users = @blog.users
     else
       @users = User.find(:all)
     end
-    
+
     respond_to do |format|
       format.html {
-        @users = @users.paginate(:page => params[:page], :order => 'created_at DESC', 
+        @users = @users.paginate(:page => params[:page], :order => 'created_at DESC',
                                  :per_page => 10)
       }
       format.xml { render :xml => @users.recent }
     end
   end
-           
-  
+
+
   # GET /admin/users/1
   # GET /admin/users/1.xml
   def show
-    @user = User.find(params[:id])   
-    
+    @user = User.find(params[:id])
+
     respond_to do |format|
       format.html
       format.xml { render :xml => @user }
     end
   end
-         
-  
+
+
   # GET /admin/users/new
   def new
     @user = User.new
   end
-         
-  
+
+
   # GET /users/new
-  def signup     
+  def signup
     @user = User.new
     render :action => "signup", :layout => "application"
   end
-        
-  
+
+
   # GET /admin/users/1;edit
   def edit
     @user = User.find(params[:id])
   end
-       
-   
+
+
   # POST /admin/users
-  # POST /admin/users.xml           
-  def create                       
-    @user = User.new(params[:user])    
-    
+  # POST /admin/users.xml
+  def create
+    @user = User.new(params[:user])
+
     respond_to do |format|
       if @user.save
         flash[:notice] = 'User was successfully created.'
@@ -75,10 +75,10 @@ class Admin::UsersController < ApplicationController
       end
     end
   end
-      
- 
+
+
   # POST /users/register
-  def register          
+  def register
     logout_keeping_session!
     @user = User.new(params[:user])
     success = @user && @user.save
@@ -87,17 +87,17 @@ class Admin::UsersController < ApplicationController
       # protection if visitor resubmits an earlier form using back
       # button. Uncomment if you understand the tradeoffs.
       # reset session
-      self.current_user = @user # !! now logged in           
+      self.current_user = @user # !! now logged in
       flash[:notice] = "Thanks for signing up! You're logged in and ready to go"
       redirect_to(admin_url)
     else
-      flash[:error]  = "We couldn't set up that account, sorry.  \ 
+      flash[:error]  = "We couldn't set up that account, sorry.  \
                         Please try again, or contact an admin (link is above)."
       render :action => 'signup', :layout => "application"
     end
   end
-  
-  
+
+
   # PUT /admin/users/1
   # PUT /admin/users/1.xml
   def update
@@ -114,7 +114,7 @@ class Admin::UsersController < ApplicationController
       end
     end
   end
-          
+
 
   # DELETE /admin/users/1
   # DELETE /admin/users/1.xml
@@ -125,13 +125,12 @@ class Admin::UsersController < ApplicationController
       redirect_to admin_users_url
     else
       @user.destroy
-      
+
       respond_to do |format|
         format.html { redirect_to admin_users_url }
         format.xml  { head :ok }
       end
     end
-  end  
-
+  end
 
 end

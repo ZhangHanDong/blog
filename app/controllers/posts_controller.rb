@@ -24,7 +24,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        @posts = @posts.paginate(:page => params[:page], :per_page => 10, 
+        @posts = @posts.paginate(:page => params[:page], :per_page => 10,
                                  :include => [:comments, :user, :tags])
       }
       format.atom { @posts = @posts.recent }
@@ -36,9 +36,9 @@ class PostsController < ApplicationController
   # GET /blogs/1/:tag_name.atom
   def tagged
     @blog = Blog.published.find(params[:blog_id])
-    
-    if params[:tag]                
-      tag_name = params[:tag].humanize.downcase    
+
+    if params[:tag]
+      tag_name = params[:tag].humanize.downcase
       @tag = Tag.find_by_name(tag_name)
       @posts = @blog.posts.published.with_tag(@tag) if @tag
       if @posts.blank?
@@ -48,13 +48,13 @@ class PostsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { 
-        @posts = @posts.paginate(:page => params[:page], :per_page => 10, 
+      format.html {
+        @posts = @posts.paginate(:page => params[:page], :per_page => 10,
                                  :include => [:comments, :user, :tags])
       }
       format.atom { @posts = @posts.recent }
     end
-                         
+
     render :action => :index
   end
 
@@ -78,18 +78,17 @@ class PostsController < ApplicationController
       }
     end
   end
-  
-  
+
+
   # GET /blogs/1/:year/:month/:day/:permalink
   def permalink
     @blog = Blog.published.find(params[:blog_id])
     @date_range = Post.get_date_range(params[:year], params[:month], params[:day])
     @post = @blog.posts.published.in_range(@date_range[:start], @date_range[:end]). \
                         find_by_permalink(params[:permalink], :include => [:comments, :user, :tags])
-                                          
+
     raise ActiveRecord::RecordNotFound unless @post
     @comment = Comment.new
   end
-
 
 end

@@ -13,7 +13,7 @@ module PostSpecHelper
     }
   end
 
-  def create_posts_over_days(number_of_days, starting_from_date = Time.now,  attributes = Hash.new)
+  def create_posts_over_days(number_of_days, starting_from_date = Time.now, attributes = Hash.new)
     1.upto(number_of_days) do
       Post.create!(valid_post_attributes.with(attributes.merge(:publish_date => starting_from_date)))
       starting_from_date = starting_from_date + 1.day
@@ -33,109 +33,6 @@ describe Post do
   end
 
 
-  describe 'helper methods' do
-
-    it "should return date range based on year" do
-      range = Post.get_date_range("2008", nil, nil)
-      range[:start].to_date.should eql(Time.utc("2008", "1", "1").to_date)
-      range[:end].to_date.should eql(Time.utc("2008", "1", "1").end_of_year.to_date)
-      range[:descriptor].should eql(' in 2008')
-    end
-
-    it "should return date range based on year and (optional) month" do
-      range = Post.get_date_range("2007", "6", nil)
-      range[:start].to_date.should eql(Time.utc("2007", "6", "1").to_date)
-      range[:end].to_date.should eql(Time.utc("2007", "6", "1").end_of_month.to_date)
-      range[:descriptor].should eql(' in June 2007')
-    end
-
-    it "should return date range based on year and (optional) month, day params" do
-      range = Post.get_date_range("2006", "2", "28")
-      range[:start].to_date.should eql(Time.utc("2006", "2", "28").to_date)
-      range[:end].to_date.should eql(Time.utc("2006", "2", "28").end_of_day.to_date)
-      range[:descriptor].should eql(' on Tuesday February 28, 2006')
-    end
-
-    it "should return current day if range params are invalid" do
-      range = Post.get_date_range("2006", "13", "700")
-      range[:start].to_date.should eql(Time.now.to_date)
-      range[:end].to_date.should eql(Time.now.end_of_day.to_date)
-    end
-  end
-
-  describe "permalink creation" do
-      
-    it "should not change permalink with multiple saves" do
-      blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
-                                                       :publish_date => Date.today, :blog => blog))
-      post_1.permalink.should eql('another-title')
-      blog.save!
-      post_1.save!
-      post_1.permalink.should eql('another-title')
-      post_1.update_attribute(:title, 'another title')
-      post_1.permalink.should eql('another-title')
-    end
-
-    it "should give different permalinks for posts with the same title on same day" do
-      blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
-                                                       :publish_date => Date.today, :blog => blog))
-      post_1.permalink.should eql('another-title')
-      blog.save!
-      blog.posts.reload
-      post_2 = Post.new(valid_post_attributes.with(:title => 'another title', 
-                                                   :blog => blog, :publish_date => Date.today))
-      post_2.save!
-      post_2.permalink.should eql('another-title-1')
-      blog.posts.reload
-      post_3 = Post.new(valid_post_attributes.with(:title => 'another title', 
-                                                   :blog => blog, :publish_date => Date.today))
-      post_3.save!
-      post_3.permalink.should eql('another-title-2')
-    end
-    
-    it "should allow two posts to have same permalink on different days" do
-      blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
-                                                       :publish_date => Date.today, :blog => blog))
-      post_1.permalink.should eql('another-title')
-      blog.save!
-      blog.posts.reload
-      post_2 = Post.new(valid_post_attributes.with(:title => 'another title', 
-                                                   :blog => blog, :publish_date => Date.today+1))
-      post_2.save!
-      post_2.permalink.should eql('another-title')
-    end
-
-    it "should give different permalinks for posts with the same title on same day \ 
-        (on update and taking permalink name from last permalink added)" do
-      blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
-      post_1 = Post.create!(valid_post_attributes.with(:title => 'another title', 
-                                                       :publish_date => Date.today, :blog => blog))
-      blog.save!
-      blog.posts.reload
-      post_2 = Post.new(valid_post_attributes.with(:title => 'something else', 
-                                                   :blog => blog, :publish_date => Date.today))
-      post_2.save!
-      post_2.permalink.should eql('something-else')
-      blog.posts.reload
-      post_3 = Post.new(valid_post_attributes.with(:title => 'another title', 
-                                                   :blog => blog, :publish_date => Date.today))
-      post_3.save!
-      blog.posts.reload
-      post_2.update_attribute(:title, 'another title')
-      post_2.permalink.should eql('another-title-2')
-    end
-
-    it "should shorten permalink string for a long title" do
-      @post = Post.create!(valid_post_attributes.with(:title => '123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z too long here'))
-      @post.permalink.should eql('123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z')
-    end
-
-  end
-
-
   describe 'named scopes' do
 
     it "should have a published scope, and find published posts" do
@@ -149,7 +46,7 @@ describe Post do
 
     it "should have a recent scope, and find recent posts (limited and ordered)" do
       create_posts_over_days(22, Time.mktime(2007,3,1))
-      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent', 
+      @most_recent_post = Post.create!(valid_post_attributes.with(:title => 'Very Recent',
                                                                   :publish_date => Time.now+1.day))
       Post.recent.length.should eql(20)
       Post.recent.first.title.should eql(@most_recent_post.title)
@@ -170,7 +67,6 @@ describe Post do
       Post.in_range(start_date, end_date).length.should eql(4)
     end
 
-
     it "should have a recent scope that returns up to 20 posts ordered by publish_date DESC" do
       Post.should have_named_scope(:recent, {:limit=>20, :order=>"posts.publish_date DESC"})
     end
@@ -179,15 +75,138 @@ describe Post do
       Post.should have_named_scope(:by_user, {:conditions=>["posts.user_id = ?", []]})
     end
 
-    it "should have a published scope that returns posts with in_draft set to false \ 
+    it "should have a published scope that returns posts with in_draft set to false \
         and ordered by publish_date DESC" do
-      Post.should have_named_scope(:published, {:conditions=>{:in_draft=>false}, 
+      Post.should have_named_scope(:published, {:conditions=>{:in_draft=>false},
                                    :order=>"posts.publish_date DESC"})
     end
 
     it "should have a with_tag scope that returns posts tagged with a matching tag" do
-      Post.should have_named_scope(:with_tag, {:include=>:taggings, 
+      Post.should have_named_scope(:with_tag, {:include=>:taggings,
                                    :conditions=>["taggings.tag_id = ?", []]})
+    end
+
+  end
+
+
+  describe 'being associated with' do
+
+    it "should belong to a user" do
+      @post.attributes = valid_post_attributes
+      @post.save!
+      @post.user.should eql(users(:quentin))
+    end
+
+    it "should belong to a blog" do
+      @blog = Blog.create!(:title => 'test', :short_name => 'test', :created_by_id => 1)
+      @post.attributes = valid_post_attributes.with(:blog => @blog)
+      @post.save!
+      @post.blog.should eql(@blog)
+    end
+
+    it "should have tags" do
+      @post.attributes = valid_post_attributes.with(:tag_list => 'one "two tag" three')
+      @post.save!
+      @post.tags.length.should eql(3)
+    end
+
+    it "should have comments" do
+      @post.attributes = valid_post_attributes
+      @post.save!
+      @post.comments << Comment.new(:name => 'test', :body => 'test body')
+      @post.comments.length.should eql(1)
+    end
+
+  end
+
+
+  describe 'helper methods' do
+
+    it "should return date range based on year" do
+      range = Post.get_date_range("2008", nil, nil)
+      range[:start].to_date.should eql(Time.utc("2008", "1", "1").to_date)
+      range[:end].to_date.should eql(Time.utc("2008", "1", "1").end_of_year.to_date)
+      range[:descriptor].should eql(' in 2008')
+    end
+
+    it "should return date range based on year and (optional) month" do
+      range = Post.get_date_range("2007", "6", nil)
+      range[:start].to_date.should eql(Time.utc("2007", "6", "1").to_date)
+      range[:end].to_date.should eql(Time.utc("2007", "6", "1").end_of_month.to_date)
+      range[:descriptor].should eql(' in June 2007')
+    end
+
+    it "should return date range based on year and (optional) month and day" do
+      range = Post.get_date_range("2006", "2", "28")
+      range[:start].to_date.should eql(Time.utc("2006", "2", "28").to_date)
+      range[:end].to_date.should eql(Time.utc("2006", "2", "28").end_of_day.to_date)
+      range[:descriptor].should eql(' on Tuesday February 28, 2006')
+    end
+
+    it "should return current day if range params are invalid" do
+      range = Post.get_date_range("2006", "13", "700")
+      range[:start].to_date.should eql(Time.now.to_date)
+      range[:end].to_date.should eql(Time.now.end_of_day.to_date)
+    end
+  end
+
+
+  describe "permalink creation" do
+
+    before(:each) do
+      @blog = Blog.create!(:title => 'blog', :short_name => 'blog', :creator => users(:quentin))
+      @post_1 = Post.create!(valid_post_attributes.with(:title => 'another title',
+                                                       :publish_date => Date.today, :blog => @blog))
+    end
+
+    it "should return permalink path options for use in url_for" do
+      @post_1.permalink_url.should eql({ :day        => "#{Date.today.day}",
+                                        :month      => "#{Date.today.month}",
+                                        :year       => "#{Date.today.year}",
+                                        :permalink  => "another-title",
+                                        :controller => "/posts",
+                                        :action     => "permalink",
+                                        :blog_id    => "#{@blog.id}",
+                                        :only_path  => false })
+    end
+
+    it "should not change permalink with multiple saves" do
+      @post_1.permalink.should eql('another-title')
+      @post_1.save!
+      @post_1.permalink.should eql('another-title')
+      @post_1.update_attribute(:title, 'another title')
+      @post_1.permalink.should eql('another-title')
+    end
+
+    it "should give different permalinks for posts with the same title on same day" do
+      @post_2 = Post.create!(valid_post_attributes.with(:title => 'another title',
+                                                        :blog => @blog, :publish_date => Date.today))
+      @post_2.permalink.should eql('another-title-1')
+      @post_3 = Post.create!(valid_post_attributes.with(:title => 'another title',
+                                                        :blog => @blog, :publish_date => Date.today))
+      @post_3.permalink.should eql('another-title-2')
+    end
+
+    it "should allow two posts to have same permalink on different days" do
+      @post_2 = Post.create!(valid_post_attributes.with(:title => 'another title',
+                                                        :blog => @blog, :publish_date => Date.today+1))
+      @post_2.permalink.should eql('another-title')
+    end
+
+    it "should give different permalinks for posts with the same title on same day \
+        (on update and taking permalink name from last permalink added)" do
+      @post_2 = Post.create!(valid_post_attributes.with(:title => 'something else',
+                                                        :blog => @blog, :publish_date => Date.today))
+      @post_2.permalink.should eql('something-else')
+      @post_3 = Post.create!(valid_post_attributes.with(:title => 'another title',
+                                                        :blog => @blog, :publish_date => Date.today))
+      @post_2.update_attribute(:title, 'another title')
+      @post_2.permalink.should eql('another-title-2')
+    end
+
+    it "should shorten permalink string for a long title" do
+      long_post = Post.create!(valid_post_attributes.with(:title => '123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z 123456789Z too long here'))
+      long_post.permalink.should eql('123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z-123456789z')
     end
 
   end
@@ -219,38 +238,6 @@ describe Post do
       @post.save!
       @post.update_attribute(:title, 'wejfn iewjnf wek *efwef* //`~`&@@@ |! kebf le')
       @post.permalink.should eql('wejfn-iewjnf-wek-efwef-kebf-le')
-    end
-
-
-  end
-
-
-  describe 'being associated with' do
-
-    it "should have a user" do
-      @post.attributes = valid_post_attributes
-      @post.save!
-      @post.user.should eql(users(:quentin))
-    end
-
-    it "should have tags" do
-      @post.attributes = valid_post_attributes.with(:tag_list => 'one "two tag" three')
-      @post.save!
-      @post.tags.length.should eql(3)
-    end
-
-    it "should have comments" do
-      @post.attributes = valid_post_attributes
-      @post.save!
-      @post.comments << Comment.new(:name => 'test', :body => 'test body')
-      @post.comments.length.should eql(1)
-    end
-
-    it "should belong to a blog" do
-      @blog = Blog.create!(:title => 'test', :short_name => 'test', :created_by_id => 1)
-      @post.attributes = valid_post_attributes.with(:blog => @blog)
-      @post.save!
-      @post.blog.should eql(@blog)
     end
 
   end
