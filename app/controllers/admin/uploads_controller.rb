@@ -3,7 +3,6 @@ class Admin::UploadsController < ApplicationController
   layout 'admin'
   before_filter :login_required
 
-
   # GET /admin/blogs/1/uploads
   # GET /admin/blogs/1/uploads.xml
   # GET /admin/blogs/1/users/1/uploads
