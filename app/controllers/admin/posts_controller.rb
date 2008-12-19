@@ -67,7 +67,6 @@ class Admin::PostsController < ApplicationController
     @post = Post.find(params[:id], :include => [:blog, :comments, :user, :tags])
   end
 
-
   # POST /admin/blogs/1/posts
   # POST /admin/blogs/1/posts.xml
   def create
