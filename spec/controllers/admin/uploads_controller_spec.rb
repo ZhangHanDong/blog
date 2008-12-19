@@ -201,6 +201,21 @@ describe Admin::UploadsController do
       response.should redirect_to(admin_blog_uploads_url(@blog))
     end
     
+  end 
+     
+  
+  describe "handling exceptions" do
+
+    before(:each) do
+      controller.use_rails_error_handling!
+    end
+
+    it "should render 404 for RecordNotFound on GET /admin/blogs/1/uploads/15155199 " do
+      Blog.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "15155199", :blog_id => "1"
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
+    end
+    
   end
 
 end

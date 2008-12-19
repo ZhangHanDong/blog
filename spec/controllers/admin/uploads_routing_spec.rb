@@ -130,9 +130,9 @@ describe Admin::UploadsController do
 
     it "should generate params { :controller => 'admin/uploads', action => 'destroy', id => '1' } \
         from DELETE /admin/blogs/1/uploads/1" do
-      params_from(:delete, "/admin/blogs/1/uploads/1").should == {:controller => "admin/uploads",
-                                                                  :action => "destroy", :id => "1",
-                                                                  :blog_id => "1"}
+      params_from(:delete, "/admin/blogs/1/uploads/1").should == { :controller => "admin/uploads",
+                                                                   :action => "destroy", :id => "1",
+                                                                   :blog_id => "1"}
     end    
     
   end
