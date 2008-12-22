@@ -24,14 +24,22 @@ describe Admin::UsersController do
                 :page => "10").should == "/admin/users/page/10"
     end
 
-    it "should map { :controller => 'admin/users', :action => 'index', :blog_id => '1'\
+    it "should map { :controller => 'admin/users', :action => 'index', :blog_id => '1', \
         :page => '10' } to /admin/blogs/1/users/page/10" do
-      route_for(:controller => "admin/users", :action => "index",
+      route_for(:controller => "admin/users", :action => "index", :page => "10",
                 :blog_id => "1").should == "/admin/blogs/1/users/page/10"
     end
 
     it "should map { :controller => 'admin/users', :action => 'new' } to /admin/users/new" do
       route_for(:controller => "admin/users", :action => "new").should == "/admin/users/new"
+    end
+    
+    it "should map { :controller => 'admin/users', :action => 'create' } to /admin/users" do
+      route_for(:controller => "admin/users", :action => "create").should == "/admin/users"
+    end
+    
+    it "should map { :controller => 'admin/users', :action => 'register' } to /admin/users/register" do
+      route_for(:controller => "admin/users", :action => "register").should == "/admin/users/register"
     end
 
     it "should map { :controller => 'admin/users', :action => 'show', :id => '1' } \
@@ -106,6 +114,12 @@ describe Admin::UsersController do
         from POST /admin/users" do
       params_from(:post, "/admin/users").should == { :controller => "admin/users",
                                                      :action => "create" }
+    end
+    
+    it "should generate params { :controller => 'admin/users', action => 'register' } \
+        from POST /admin/users/register" do
+      params_from(:post, "/admin/users/register").should == { :controller => "admin/users",
+                                                              :action => "register" }
     end
 
     it "should generate params { :controller => 'admin/users', action => 'show', id => '1' } \

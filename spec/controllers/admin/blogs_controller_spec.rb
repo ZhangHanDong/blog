@@ -256,6 +256,36 @@ describe Admin::BlogsController do
       response.should render_template("#{RAILS_ROOT}/public/404.html")
     end
     
+    it "should show flash message and re-render action view on failed create" do
+      blog = mock("Blog")
+      errors = mock("errors")
+
+      blog.stub!(:errors).and_return(errors)
+      blog.stub!(:new_record?).and_return(true)
+      errors.stub!(:full_messages).and_return([]) 
+      Blog.should_receive(:new).and_raise(ActiveRecord::RecordInvalid.new(blog))
+      
+      post :create, :blog => {}
+      
+      response.should render_template('new')
+      flash[:notice].should eql('Sorry, there was a problem creating that')
+    end
+    
+    it "should show flash message and re-render action view on failed update" do
+      blog = mock("Blog")
+      errors = mock("errors")
+
+      blog.stub!(:errors).and_return(errors)
+      blog.stub!(:new_record?).and_return(false)
+      errors.stub!(:full_messages).and_return([]) 
+      Blog.should_receive(:new).and_raise(ActiveRecord::RecordInvalid.new(blog))
+      
+      post :create, :blog => {}
+      
+      response.should render_template('edit')
+      flash[:notice].should eql('Sorry, there was a problem updating that')
+    end
+    
   end
 
 end

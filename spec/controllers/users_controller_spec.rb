@@ -8,14 +8,13 @@ describe UsersController do
     @post = mock_model(Post)
     @comment = mock_model(Comment)
     @tag = mock_model(Tag)
-    
-    Blog.stub!(:find).and_return(@blog)   
   end
 
 
   describe "handling GET blogs/1/users" do
 
     def do_get
+      Blog.stub!(:find).and_return(@blog)  
       get :index, :blog_id => "1"
     end
 
@@ -37,6 +36,7 @@ describe UsersController do
   describe "handling GET blogs/1/users/1" do
 
     def do_get
+      Blog.stub!(:find).and_return(@blog)  
       get :show, :blog_id => "1", :id => "1"
     end
 
@@ -58,6 +58,21 @@ describe UsersController do
       assigns[:posts].should == @post
       assigns[:comments].should == @comment
       assigns[:user].should == @user
+    end
+    
+  end
+  
+  
+  describe "handling exceptions" do
+
+    before(:each) do
+      controller.use_rails_error_handling!
+    end
+
+    it "should render 404 for RecordNotFound on GET /blogs/1/users/15155199 " do
+      User.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "15155199", :blog_id => "1"
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
     end
     
   end

@@ -219,10 +219,6 @@ describe PostsController do
       @blog.should_receive(:posts).and_return(@post)
       @post.should_receive(:published).and_return(@post)
       @post.should_receive(:in_range).with(date_range[:start], date_range[:end]).and_return(@post)
-      @post.should_receive(:find_by_permalink).with('some-post-title',
-                                                    { :include=>[:comments, :user, :tags] }).and_return(@post)
-      
-      Comment.should_receive(:new).and_return(mock_model(Comment))
     end
 
     def do_get
@@ -231,11 +227,23 @@ describe PostsController do
     end
 
     it "should be successful, render show template and asssign the post for the view" do
+      @post.should_receive(:find_by_permalink).with('some-post-title',
+                                                    { :include => [:comments, :user, :tags] }).and_return(@post)
+      Comment.should_receive(:new).and_return(mock_model(Comment))
       do_get
       response.should be_success
       response.should render_template('permalink')
       assigns[:blog].should == @blog
       assigns[:post].should equal(@post)
+    end
+    
+    it "should render 404 for RecordNotFound on GET /blogs/1/:year/:month/not-a-found-permalink" do
+      controller.use_rails_error_handling!
+      @post.should_receive(:find_by_permalink).with('not-a-found-permalink',
+                                                    { :include => [:comments, :user, :tags] }).and_raise(ActiveRecord::RecordNotFound)
+      get :permalink, :blog_id => "1", 
+          :year => "2008", :month => "7", :permalink => 'not-a-found-permalink'
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
     end
 
   end

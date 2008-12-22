@@ -41,10 +41,18 @@ describe BlogsController do
   end
 
 
-  describe "handling unsuccessful GET for /blogs/15155199" do
-    it "should be redirected with flash message" do
-      lambda { get :show, :id => "15155199" }.should raise_error(ActiveRecord::RecordNotFound)
+  describe "handling exceptions" do
+
+    before(:each) do
+      controller.use_rails_error_handling!
     end
+
+    it "should render 404 for RecordNotFound on GET /blogs/15155199 " do
+      Blog.stub!(:find).and_raise(ActiveRecord::RecordNotFound)
+      get :show, :id => "15155199"
+      response.should render_template("#{RAILS_ROOT}/public/404.html")
+    end
+    
   end
 
 end

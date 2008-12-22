@@ -58,6 +58,12 @@ describe Admin::PostsController do
       route_for(:controller => "admin/posts", :action => "new",
                 :blog_id => "1").should == "/admin/blogs/1/posts/new"
     end
+    
+    it "should map { :controller => 'admin/posts', :action => 'create', :blog_id => '1' } \
+        to /admin/blogs/1/posts" do
+      route_for(:controller => "admin/posts", :action => "create",
+                :blog_id => "1").should == "/admin/blogs/1/posts"
+    end
 
     it "should map { :controller => 'admin/posts', :action => 'show', :blog_id => '1', :id => '1' } \
         to /admin/blogs/1/posts/1" do

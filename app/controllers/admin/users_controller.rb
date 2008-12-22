@@ -20,7 +20,7 @@ class Admin::UsersController < ApplicationController
     respond_to do |format|
       format.html {
         @users = @users.paginate(:page => params[:page], :order => 'created_at DESC',
-                                 :per_page => 1)
+                                 :per_page => 10)
       }
       format.xml { render :xml => @users.recent }
     end
@@ -42,7 +42,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new
   end
 
-  # GET /users/new
+  # GET /signup
   def signup
     @user = User.new
     render :action => "signup", :layout => "application"
