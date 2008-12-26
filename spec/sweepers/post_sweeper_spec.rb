@@ -89,6 +89,54 @@ describe PostSweeper do
       @post.save!
     end
 
+    it "should expire old permalink with title change" do
+      @post = Post.create!(valid_post_attributes)
+      @sweeper.should_receive(:expire_page).once.with({:controller=>"/posts",
+                                                  :day => @post.publish_date.day,
+                                                  :month => @post.publish_date.month,
+                                                  :permalink => "post-title",
+                                                  :year => @post.publish_date.year,
+                                                  :action => "permalink"})
+
+
+      @sweeper.should_receive(:expire_page).with({:controller=>"/comments",
+                                                  :post_id => @post.id, :action => "index"})
+                                                  
+      @sweeper.should_receive(:expire_page).with({:controller=>"/comments",
+                                                  :post_id => @post.id, :action => "index",
+                                                  :format=>:atom})
+
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts",
+                                                  :day => @post.publish_date.day,
+                                                  :month => @post.publish_date.month,
+                                                  :year => @post.publish_date.year,
+                                                  :action=>"on"})
+
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts",
+                                                  :month=>@post.publish_date.month,
+                                                  :year=>@post.publish_date.year, :action=>"on"})
+
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts",
+                                                  :year=>@post.publish_date.year, :action=>"on"})
+                                                  
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts",
+                                                  :blog_id=>@post.blog_id, :action=>"index"})
+                                                  
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts",
+                                                  :blog_id=>@post.blog_id, 
+                                                  :action=>"index", :format=>:atom})
+                                                  
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts", :user_id=>@post.user_id,
+                                                  :blog_id=>@post.blog_id, :action=>"index"})
+
+      @sweeper.should_receive(:expire_page).with({:controller=>"/posts", :format=>:atom,
+                                                  :user_id=>@post.user_id, :blog_id=>@post.blog_id,
+                                                  :action=>"index"})
+
+      @post.title = "new title"
+      @post.save!
+    end
+
   end
 
 
@@ -98,10 +146,9 @@ describe PostSweeper do
       @post = Post.create!(valid_post_attributes.with(:tag_list => 'one "two tag"'))
     end
 
-    it "should always expire" do 
-      require 'ruby-debug'
-      debugger
-      @sweeper.should_receive(:expire_all).with(@post, false, true)
+    it "should always expire" do
+      current_tags = Tag.parse(@post.cached_tag_list)
+      @sweeper.should_receive(:expire_tag_pages).with(@post, current_tags)
       @post.destroy
     end
 

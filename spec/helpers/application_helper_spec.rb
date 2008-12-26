@@ -56,6 +56,7 @@ describe ApplicationHelper do
       javascript("<script>TimeInWordsHelper.convertBySelector('.updated');</script>",
                  ['file_1.js', 'file_2.js'])
     end
+    
   end
 
 end
