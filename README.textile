@@ -26,19 +26,19 @@ h3. "0.0.2":http://github.com/hiddenloop/blog/tree/0.0.2
 * spam protection for comments (basic question/answer)
 * time ago in words rendering (via javascript)
 * auto-complete tag input (with taggable posts)
-  * plugin patched to scope taggings to blogs
-  * cloud html reworked to include this scope
+** plugin patched to scope taggings to blogs
+** cloud html reworked to include this scope
 * uploads (using Paperclip), shopify like UI for this
-  * patches to plugin to generate preview images for PDFs
+** patches to plugin to generate preview images for PDFs
 * config/config.yml as a placeholder for application wide settings
 * general code improvements
-  * code refactor, basic pass now using "flay":http://ruby.sadi.st/Flay.html (gem) for duplication checking
-  * ruby code convention employed ("Ruby and Rails style guide":http://www.pathf.com/blogs/ruby-and-rails-style-guide/)
-  * 100% code coverage with rspec (updated to 1.1.11 since last rev)
-  * javascript test plugin added (rake test:javascripts)
-  * more specific routing with :only and :except
-  * removal of default js libs, coming from google now
-  * more named scopes
+** code refactor, basic pass now using "flay":http://ruby.sadi.st/Flay.html (gem) for duplication checking
+** ruby code convention employed ("Ruby and Rails style guide":http://www.pathf.com/blogs/ruby-and-rails-style-guide/)
+** 100% code coverage with rspec (updated to 1.1.11 since last rev)
+** javascript test plugin added (rake test:javascripts)
+** more specific routing with :only and :except
+** removal of default js libs, coming from google now
+** more named scopes
   
 
 h3. "0.0.1":http://github.com/hiddenloop/blog/tree/0.0.1
@@ -72,7 +72,7 @@ h2. Requirements
 * "Rspec":http://rspec.info 1.1.11
 * "Ruby":http://www.ruby-lang.org/ >= 1.8.7
 * gems
-  * "RedCloth":http://redcloth.org/ (gem) >= 4.1.1
+** "RedCloth":http://redcloth.org/ (gem) >= 4.1.1
 
 
 h2. And finally, real world examples
