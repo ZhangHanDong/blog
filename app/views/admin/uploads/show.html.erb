@@ -2,7 +2,7 @@
 <p>
   <%= link_to 'show original', @upload.asset.url, :target => '_blank' %>
   or 
-  <input id="copy_button" onclick="copyToClipboard('http://<%= "#{request.host_with_port}#{@upload.asset.url}" %>');;" type="button" value="copy file URL" />
+  <input id="copy_button" onclick="copyToClipboard('http://<%= "#{request.host_with_port}#{@upload.asset.url}" %>');" type="button" value="copy file URL" />
   <span id="copied_message" style="display:none;">OK url ready for pasting!</span>
   or
   <%= link_to 'delete?', admin_blog_upload_path(@blog, @upload), :confirm => 'Are you sure?', :method => :delete, :class => 'trashcan' %>

@@ -6,11 +6,10 @@ ActionController::Routing::Routes.draw do |map|
   map.login  '/login',  :controller => 'sessions',   :action => 'new', :conditions => { :method => :get }
   map.logout '/logout', :controller => 'sessions',   :action => 'destroy', :conditions => { :method => :delete }
   
-  
   # public resources
   map.resource  :session, :only => [:new, :create, :destroy]
   map.resources :blogs, :only => [:index, :show] do |blog|
- 
+
     # paginated listings
     map.connect 'blogs/page/:page', :controller => 'blogs', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }
     map.connect 'blogs/:blog_id/users/page/:page', :controller => 'users', :action => 'index', :requirements => { :page => /\d+/ }, :conditions => { :method => :get }

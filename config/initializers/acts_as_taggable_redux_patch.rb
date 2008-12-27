@@ -88,7 +88,7 @@ class Tag < ActiveRecord::Base
   named_scope :by_user,  lambda { |*user| {:conditions =>  ["taggings.user_id = ?", user], :include => :taggings}}
   named_scope :recent, :limit => 20, :order => "tags.id DESC"
 
-  # Tag a taggable with this tag, optionally add user to add owner to tagging
+  # Tag a taggable with this tag, optionally add user and blog to tagging
   def tag(taggable, user_id = nil, blog_id = nil)
     taggings.create :taggable => taggable, :user_id => user_id, :blog_id => blog_id
     taggings.reset

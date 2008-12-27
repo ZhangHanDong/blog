@@ -1,7 +1,7 @@
 module Paperclip
 
   class Attachment
-    
+
     # PATCH check thumbnailable, ie. is an image or PDF content type
     def self.thumbnailable?(content_type)
       [ 'image/jpeg', 'image/pjpeg',
@@ -37,12 +37,12 @@ module Paperclip
 
 
   class Thumbnail
-    
+
     def self.make file, dimensions, format = nil, whiny_thumbnails = true, pdf_page = nil
       # PATCH make call to include pdf_paging to include pdf_page e.g. [0]
       new(file, dimensions, format, whiny_thumbnails).make(pdf_page)
     end
-    
+
     def make pdf_page = nil
       src = @file
       dst = Tempfile.new([@basename, @format].compact.join("."))
@@ -51,7 +51,7 @@ module Paperclip
       # PATCH command to include pdf_page e.g. [0]
       command = <<-end_command
         #{ Paperclip.path_for_command('convert') }
-        "#{ File.expand_path(src.path) }#{pdf_page}" 
+        "#{ File.expand_path(src.path) }#{pdf_page}"
         #{ transformation_command }
         "#{ File.expand_path(dst.path) }"
       end_command
@@ -65,6 +65,5 @@ module Paperclip
     end
 
   end
-  
-  
+
 end

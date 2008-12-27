@@ -1,41 +1,62 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>distanceOfTimeInWords javascript unittests</title>
-  <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
-  <script src="javascripts/unittest.js" type="text/javascript"></script>
+  <title>JavaScript unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js" type="text/javascript"></script>
+    <script src="assets/unittest.js" type="text/javascript"></script>
+
   <script src="../../public/javascripts/application.js" type="text/javascript"></script>
-  <link rel="stylesheet" href="stylesheets/test.css" type="text/css"/>
+
+  <link rel="stylesheet" href="assets/unittest.css" type="text/css" />
 </head>
 <body>
-<h1>distanceOfTimeInWords javascript unit tests</h1>
-<h2>Results</h2>
-<div id="testlog"></div>
-<!-- here go any elements you do the testing on -->
-<h2>Output</h2>
-<p id="testExample" class="updated" title="2008-08-23T19:00:00Z">4th Oct 2008</p>
+<div id="content">
+  <div id="header">
+    <h1>JavaScript unit test file</h1>
+    <p>
+      This file tests <strong>application.js</strong>.
+    </p>
+  </div>
+  <!-- Log output (one per Runner, via {testLog: "testlog"} option)-->
+  <div id="testlog"></div>
+  <!-- Put or load sample/test html here (load via sampleLoad(file) in setup() methods) -->
+  <p id="testExample" class="updated" title="2008-08-23T19:00:00Z">4th Oct 2008</p>
+</div>
 
-<!-- Tests -->
-<script type="text/javascript" language="javascript">
+<script type="text/javascript">
+// <![CDATA[
+
+  // helper methods for tests
   var now = new Date();
+
   function nowPlusSeconds(seconds) {
     var date = new Date()
     date.setTime(now.getTime() + (seconds * 1000))
     return date
   }
+
   function nowPlusMinutes(minutes) {
     return nowPlusSeconds(minutes * 60)
   }
+
   function nowMinusMinutes(minutes) {
     return nowPlusSeconds(minutes * -60)
   }
+
   new Test.Unit.Runner({
+
     setup: function() {
       this.assertTimeDistanceInWordsEquals = function(expected, toTime, includeSeconds, includePrefix) {
         this.assertEqual(expected, TimeInWordsHelper.distanceInWords(now, toTime, includeSeconds, includePrefix));
       }
       this.now = new Date();
     },
+
+    teardown: function() {
+    },
+
     testTimeAgoInWordsSubMinute: function() {
       with (this) {
         assertTimeDistanceInWordsEquals("less than 5 seconds", now, true);
@@ -51,20 +72,23 @@
         assertTimeDistanceInWordsEquals("1 minute", nowPlusSeconds(60), true);
       }
     },
+    
     testTimeAgoInWordsSubMinuteIgnoringSeconds: function() {
       with (this) {
         assertTimeDistanceInWordsEquals("less than a minute", now, false);
         assertTimeDistanceInWordsEquals("1 minute", nowPlusSeconds(40), false);
       }
     },
-	testTimeAgoInWordsSubMinuteIncludingPrefix: function() {
+    
+	  testTimeAgoInWordsSubMinuteIncludingPrefix: function() {
       with (this) {
         assertTimeDistanceInWordsEquals("less than a minute from now", now, false, true);
         assertTimeDistanceInWordsEquals("1 minute from now", nowPlusSeconds(40), false, true);
-		assertTimeDistanceInWordsEquals("10 minutes ago", nowMinusMinutes(10), false, true);
+		    assertTimeDistanceInWordsEquals("10 minutes ago", nowMinusMinutes(10), false, true);
         assertTimeDistanceInWordsEquals("about 2 hours ago", nowMinusMinutes(90), false, true);
       }
     },
+    
     testTimeAgoInWords: function() {
       with (this) {
         assertTimeDistanceInWordsEquals("2 minutes", nowPlusMinutes(2), true);
@@ -87,6 +111,7 @@
         assertTimeDistanceInWordsEquals("over 2 years", nowPlusMinutes(1051200), true);
       }
     },
+
     testConvertToTimeAgoInWords: function() {
       with (this) {
         var e = $('testExample');
@@ -96,8 +121,22 @@
         TimeInWordsHelper.convertBySelector('.updated');
         assertEqual(expectedDateInWords, $('testExample').innerHTML)
       }
+    },
+    
+    testDateCreateFromISOString: function() {
+      testDate = new Date();
+      with (this) {
+        testDate.setISO8601('2009-08-23T19:12:34Z')
+        assertEqual(testDate.toUTCString(), 'Sun, 23 Aug 2009 19:12:34 GMT');
+        testDate.setISO8601('2003-04-01T13:01:02')
+        assertEqual(testDate.toUTCString(), 'Tue, 01 Apr 2003 13:01:02 GMT');
+        testDate.setISO8601('2007-04-05T24:00')
+        assertEqual(testDate.toUTCString(), 'Fri, 06 Apr 2007 00:00:00 GMT');
+      }
     }
-  });
+
+  }, {testLog: "testlog"});
+// ]]>
 </script>
 </body>
 </html>
