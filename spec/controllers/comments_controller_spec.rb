@@ -108,8 +108,8 @@ describe CommentsController do
   describe "handling POST /blogs/1/posts/1/comments" do
 
     before(:each) do
-      Comment.should_receive(:new).and_return(@comment)
-      @comment.should_receive(:post=).with(@post)
+      @post.should_receive(:comments).and_return(@comment)
+      @comment.should_receive(:build).and_return(@comment)
     end
 
 

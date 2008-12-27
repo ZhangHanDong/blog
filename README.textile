@@ -1,0 +1,80 @@
+h1. Blog
+
+h2. About
+
+A simple RESTful rails blogging application using common plugins, heavily tested with Rspec.  The project has been built in stages and tagged at each.  Attempts have been made to achieve 100% code coverage through Rspec. The blog follows normal blogging conventions and sticks to the basics.  The project is intended to form the starting point for any Rails application requiring blogging.
+
+For more, read the latest commit logs and revision information below.
+
+
+h2. Caveats
+
+* all front-end code is to be considered as placeholder until this message is removed (will be smartened up later)
+
+
+h2. Revisions
+
+
+h3. "0.0.2":http://github.com/hiddenloop/blog/tree/0.0.2
+
+* multiple blogs, blog model, has many posts
+* page caching on all public pages (with sweeping)
+* user has and belongs to many blogs
+* unique perma-links for posts (with date based URL)
+* public tags controller with restful routes
+* "hAtom":http://microformats.org/wiki/hatom, "hCard":http://microformats.org/wiki/hcard, "rel-tag":http://microformats.org/wiki/rel-tag microformats in public views ("about":http://microformats.org/)
+* spam protection for comments (basic question/answer)
+* time ago in words rendering (via javascript)
+* auto-complete tag input (with taggable posts)
+  * plugin patched to scope taggings to blogs
+  * cloud html reworked to include this scope
+* uploads (using Paperclip), shopify like UI for this
+  * patches to plugin to generate preview images for PDFs
+* config/config.yml as a placeholder for application wide settings
+* general code improvements
+  * code refactor, basic pass now using "flay":http://ruby.sadi.st/Flay.html (gem) for duplication checking
+  * ruby code convention employed ("Ruby and Rails style guide":http://www.pathf.com/blogs/ruby-and-rails-style-guide/)
+  * 100% code coverage with rspec (updated to 1.1.11 since last rev)
+  * javascript test plugin added (rake test:javascripts)
+  * more specific routing with :only and :except
+  * removal of default js libs, coming from google now
+  * more named scopes
+  
+
+h3. "0.0.1":http://github.com/hiddenloop/blog/tree/0.0.1
+
+* public and admin namespaces
+* posts have many comments
+* users have many posts
+* administration for tagging
+* paperclip used only for user photo upload
+* public register and login available for back-end (with logout)
+* date specific urls for posts (posts/year/month/day) (currently not user scope-able)
+* basic ATOM feeds for posts and comments (can be scoped by user)
+* 100% code coverage with rspec
+
+
+h2. Plugins Used (and vendored)
+
+* "Paperclip":http://github.com/thoughtbot/paperclip/tree/master - thoughtbot
+* "Restful Authentication":http://github.com/technoweenie/restful-authentication/tree/master - technoweenie
+* "Acts as Taggable Redux":http://github.com/monki/acts_as_taggable_redux/tree/master - monki
+* "Will Paginate":http://github.com/mislav/will_paginate/tree/master - mislav
+* "Rspec":http://rspec.info - dchelimsky
+* "Rspec Rails":http://github.com/dchelimsky/rspec-rails/tree/master - dchelimsky
+* "Javascript Test":http://github.com/rails/javascript_test/tree/master - madrobby
+* "Auto Complete":http://github.com/rails/auto_complete/tree/master - dhh
+
+
+h2. Requirements
+
+* "Rails":http://rubyonrails.org/ 2.2.2
+* "Rspec":http://rspec.info 1.1.11
+* "Ruby":http://www.ruby-lang.org/ >= 1.8.7
+* gems
+  * "RedCloth":http://redcloth.org/ (gem) >= 4.1.1
+
+
+h2. And finally, real world examples
+
+Examples where this application is used will eventually be listed below

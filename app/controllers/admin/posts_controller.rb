@@ -71,9 +71,8 @@ class Admin::PostsController < ApplicationController
   # POST /admin/blogs/1/posts.xml
   def create
     @blog = Blog.find(params[:blog_id])
-    @post = Post.new(params[:post])
+    @post = @blog.posts.build(params[:post])
     @post.user = @current_user
-    @blog.posts << @post
 
     respond_to do |format|
       if @post.save

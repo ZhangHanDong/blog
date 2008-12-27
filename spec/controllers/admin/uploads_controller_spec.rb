@@ -140,7 +140,6 @@ describe Admin::UploadsController do
     before(:each) do
       @upload = mock_model(Upload, :to_param => "1")
       @upload.should_receive(:user=).with(users(:quentin)).and_return(true)
-      @upload.should_receive(:<<)
       Upload.stub!(:new).and_return(@upload)
     end
     
@@ -154,7 +153,7 @@ describe Admin::UploadsController do
       end
       
       it "should upload file successfully and redirect to blog uploads" do
-        Upload.should_receive(:new).with(anything()).and_return(@upload)
+        @upload.should_receive(:build).and_return(@upload)
         do_post
         response.should redirect_to(admin_blog_uploads_url(@blog))
       end
@@ -165,6 +164,7 @@ describe Admin::UploadsController do
 
       def do_post
         @blog.should_receive(:uploads).twice.and_return(@upload)
+        @upload.should_receive(:build).and_return(@upload)
         @upload.should_receive(:save).and_return(false)
         @upload.should_receive(:paginate).with({ :include => [:blog, :user],
                                                  :per_page => 12, :page => nil }).and_return([@upload])

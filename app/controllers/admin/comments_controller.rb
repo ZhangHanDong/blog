@@ -71,9 +71,8 @@ class Admin::CommentsController < ApplicationController
   # POST /admin/blogs/1/posts/1/comments.xml
   def create
     @post = Post.find(params[:post_id], :include => :blog)
-    @comment = Comment.new(params[:comment])
+    @comment = @post.comments.build(params[:comment])
     @comment.user = @current_user
-    @post.comments << @comment
 
     respond_to do |format|
       if @post.save

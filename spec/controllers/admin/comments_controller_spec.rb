@@ -203,14 +203,14 @@ describe Admin::CommentsController do
 
       def do_post                                
         @post.should_receive(:blog).and_return(@blog)
-        @post.should_receive(:comments).and_return([])
+        @post.should_receive(:comments).and_return(@comment)
+        @comment.should_receive(:build).and_return(@comment)
         @comment.should_receive(:user=).with(users(:aaron)).and_return(true)
         @post.should_receive(:save).and_return(true)
         post :create, :comment => {}, :blog_id => "1", :post_id => "1"
       end
 
       it "should create a new comment with the correct author set" do
-        Comment.should_receive(:new).with({}).and_return(@comment)
         login_as :aaron     
         do_post
       end
@@ -227,7 +227,8 @@ describe Admin::CommentsController do
     describe "with failed create" do
 
       def do_post
-        @post.should_receive(:comments).and_return([])
+        @post.should_receive(:comments).and_return(@comment)
+        @comment.should_receive(:build).and_return(@comment)
         @comment.should_receive(:user=).with(users(:aaron)).and_return(true)
         @post.should_receive(:save).and_return(false)
         post :create, :comment => {}, :blog_id => "1", :post_id => "1" 

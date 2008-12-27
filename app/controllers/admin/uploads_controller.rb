@@ -44,9 +44,8 @@ class Admin::UploadsController < ApplicationController
   # POST /admin/blogs/1/uploads.xml
   def create
     @blog = Blog.find(params[:blog_id])
-    @upload = Upload.new(params[:upload])
+    @upload = @blog.uploads.build(params[:upload])
     @upload.user = @current_user
-    @blog.uploads << @upload
 
     respond_to do |format|
       if @upload.save

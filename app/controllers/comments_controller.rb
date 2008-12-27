@@ -39,8 +39,7 @@ class CommentsController < ApplicationController
   # POST blogs/1/posts/1/comments
   def create
     @post = Post.published.find(params[:post_id], :include => :blog)
-    @comment = Comment.new(params[:comment])
-    @comment.post = @post
+    @comment = @post.comments.build(params[:comment])
     @comment.user = current_user if current_user
 
     respond_to do |format|

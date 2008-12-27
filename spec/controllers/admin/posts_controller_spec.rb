@@ -208,14 +208,14 @@ describe Admin::PostsController do
     describe "with setting author (user) (successful save)" do
 
       def do_post
-        @blog.should_receive(:posts).and_return([@post])
+        @blog.should_receive(:posts).and_return(@post)
         @post.should_receive(:user=).with(users(:quentin)).and_return(true)
         @post.should_receive(:save).and_return(true)
         post :create, :post => {}, :blog_id => "1"
       end
 
       it "should create a new post with the correct author set and redirect to new post" do
-        Post.should_receive(:new).with({}).and_return(@post)
+        @post.should_receive(:build).with({}).and_return(@post)
         do_post
         response.should redirect_to(admin_blog_post_url(@blog, @post))
       end
@@ -225,7 +225,8 @@ describe Admin::PostsController do
     describe "with failed save" do
 
       def do_post
-        @blog.should_receive(:posts).and_return([@post])
+        @blog.should_receive(:posts).and_return(@post)
+        @post.should_receive(:build).and_return(@post)
         @post.should_receive(:user=).with(users(:quentin)).and_return(true)
         @post.should_receive(:save).and_return(false)
         post :create, :post => {}, :blog_id => "1"
