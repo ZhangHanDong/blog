@@ -25,22 +25,6 @@ describe BlogsController do
   end
 
 
-  describe "handling GET /blogs/1" do
-
-    def do_get            
-      get :show, :id => "1"
-    end
-
-    it "should be successful, find the blog and redirect to the blog posts url" do
-      Blog.should_receive(:find).with("1").and_return(@blog)
-      do_get                                                                
-      assigns[:blog].should equal(@blog)
-      response.should redirect_to(blog_posts_url(@blog))
-    end  
-              
-  end
-
-
   describe "handling exceptions" do
 
     before(:each) do

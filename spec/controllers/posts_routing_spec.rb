@@ -7,7 +7,7 @@ describe PostsController do
     it "should map { :controller => 'posts', :action => 'index', :blog_id => '1' } \ 
         to /blogs/1/posts" do
       route_for(:controller => "posts", :action => "index", 
-                :blog_id => "1").should == "/blogs/1/posts"
+                :blog_id => "1").should == "/blogs/1"
     end
     
     it "should map { :controller => 'posts', :action => 'index', :blog_id => '1', :page => '10' } \ 

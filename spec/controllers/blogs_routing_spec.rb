@@ -36,7 +36,7 @@ describe BlogsController do
 
     it "should generate params { :controller => 'blogs', action => 'show', id => '1' } \ 
         from GET /blogs/1" do
-      params_from(:get, "/blogs/1").should == {:controller => "blogs", :action => "show", :id => "1"}
+      params_from(:get, "/blogs/1").should == {:controller => "posts", :action => "index", :blog_id => "1"}
     end
 
   end

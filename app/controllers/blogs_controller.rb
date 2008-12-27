@@ -9,10 +9,4 @@ class BlogsController < ApplicationController
     end
   end
 
-  # GET /blogs/1
-  def show
-    @blog = Blog.published.find(params[:id])
-    redirect_to blog_posts_url(@blog)  
-  end
-
 end

@@ -1,10 +1,11 @@
 ActionController::Routing::Routes.draw do |map|
   
   # mapped routes
-  map.admin  '/admin',  :controller => 'admin/blogs', :conditions => { :method => :get }
-  map.signup '/signup', :controller => 'admin/users', :action => 'signup', :conditions => { :method => :get }
-  map.login  '/login',  :controller => 'sessions',   :action => 'new', :conditions => { :method => :get }
-  map.logout '/logout', :controller => 'sessions',   :action => 'destroy', :conditions => { :method => :delete }
+  map.admin  '/admin',         :controller => 'admin/blogs', :action => 'index',   :conditions => { :method => :get }
+  map.signup '/signup',        :controller => 'admin/users', :action => 'signup',  :conditions => { :method => :get }
+  map.login  '/login',         :controller => 'sessions',    :action => 'new',     :conditions => { :method => :get }
+  map.logout '/logout',        :controller => 'sessions',    :action => 'destroy', :conditions => { :method => :delete }
+  map.blog   '/blogs/:blog_id', :controller => 'posts',       :action => 'index',   :conditions => { :method => :get }
   
   # public resources
   map.resource  :session, :only => [:new, :create, :destroy]
