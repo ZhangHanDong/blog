@@ -7,7 +7,7 @@ class CreatePosts < ActiveRecord::Migration
       t.text :summary
       t.text :body
       t.text :body_formatted
-      t.boolean :in_draft
+      t.boolean :in_draft, :default => false
 
       t.timestamps
     end
